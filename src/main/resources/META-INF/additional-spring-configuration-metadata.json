@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "dotenv.location",
+    "type": "java.lang.String",
+    "description": "A description for 'dotenv.location'"
+  },
+  {
+    "name": "dotenv.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'dotenv.enabled'"
+  }
+]}
