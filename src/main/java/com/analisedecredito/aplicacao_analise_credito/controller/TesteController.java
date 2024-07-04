@@ -39,7 +39,7 @@ public class TesteController {
         return repository.findById(id).get().getDescricaoRendaTipo();
     }
 
-    @GetMapping("/lista")
+    @GetMapping("/listanova")
     public List<RendaTipo> listaRenda(@RequestBody RendaTipoDto rendaTipoDto){
         return service.list();
     }
