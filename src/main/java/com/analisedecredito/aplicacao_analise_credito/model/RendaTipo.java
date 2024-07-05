@@ -1,5 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.model;
 
+import com.analisedecredito.aplicacao_analise_credito.dto.RendaTipoDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,13 +18,12 @@ public class RendaTipo {
     private String descricaoRendaTipo;
 
     // Construtor
-    public RendaTipo(Integer idRendaTipo, String descricaoRendaTipo) {
-        this.idRendaTipo = idRendaTipo;
-        this.descricaoRendaTipo = descricaoRendaTipo;
+    public RendaTipo() {
     }
 
-    public RendaTipo() {
-        
+    public RendaTipo(RendaTipoDto rendaTipoDto) {
+        this.idRendaTipo = rendaTipoDto.getIdRendaTipo();
+        this.descricaoRendaTipo = rendaTipoDto.getDescricaoRendaTipo();
     }
 
     // Get e set

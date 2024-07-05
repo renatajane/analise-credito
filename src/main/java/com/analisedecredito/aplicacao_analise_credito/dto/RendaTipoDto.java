@@ -1,42 +1,39 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import org.springframework.beans.BeanUtils;
+
 import com.analisedecredito.aplicacao_analise_credito.model.RendaTipo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-@Entity
 public class RendaTipoDto {
-    
-    //Propriedades
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idRendaTipoDto;
-    
-    private String descricaoRendaTipoDto;
 
-    //get e set
-    public Integer getIdRendaTipoDto() {
-        return idRendaTipoDto;
+    // Propriedades
+    private Integer idRendaTipo;
+    private String descricaoRendaTipo;
+
+    // Construtores
+    public RendaTipoDto() {
+
     }
 
-    public void setIdRendaTipoDto(Integer idRendaTipoDto) {
-        this.idRendaTipoDto = idRendaTipoDto;
+    // Get e set
+    public RendaTipoDto(RendaTipo rendaTipo) {
+        BeanUtils.copyProperties(rendaTipo, this);
     }
 
-    public String getDescricaoRendaTipoDto() {
-        return descricaoRendaTipoDto;
+    public Integer getIdRendaTipo() {
+        return idRendaTipo;
     }
 
-    public void setDescricaoRendaTipoDto(String descricaoRendaTipoDto) {
-        this.descricaoRendaTipoDto = descricaoRendaTipoDto;
-    }    
+    public void setIdRendaTipo(Integer idRendaTipo) {
+        this.idRendaTipo = idRendaTipo;
+    }
 
-    //Converte para objeto
-    public RendaTipo transformaParaObjeto(){
-        return new RendaTipo(idRendaTipoDto, descricaoRendaTipoDto);
+    public String getDescricaoRendaTipo() {
+        return descricaoRendaTipo;
+    }
+
+    public void setDescricaoRendaTipo(String descricaoRendaTipo) {
+        this.descricaoRendaTipo = descricaoRendaTipo;
     }
 
 }
