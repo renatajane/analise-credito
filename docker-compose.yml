@@ -30,7 +30,6 @@ services:
 
 networks:
   pg-network:
-    external: true
 
 volumes:
   db-data:

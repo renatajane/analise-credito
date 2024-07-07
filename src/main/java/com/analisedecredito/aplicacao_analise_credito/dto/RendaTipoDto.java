@@ -15,7 +15,7 @@ public class RendaTipoDto {
 
     }
 
-    // Get e set
+    // Getters e Setters
     public RendaTipoDto(RendaTipo rendaTipo) {
         BeanUtils.copyProperties(rendaTipo, this);
     }

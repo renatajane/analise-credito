@@ -2,19 +2,24 @@ package com.analisedecredito.aplicacao_analise_credito.model;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.RendaTipoDto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "renda_tipo")
 public class RendaTipo {
 
     // Atributos
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_renda_tipo")
     private Integer idRendaTipo;
-
+    
+    @Column(name = "descricao_renda_tipo", nullable = false)
     private String descricaoRendaTipo;
 
     // Construtor
@@ -26,7 +31,7 @@ public class RendaTipo {
         this.descricaoRendaTipo = rendaTipoDto.getDescricaoRendaTipo();
     }
 
-    // Get e set
+    // Getters e Setters
     public Integer getIdRendaTipo() {
         return idRendaTipo;
     }
