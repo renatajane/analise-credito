@@ -1,5 +1,9 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.model.PatrimonioTipo;
+
 public class PatrimonioTipoDto {
 
     // Propriedades
@@ -9,6 +13,9 @@ public class PatrimonioTipoDto {
     // Construtor
     public PatrimonioTipoDto() {
      
+    }
+    public PatrimonioTipoDto(PatrimonioTipo patrimonioTipo) {
+        BeanUtils.copyProperties(patrimonioTipo, this);
     }
     
     // Getters e Setters

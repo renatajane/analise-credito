@@ -1,10 +1,23 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.model.DespesaTipo;
+
 public class DespesaTipoDto {
 
     // Propriedades
     private Integer idDespesaTipo;
     private String descricaoDespesaTipo;
+
+    // Construtor
+    public DespesaTipoDto() {
+      
+    }
+
+     public DespesaTipoDto(DespesaTipo despesaTipo) {
+        BeanUtils.copyProperties(despesaTipo, this);
+    }
 
     // Getters e Setters
     public Integer getIdDespesaTipo() {

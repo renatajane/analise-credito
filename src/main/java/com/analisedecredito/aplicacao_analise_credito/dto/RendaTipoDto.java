@@ -14,12 +14,11 @@ public class RendaTipoDto {
     public RendaTipoDto() {
 
     }
-
-    // Getters e Setters
     public RendaTipoDto(RendaTipo rendaTipo) {
         BeanUtils.copyProperties(rendaTipo, this);
     }
 
+    // Getters e Setters
     public Integer getIdRendaTipo() {
         return idRendaTipo;
     }

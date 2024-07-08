@@ -30,7 +30,7 @@ public class RendaTipoController {
     /* Retorna um tipo de renda de acordo com o id */
     @GetMapping("{id}")
     public RendaTipoDto findById(@PathVariable("id") Integer id) {
-        return new RendaTipoDto(repository.findById(id).get());
+        return service.findById(id);
     }
 
     /* Retorna uma lista de todos os tipos de renda cadastrados */

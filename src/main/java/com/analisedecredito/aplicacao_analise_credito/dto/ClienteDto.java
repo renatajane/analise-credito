@@ -13,7 +13,7 @@ public class ClienteDto {
     private String telefone;
     private String endereco;
     private boolean autorizacaoLGPD;
-    private Integer idPerfilCredito;
+    private Integer perfilCredito;
 
     // Construtor
     public ClienteDto() {
@@ -84,13 +84,11 @@ public class ClienteDto {
         this.autorizacaoLGPD = autorizacaoLGPD;
     }
 
-    public Integer getIdPerfilCredito() {
-        return idPerfilCredito;
+    public Integer getPerfilCredito() {
+        return perfilCredito;
     }
 
-    public void setIdPerfilCredito(Integer idPerfilCredito) {
-        this.idPerfilCredito = idPerfilCredito;
-    }
-
-    
+    public void setPerfilCredito(Integer perfilCredito) {
+        this.perfilCredito = perfilCredito;
+    }    
 }
