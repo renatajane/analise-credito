@@ -2,8 +2,12 @@ package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import java.util.Date;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.model.IofAtual;
+
 public class IofAtualDto {
-    
+
     // Propriedades
     private Integer idIof;
     private Double iofDiarioMaiorPrazo;
@@ -13,7 +17,11 @@ public class IofAtualDto {
 
     // Construtor
     public IofAtualDto() {
-        
+
+    }
+
+    public IofAtualDto(IofAtual iofAtual) {
+        BeanUtils.copyProperties(iofAtual, this);
     }
 
     // Getters e Setters
@@ -57,5 +65,4 @@ public class IofAtualDto {
         this.dataCalculo = dataCalculo;
     }
 
-    
 }

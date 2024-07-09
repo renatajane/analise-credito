@@ -1,5 +1,9 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoModalidade;
+
 public class EmprestimoModalidadeDto {
 
     // Propriedades
@@ -9,6 +13,10 @@ public class EmprestimoModalidadeDto {
     // Construtor
     public EmprestimoModalidadeDto() {
 
+    }
+
+    public EmprestimoModalidadeDto(EmprestimoModalidade emprestimoModalidade) {
+        BeanUtils.copyProperties(emprestimoModalidade, this);
     }
 
     // Getters e Setters

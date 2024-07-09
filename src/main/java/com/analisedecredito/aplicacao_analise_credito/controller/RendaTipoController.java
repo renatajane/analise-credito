@@ -28,7 +28,7 @@ public class RendaTipoController {
     RendaTipoService service;
 
     /* Retorna um tipo de renda de acordo com o id */
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public RendaTipoDto findById(@PathVariable("id") Integer id) {
         return service.findById(id);
     }
@@ -40,7 +40,7 @@ public class RendaTipoController {
     }
 
     /* Cria um novo tipo de renda com base nos dados fornecidos */
-    @PostMapping("/create")
+    @PostMapping
     public void create(@RequestBody RendaTipoDto rendaTipoDto) {
         if (rendaTipoDto.getDescricaoRendaTipo() == null) {
             throw new IllegalArgumentException("Descrição da renda tipo não pode ser nula ou vazia");
@@ -49,13 +49,13 @@ public class RendaTipoController {
     }
 
     /* Atualiza os dados de um tipo de renda existente */
-    @PutMapping("/update")
+    @PutMapping
     public RendaTipoDto update(@RequestBody RendaTipoDto rendaTipoDto) {
         return service.update(rendaTipoDto);
     }
 
     /* Remove um dado de tipo de renda pelo id */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         service.delete(id);
         return ResponseEntity.ok().build();

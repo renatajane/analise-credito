@@ -24,7 +24,7 @@ public class EmprestimoModalidade {
 
     // Construtor
     public EmprestimoModalidade() {
-        super();
+        
     }
 
     public EmprestimoModalidade(EmprestimoModalidadeDto emprestimoModalidadeDto) {

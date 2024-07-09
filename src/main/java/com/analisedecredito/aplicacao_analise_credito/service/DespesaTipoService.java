@@ -32,5 +32,16 @@ public class DespesaTipoService {
         repository.save(despesaTipo);
     }
 
+    /* Atualiza os dados de um tipo de despesa existente com base nos dados fornecidos */
+    public DespesaTipoDto update(DespesaTipoDto despesaTipoDto){
+        DespesaTipo despesaTipo = new DespesaTipo(despesaTipoDto);
+        return new DespesaTipoDto(repository.save(despesaTipo));
+    }
+
+    /* Remove um tipo de despesa de acordo com o id */
+    public void delete(Integer id){
+        DespesaTipo despesaTipo = repository.findById(id).get();
+        repository.delete(despesaTipo);
+    }
   
 }
