@@ -27,7 +27,7 @@ public class Cliente {
     private String nome;
 
     @Column(name = "cpf", unique = true, nullable = false)
-    private Integer cpf;
+    private Long cpf;
 
     @Column(name = "data_nascimento", nullable = false)
     private Date dataNascimento;
@@ -83,11 +83,11 @@ public class Cliente {
         this.nome = nome;
     }
 
-    public Integer getCpf() {
+    public Long getCpf() {
         return cpf;
     }
 
-    public void setCpf(Integer cpf) {
+    public void setCpf(Long cpf) {
         this.cpf = cpf;
     }
 

@@ -2,12 +2,16 @@ package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import java.util.Date;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
+
 public class ClienteDto {
 
     // Propriedades
     private Integer idCliente;
     private String nome;
-    private Integer cpf;
+    private Long cpf;
     private Date dataNascimento;
     private String email;
     private String telefone;
@@ -17,6 +21,10 @@ public class ClienteDto {
 
     // Construtor
     public ClienteDto() {
+    }
+
+    public ClienteDto(Cliente cliente) {
+        BeanUtils.copyProperties(cliente, this);
     }
 
     // Getters e Setters
@@ -36,11 +44,11 @@ public class ClienteDto {
         this.nome = nome;
     }
 
-    public Integer getCpf() {
+    public Long getCpf() {
         return cpf;
     }
 
-    public void setCpf(Integer cpf) {
+    public void setCpf(Long cpf) {
         this.cpf = cpf;
     }
 
@@ -90,5 +98,5 @@ public class ClienteDto {
 
     public void setPerfilCredito(Integer perfilCredito) {
         this.perfilCredito = perfilCredito;
-    }    
+    }
 }
