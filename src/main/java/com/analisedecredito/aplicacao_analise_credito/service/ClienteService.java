@@ -35,9 +35,11 @@ public class ClienteService {
 
     /* Cria um novo cliente com base nos dados fornecidos */
     public void create(ClienteDto clienteDto) {
-        Optional<PerfilCredito> perfilCreditoOpt = perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
+        Optional<PerfilCredito> perfilCreditoOpt = perfilCreditoRepository.
+        findById(clienteDto.getPerfilCredito());
         if(perfilCreditoOpt.isPresent()){
-            Cliente cliente = new Cliente(clienteDto, perfilCreditoOpt.get());
+            Cliente cliente = new 
+            Cliente(clienteDto, perfilCreditoOpt.get());
             repository.save(cliente);
         } else{
             throw new ResourceNotFoundException("Perfil de crédito não.");
@@ -49,7 +51,8 @@ public class ClienteService {
         Optional<Cliente> clienteOpt = repository.findById(id);
         if (clienteOpt.isPresent()) {
             Cliente cliente = clienteOpt.get();
-            Optional<PerfilCredito> perfilCreditoOpt = perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
+            Optional<PerfilCredito> perfilCreditoOpt = perfilCreditoRepository.
+                        findById(clienteDto.getPerfilCredito());
             if (perfilCreditoOpt.isPresent()) {
                 PerfilCredito perfilCredito = perfilCreditoOpt.get();
                 cliente.setNome(clienteDto.getNome());

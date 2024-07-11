@@ -1,5 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import com.analisedecredito.aplicacao_analise_credito.model.AnaliseRestricao;
+
 public class AnaliseRestricaoDto {
 
     // Propriedades
@@ -11,6 +13,13 @@ public class AnaliseRestricaoDto {
     // Construtor
     public AnaliseRestricaoDto() {
 
+    }
+
+    public AnaliseRestricaoDto(AnaliseRestricao analiseRestricao) {
+        this.idRestricao = analiseRestricao.getIdRestricao();
+        this.cliente = analiseRestricao.getCliente().getIdCliente();
+        this.statusSerasa = analiseRestricao.getStatusSerasa();
+        this.statusSpc = analiseRestricao.getStatusSpc();
     }
 
     // Getters e Setters
