@@ -2,8 +2,6 @@ package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import java.util.Date;
 
-import org.springframework.beans.BeanUtils;
-
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 
 public class ClienteDto {
@@ -24,7 +22,15 @@ public class ClienteDto {
     }
 
     public ClienteDto(Cliente cliente) {
-        BeanUtils.copyProperties(cliente, this);
+        this.idCliente = cliente.getIdCliente();
+        this.nome = cliente.getNome();
+        this.cpf = cliente.getCpf();
+        this.dataNascimento = cliente.getDataNascimento();
+        this.email = cliente.getEmail();
+        this.telefone = cliente.getTelefone();
+        this.endereco = cliente.getEndereco();
+        this.autorizacaoLGPD = cliente.getAutorizacaoLGPD();
+        this.perfilCredito = cliente.getPerfilCredito().getIdPerfilCredito();
     }
 
     // Getters e Setters
