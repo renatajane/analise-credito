@@ -26,7 +26,7 @@ public class Despesa {
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "id_despesa_tipo", referencedColumnName = "id_despesa_tipo", nullable = false)
+    @JoinColumn(name = "id_despesa_tipo_fk", referencedColumnName = "id_despesa_tipo", nullable = false)
     private DespesaTipo despesaTipo;
 
     @Column(name="valor_despesa")

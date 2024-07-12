@@ -2,6 +2,8 @@ package com.analisedecredito.aplicacao_analise_credito.model;
 
 import java.util.Date;
 
+import org.springframework.beans.BeanUtils;
+
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 
 import jakarta.persistence.Column;
@@ -54,14 +56,7 @@ public class Cliente {
     }
 
     public Cliente(ClienteDto clienteDto, PerfilCredito perfilCredito) {
-        this.idCliente = clienteDto.getIdCliente();
-        this.nome = clienteDto.getNome();
-        this.cpf = clienteDto.getCpf();
-        this.dataNascimento = clienteDto.getDataNascimento();
-        this.email = clienteDto.getEmail();
-        this.telefone = clienteDto.getTelefone();
-        this.endereco = clienteDto.getEndereco();
-        this.autorizacaoLGPD = clienteDto.getAutorizacaoLGPD();
+        BeanUtils.copyProperties(clienteDto, this);
         this.perfilCredito = perfilCredito;
     }
 

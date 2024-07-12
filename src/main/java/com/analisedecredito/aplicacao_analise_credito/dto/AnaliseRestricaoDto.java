@@ -1,5 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import org.springframework.beans.BeanUtils;
+
 import com.analisedecredito.aplicacao_analise_credito.model.AnaliseRestricao;
 
 public class AnaliseRestricaoDto {
@@ -16,10 +18,8 @@ public class AnaliseRestricaoDto {
     }
 
     public AnaliseRestricaoDto(AnaliseRestricao analiseRestricao) {
-        this.idRestricao = analiseRestricao.getIdRestricao();
+        BeanUtils.copyProperties(analiseRestricao, this);
         this.cliente = analiseRestricao.getCliente().getIdCliente();
-        this.statusSerasa = analiseRestricao.getStatusSerasa();
-        this.statusSpc = analiseRestricao.getStatusSpc();
     }
 
     // Getters e Setters
