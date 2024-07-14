@@ -1,7 +1,5 @@
 package com.analisedecredito.aplicacao_analise_credito.model;
 
-import com.analisedecredito.aplicacao_analise_credito.dto.AnaliseRestricaoDto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,13 +33,6 @@ public class AnaliseRestricao {
     public AnaliseRestricao() {
         
     }
-
-    public AnaliseRestricao(AnaliseRestricaoDto analiseRestricaoDto, Cliente cliente) {
-        this.idRestricao = analiseRestricaoDto.getIdRestricao();
-        this.statusSerasa = analiseRestricaoDto.getStatusSerasa();
-        this.statusSpc = analiseRestricaoDto.getStatusSpc();
-        this.cliente = cliente;
-        }
 
     // Getters e Setters
     public Integer getIdRestricao() {

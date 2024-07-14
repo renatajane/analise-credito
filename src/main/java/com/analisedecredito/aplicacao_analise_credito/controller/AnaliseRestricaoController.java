@@ -47,7 +47,7 @@ public class AnaliseRestricaoController {
     public ResponseEntity<AnaliseRestricaoDto> update
     (@RequestBody AnaliseRestricaoDto analiseRestricaoDto) {
         try {
-            Integer id = analiseRestricaoDto.getCliente();
+            Integer id = analiseRestricaoDto.getIdRestricao();
             AnaliseRestricaoDto updatedAnalise = service.update(id, analiseRestricaoDto);
             return ResponseEntity.ok(updatedAnalise);
         } catch (ResourceNotFoundException e) {

@@ -27,6 +27,8 @@ services:
         - "5050:80"
       networks:
         - pg-network
+      depends_on:
+      - db
 
 networks:
   pg-network:

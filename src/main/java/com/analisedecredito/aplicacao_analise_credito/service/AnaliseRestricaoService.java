@@ -37,9 +37,22 @@ public class AnaliseRestricaoService {
     public void create(AnaliseRestricaoDto analiseRestricaoDto) {
         Optional<Cliente> clienteOpt = clienteRepository.findById(analiseRestricaoDto.getCliente());
         if (clienteOpt.isPresent()) {
-            AnaliseRestricao analise = new AnaliseRestricao(analiseRestricaoDto, clienteOpt.get());
-            repository.save(analise);
-        }
+             // Cria uma nova instância de AnaliseRestricao
+             AnaliseRestricao analiseRestricao = new AnaliseRestricao();
+            
+             // Associa o cliente encontrado à análise de restrição
+             analiseRestricao.setCliente(clienteOpt.get());
+             
+             // Define os status Serasa e SPC
+             analiseRestricao.setStatusSerasa(analiseRestricaoDto.getStatusSerasa());
+             analiseRestricao.setStatusSpc(analiseRestricaoDto.getStatusSpc());
+             
+             // Salva a nova análise de restrição no banco de dados
+             repository.save(analiseRestricao);
+        }else {
+        throw new ResourceNotFoundException(
+                "Cliente não encontrado com id " + analiseRestricaoDto.getCliente());
+    }
     }
 
     /* Atualiza os dados de uma análise de restrição existente */
