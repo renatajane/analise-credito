@@ -59,7 +59,7 @@ public class AnaliseRestricaoController {
     /* Remove uma análise de restrição pelo id */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id){
-        service.delete(id);;
+        service.delete(id);
         return ResponseEntity.ok().build();
     }
 }

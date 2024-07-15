@@ -63,6 +63,7 @@ public class DespesaService {
         return new DespesaDto(despesa);
     }
 
+     /* Atualiza os dados de uma despesa existente */
     public DespesaDto update(Integer id,DespesaDto despesaDto) {
           
         Optional<Despesa> despesaOpt = repository.findById(id);
@@ -88,6 +89,12 @@ public class DespesaService {
         } else {
             throw new ResourceNotFoundException("Cliente não encontrado com id " + id);
         }
+    }
+
+    /* Remove uma despesa pelo id */
+    public void delete(Integer id){
+        Despesa despesa = repository.findById(id).get();
+        repository.delete(despesa);
     }
 
 }
