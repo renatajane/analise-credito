@@ -8,6 +8,7 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.AnaliseRestricaoDto;
+import com.analisedecredito.aplicacao_analise_credito.dto.AnaliseRestricaoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.model.AnaliseRestricao;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.repository.AnaliseRestricaoRepository;
@@ -23,36 +24,37 @@ public class AnaliseRestricaoService {
     ClienteRepository clienteRepository;
 
     /* Retorna uma analise de restrição de acordo com o id */
-    public AnaliseRestricaoDto findById(Integer id) {
-        return new AnaliseRestricaoDto(repository.findById(id).get());
+    public AnaliseRestricaoReadDto findById(Integer id) {
+        return new AnaliseRestricaoReadDto(repository.findById(id).get());
     }
 
     /* Retorna uma lista de análises de restrições cadastrados */
-    public List<AnaliseRestricaoDto> list() {
+    public List<AnaliseRestricaoReadDto> list() {
         List<AnaliseRestricao> listaAnalises = repository.findAll();
-        return listaAnalises.stream().map(AnaliseRestricaoDto::new).toList();
+        return listaAnalises.stream().map(AnaliseRestricaoReadDto::new).toList();
+
     }
 
     /* Cria uma nova análise de restrição com base nos dados fornecidos */
     public void create(AnaliseRestricaoDto analiseRestricaoDto) {
         Optional<Cliente> clienteOpt = clienteRepository.findById(analiseRestricaoDto.getCliente());
         if (clienteOpt.isPresent()) {
-             // Cria uma nova instância de AnaliseRestricao
-             AnaliseRestricao analiseRestricao = new AnaliseRestricao();
-            
-             // Associa o cliente encontrado à análise de restrição
-             analiseRestricao.setCliente(clienteOpt.get());
-             
-             // Define os status Serasa e SPC
-             analiseRestricao.setStatusSerasa(analiseRestricaoDto.getStatusSerasa());
-             analiseRestricao.setStatusSpc(analiseRestricaoDto.getStatusSpc());
-             
-             // Salva a nova análise de restrição no banco de dados
-             repository.save(analiseRestricao);
-        }else {
-        throw new ResourceNotFoundException(
-                "Cliente não encontrado com id " + analiseRestricaoDto.getCliente());
-    }
+            // Cria uma nova instância de AnaliseRestricao
+            AnaliseRestricao analiseRestricao = new AnaliseRestricao();
+
+            // Associa o cliente encontrado à análise de restrição
+            analiseRestricao.setCliente(clienteOpt.get());
+
+            // Define os status Serasa e SPC
+            analiseRestricao.setStatusSerasa(analiseRestricaoDto.getStatusSerasa());
+            analiseRestricao.setStatusSpc(analiseRestricaoDto.getStatusSpc());
+
+            // Salva a nova análise de restrição no banco de dados
+            repository.save(analiseRestricao);
+        } else {
+            throw new ResourceNotFoundException(
+                    "Cliente não encontrado com id " + analiseRestricaoDto.getCliente());
+        }
     }
 
     /* Atualiza os dados de uma análise de restrição existente */

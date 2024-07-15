@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.AnaliseRestricaoDto;
+import com.analisedecredito.aplicacao_analise_credito.dto.AnaliseRestricaoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.service.AnaliseRestricaoService;
 
 @RestController
@@ -26,13 +27,13 @@ public class AnaliseRestricaoController {
 
     /* Retorna uma analise de restrição de acordo com o id */
     @GetMapping("/{id}")
-    public AnaliseRestricaoDto findById(@PathVariable("id") Integer id) {
+    public AnaliseRestricaoReadDto findById(@PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
     /* Retorna uma lista de análises de restrições cadastrados */
     @GetMapping("/list")
-    public List<AnaliseRestricaoDto> list() {
+    public List<AnaliseRestricaoReadDto> list() {
         return service.list();
     }
 

@@ -1,57 +1,41 @@
-package com.analisedecredito.aplicacao_analise_credito.model;
+package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import org.springframework.beans.BeanUtils;
 
-@Entity
-@Table(name = "cliente")
-public class Cliente {
+import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
+import com.analisedecredito.aplicacao_analise_credito.model.PerfilCredito;
 
-    // Propriedades
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cliente")
+public class ClienteReadDto {
+
+    // Propriedade completa
     private Integer idCliente;
-
-    @Column(name = "nome", nullable = false)
     private String nome;
-
-    @Column(name = "cpf", unique = true, nullable = false)
     private Long cpf;
-
-    @Column(name = "data_nascimento", nullable = false)
     private Date dataNascimento;
-
-    @Column(name = "email", unique = true, nullable = false)
     private String email;
-
-    @Column(name = "telefone", nullable = false)
     private String telefone;
-
-    @Column(name = "endereco", nullable = false)
     private String endereco;
-
-    @Column(name = "autorizacao_lgpd", nullable = false)
     private boolean autorizacaoLGPD;
-
-    @ManyToOne
-    @JoinColumn(name = "id_perfil_credito_fk", referencedColumnName = "id_perfil_credito")
     private PerfilCredito perfilCredito;
 
-    // Construtor 
-    public Cliente() {
-        
+    // Construtor
+    public ClienteReadDto() {
     }
 
-    // Getters e Setters
+    public ClienteReadDto(Cliente cliente) {
+        BeanUtils.copyProperties(cliente, this);
+    }
+
+    // Getter e Setter
+    public PerfilCredito getPerfilCredito() {
+        return perfilCredito;
+    }
+
+    public void setPerfilCredito(PerfilCredito perfilCredito) {
+        this.perfilCredito = perfilCredito;
+    }
 
     public Integer getIdCliente() {
         return idCliente;
@@ -109,20 +93,11 @@ public class Cliente {
         this.endereco = endereco;
     }
 
-    public boolean getAutorizacaoLGPD() {
+    public boolean isAutorizacaoLGPD() {
         return autorizacaoLGPD;
     }
 
     public void setAutorizacaoLGPD(boolean autorizacaoLGPD) {
         this.autorizacaoLGPD = autorizacaoLGPD;
     }
-
-    public PerfilCredito getPerfilCredito() {
-        return perfilCredito;
-    }
-
-    public void setPerfilCredito(PerfilCredito perfilCredito) {
-        this.perfilCredito = perfilCredito;
-    }
-}
-
+ }

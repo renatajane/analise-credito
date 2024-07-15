@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
+import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.service.ClienteService;
 
 @RestController
@@ -26,13 +27,13 @@ public class ClienteController {
 
     /* Retorna um cliente de acordo com o id */
     @GetMapping("/{id}")
-    public ClienteDto findById(@PathVariable("id") Integer id) {
+    public ClienteReadDto findById(@PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
     /* Retorna uma lista de todos os clientes cadastrados */
     @GetMapping("/list")
-    public List<ClienteDto> list() {
+    public List<ClienteReadDto> list() {
         return service.list();
     }
 
