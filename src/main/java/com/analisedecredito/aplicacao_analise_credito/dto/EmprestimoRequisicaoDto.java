@@ -2,6 +2,10 @@ package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import java.util.Date;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
+
 public class EmprestimoRequisicaoDto {
     
     // Propriedades
@@ -17,6 +21,14 @@ public class EmprestimoRequisicaoDto {
     // Construtor
     public EmprestimoRequisicaoDto() {
         
+    }
+    public EmprestimoRequisicaoDto(EmprestimoRequisicao emprestimoRequisicao) {
+        BeanUtils.copyProperties(emprestimoRequisicao, this);        
+        this.cliente = emprestimoRequisicao.getCliente().getIdCliente();
+        this.emprestimoModalidade = emprestimoRequisicao.getEmprestimoModalidade().getIdModalide();
+        this.emprestimoObjetivo = emprestimoRequisicao.getEmprestimoObjetivo().getIdObjetivo();
+        this.emprestimoUrgencia = emprestimoRequisicao.getEmprestimoObjetivo().getIdObjetivo();
+        this.iof = emprestimoRequisicao.getIof().getIdIof();
     }
 
     // Getters e Setters
