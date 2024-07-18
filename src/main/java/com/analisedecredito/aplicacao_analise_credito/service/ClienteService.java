@@ -36,22 +36,23 @@ public class ClienteService {
 
     /* Cria um novo cliente com base nos dados fornecidos */
     public void create(ClienteDto clienteDto) {
-       // Optional<PerfilCredito> perfilCreditoOpt = perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
-        //if (perfilCreditoOpt.isPresent()) {
-            Cliente cliente = new Cliente();
-            cliente.setNome(clienteDto.getNome());
-            cliente.setCpf(clienteDto.getCpf());
-            cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());
-            cliente.setDataNascimento(clienteDto.getDataNascimento());
-            cliente.setEmail(clienteDto.getEmail());
-            cliente.setEndereco(clienteDto.getEndereco());
-            cliente.setIdCliente(clienteDto.getIdCliente());
-            cliente.setTelefone(clienteDto.getTelefone());
-            cliente.setPerfilCredito(null);
-            repository.save(cliente);
-       // } else {
-         //   throw new ResourceNotFoundException("Perfil de crédito não econtrado.");
-        //}
+        // Optional<PerfilCredito> perfilCreditoOpt =
+        // perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
+        // if (perfilCreditoOpt.isPresent()) {
+        Cliente cliente = new Cliente();
+        cliente.setNome(clienteDto.getNome());
+        cliente.setCpf(clienteDto.getCpf());
+        cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());
+        cliente.setDataNascimento(clienteDto.getDataNascimento());
+        cliente.setEmail(clienteDto.getEmail());
+        cliente.setEndereco(clienteDto.getEndereco());
+        cliente.setIdCliente(clienteDto.getIdCliente());
+        cliente.setTelefone(clienteDto.getTelefone());
+        cliente.setPerfilCredito(null);
+        repository.save(cliente);
+        // } else {
+        // throw new ResourceNotFoundException("Perfil de crédito não econtrado.");
+        // }
     }
 
     /* Atualiza os dados de um cliente existente */
