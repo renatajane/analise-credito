@@ -2,25 +2,26 @@ package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import org.springframework.beans.BeanUtils;
 
+import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.Patrimonio;
+import com.analisedecredito.aplicacao_analise_credito.model.PatrimonioTipo;
 
-public class PatrimonioDto {
+public class PatrimonioReadDto {
 
     // Propriedades
     private Integer idPatrimonio;
-    private Integer cliente;
-    private Integer patrimonioTipo;
+    private Cliente cliente;
+    private PatrimonioTipo patrimonioTipo;
     private Double valorPatrimonio;
 
     // Construtor
-    public PatrimonioDto() {
-
+    public PatrimonioReadDto() {
     }
 
-    public PatrimonioDto(Patrimonio patrimonio) {
+    public PatrimonioReadDto(Patrimonio patrimonio) {
         BeanUtils.copyProperties(patrimonio, this);
-        this.cliente = patrimonio.getCliente().getIdCliente();
-        this.patrimonioTipo = patrimonio.getPatrimonioTipo().getIdPatrimonioTipo();
+        this.cliente = patrimonio.getCliente();
+        this.patrimonioTipo = patrimonio.getPatrimonioTipo();
     }
 
     // Getters e Setters
@@ -32,19 +33,19 @@ public class PatrimonioDto {
         this.idPatrimonio = idPatrimonio;
     }
 
-    public Integer getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
-    public void setCliente(Integer cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
-    public Integer getPatrimonioTipo() {
+    public PatrimonioTipo getPatrimonioTipo() {
         return patrimonioTipo;
     }
 
-    public void setPatrimonioTipo(Integer patrimonioTipo) {
+    public void setPatrimonioTipo(PatrimonioTipo patrimonioTipo) {
         this.patrimonioTipo = patrimonioTipo;
     }
 
@@ -55,6 +56,5 @@ public class PatrimonioDto {
     public void setValorPatrimonio(Double valorPatrimonio) {
         this.valorPatrimonio = valorPatrimonio;
     }
-
 
 }
