@@ -1,5 +1,9 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoResultado;
+
 public class EmprestimoResultadoDto {
 
     // Propriedades
@@ -10,7 +14,11 @@ public class EmprestimoResultadoDto {
 
     // Construtor
     public EmprestimoResultadoDto() {
-        
+    }
+
+    public EmprestimoResultadoDto(EmprestimoResultado emprestimoResultado) {
+        BeanUtils.copyProperties(emprestimoResultado, this);
+        this.emprestimoRequisicao = emprestimoResultado.getEmprestimoRequisicao().getIdRequisicao();
     }
 
     // Getters e Setters
@@ -44,6 +52,6 @@ public class EmprestimoResultadoDto {
 
     public void setDescricaoResultado(String descricaoResultado) {
         this.descricaoResultado = descricaoResultado;
-    }   
+    }
 
 }
