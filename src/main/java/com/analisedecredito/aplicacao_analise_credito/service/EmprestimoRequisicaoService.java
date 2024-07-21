@@ -57,15 +57,17 @@ public class EmprestimoRequisicaoService {
     /* Cria uma nova requisição de empréstimo com base nos dados fornecidos */
     public void create(EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
 
-        Optional<Cliente> clienteOpt = clienteRepository.findById(emprestimoRequisicaoDto.getCliente());
-        Optional<IofAtual> iofOpt = iofAtualRepository.findById(emprestimoRequisicaoDto.getIof());
+        Optional<Cliente> clienteOpt = clienteRepository
+                .findById(emprestimoRequisicaoDto.getCliente());
+        Optional<IofAtual> iofOpt = iofAtualRepository
+                .findById(emprestimoRequisicaoDto.getIof());
         Optional<EmprestimoModalidade> modalidadeOpt = modalidadeRepository
                 .findById(emprestimoRequisicaoDto.getEmprestimoModalidade());
         Optional<EmprestimoObjetivo> objetivoOpt = objetivoRepository
                 .findById(emprestimoRequisicaoDto.getEmprestimoObjetivo());
         Optional<EmprestimoUrgencia> urgenciaOpt = urgenciaRepository
                 .findById(emprestimoRequisicaoDto.getEmprestimoUrgencia());
-        // modalide objetivo urgencia
+                
         if (clienteOpt.isPresent()) {
 
             EmprestimoRequisicao emprestimoRequisicao = new EmprestimoRequisicao();
@@ -93,8 +95,10 @@ public class EmprestimoRequisicaoService {
         if (requisicaoOpt.isPresent()) {
             EmprestimoRequisicao emprestimoRequisicao = requisicaoOpt.get();
 
-            Optional<Cliente> clienteOpt = clienteRepository.findById(emprestimoRequisicaoDto.getCliente());
-            Optional<IofAtual> iofOpt = iofAtualRepository.findById(emprestimoRequisicaoDto.getIof());
+            Optional<Cliente> clienteOpt = clienteRepository
+                    .findById(emprestimoRequisicaoDto.getCliente());
+            Optional<IofAtual> iofOpt = iofAtualRepository
+                    .findById(emprestimoRequisicaoDto.getIof());
             Optional<EmprestimoModalidade> modalidadeOpt = modalidadeRepository
                     .findById(emprestimoRequisicaoDto.getEmprestimoModalidade());
             Optional<EmprestimoObjetivo> objetivoOpt = objetivoRepository
