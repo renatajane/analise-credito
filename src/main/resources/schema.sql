@@ -1,6 +1,8 @@
 -- Cria schema se não existir
 CREATE SCHEMA IF NOT EXISTS db_analise;
 
+SET search_path TO db_analise;
+
 -- Criação da tabela PerfilCredito
 CREATE TABLE IF NOT EXISTS perfil_credito (
     id_perfil_credito SERIAL PRIMARY KEY,
@@ -59,6 +61,14 @@ CREATE TABLE IF NOT EXISTS iof_atual (
 INSERT INTO iof_atual (iof_diario_maior_prazo, iof_diario, iof_total, data_calculo)
 SELECT 0.0030, 0.0015, 3.00, '2023-01-01'
 WHERE NOT EXISTS (SELECT 1 FROM iof_atual);
+
+INSERT INTO iof_atual (iof_diario_maior_prazo, iof_diario, iof_total, data_calculo)
+SELECT 0.0025, 0.0015, 3.00, '2023-01-01'
+WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario_maior_prazo = 0.0025);
+
+INSERT INTO iof_atual (iof_diario_maior_prazo, iof_diario, iof_total, data_calculo)
+SELECT 0.0035, 0.0015, 3.00, '2023-01-01'
+WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario_maior_prazo = 0.0035);
 
 -- Criação da tabela de RendaTipo
 CREATE TABLE IF NOT EXISTS renda_tipo (
@@ -171,18 +181,18 @@ CREATE TABLE IF NOT EXISTS emprestimo_requisicao (
     id_iof_fk INTEGER REFERENCES iof_atual(id_iof)
 );
 
--- Inserir dados na tabela emprestimo_requisicao apenas se não existirem registros
+--Inserir dados na tabela emprestimo_requisicao apenas se não existirem registros
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, id_objetivo_fk, id_urgencia_fk, id_iof_fk)
 SELECT 1, 1, 5000.00, '2024-07-18', 1, 2, 1
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao);
 
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, id_objetivo_fk, id_urgencia_fk, id_iof_fk)
-SELECT 2, 2, 7000.00, '2024-07-18', 2, 1, 2
-WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao);
+SELECT 2, 2, 7000.00, '2024-07-20', 2, 1, 2
+WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-20');
 
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, id_objetivo_fk, id_urgencia_fk, id_iof_fk)
-SELECT 3, 3, 10000.00, '2024-07-18', 3, 3, 1
-WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao);
+SELECT 3, 3, 10000.00, '2024-07-21', 3, 3, 1
+WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-21');
 
 -- Criação da tabela AnaliseRestricao
 CREATE TABLE IF NOT EXISTS analise_restricao (
@@ -199,11 +209,11 @@ WHERE NOT EXISTS (SELECT 1 FROM analise_restricao);
 
 INSERT INTO analise_restricao (id_cliente_fk, status_serasa, status_spc)
 SELECT 2, false, true
-WHERE NOT EXISTS (SELECT 1 FROM analise_restricao);
+WHERE NOT EXISTS (SELECT 1 FROM analise_restricao WHERE id_cliente_fk = 2);
 
 INSERT INTO analise_restricao (id_cliente_fk, status_serasa, status_spc)
 SELECT 3, true, true
-WHERE NOT EXISTS (SELECT 1 FROM analise_restricao);
+WHERE NOT EXISTS (SELECT 1 FROM analise_restricao WHERE id_cliente_fk = 3);
 
 -- Criação da tabela de PatrimonioTipo
 CREATE TABLE IF NOT EXISTS patrimonio_tipo (
