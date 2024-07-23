@@ -1,8 +1,11 @@
 package com.analisedecredito.aplicacao_analise_credito.service;
 
+import java.io.FileNotFoundException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,8 @@ import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoResultado;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoResultadoRepository;
+import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdf;
+import com.itextpdf.text.DocumentException;
 
 @Service
 public class EmprestimoResultadoService {
@@ -23,9 +28,39 @@ public class EmprestimoResultadoService {
     @Autowired
     EmprestimoRequisicaoRepository requisicaoRepository;
 
+    @Autowired
+    CriaPdf criaPdf;
+
     /* Retorna um empréstimo resultado de acordo com o id */
     public EmprestimoResultadoReadDto findById(Integer id) {
         return new EmprestimoResultadoReadDto(repository.findById(id).get());
+    }
+
+    public ByteArrayOutputStream imprimir(Integer idPdf) throws DocumentException, FileNotFoundException{
+        EmprestimoResultado resultadoId = repository.findById(idPdf).get();
+        EmprestimoResultadoDto dto = new EmprestimoResultadoDto(resultadoId);
+        return criaPdf.criaPdfImprimir(dto);
+        
+    }
+
+    public ByteArrayOutputStream getPdf(EmprestimoResultadoDto dto){
+
+        if(dto != null){
+            try(ByteArrayOutputStream baos = new ByteArrayOutputStream ();){
+            String b64 = dto.getPdfBase64();
+            
+            if(b64 == null || b64.isEmpty()){
+                return null;
+            }
+            
+            byte[] decoder = Base64.getDecoder().decode(b64);
+            
+            baos.write(decoder);
+            
+            return baos;
+            
+            }
+            }
     }
 
     /* Retorna uma lista de resultados de empréstimo cadastrados */
