@@ -27,70 +27,59 @@ import jakarta.servlet.http.HttpServletResponse;
 public class EmprestimoResultadoController {
 
     @Autowired
-    EmprestimoRe
-    sultadoService service;
+    EmprestimoResultadoService service;
 
-    /* Retorna um empréstimo resultado de acordo com o id */
+    /* Retorna um resultado de empréstimo de acordo com o id */
     @GetMapping("/{id}")
     public EmprestimoResultadoReadDto findById(@PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
-    /* Retorna uma lista de resultados de empréstimo cadastrados */
+    /* Retorna uma lista de resultados de empréstimos cadastrados */
     @GetMapping("/list")
     public List<EmprestimoResultadoReadDto> list() {
         return service.list();
     }
 
+    /* Retorna um pdf com base no id do resultado do empréstimo */
     @GetMapping("/pdf/{id}")
-    public void teste(@PathVariable("id") Integer id, HttpServletResponse response) 
-        throws DocumentException {
-
+    public void getPdf(@PathVariable("id") Integer id, HttpServletResponse response) throws DocumentException, IOException {
         response.setHeader("Expires", "0");
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Pragma", "public");
+        response.setContentType("application/pdf");
 
-        response.setContentType("appliction/pdf");
-        var vo = service.findById(id);
-        ByteArrayOutputStream pdf = service.getPdf(vo);
+        ByteArrayOutputStream pdf = service.gerarPdf(id);
 
         if (pdf != null) {
-            try (var output = response.getOutPutStream()) {
-                pdf.writeTo(output);
-                output.flush();
-                output.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            response.setContentLength(pdf.size());
+            pdf.writeTo(response.getOutputStream());
+            response.getOutputStream().flush();
         }
-        service.imprimir(id);
     }
 
     /* Cria um novo resultado de empréstimo com base nos dados fornecidos */
     @PostMapping
-    public void Create(@RequestBody EmprestimoResultadoDto emprestimoResultadoDto) {
+    public void create(@RequestBody EmprestimoResultadoDto emprestimoResultadoDto) {
         service.create(emprestimoResultadoDto);
     }
 
     /* Atualiza os dados de um resultado de empréstimo existente */
     @PutMapping
     public ResponseEntity<EmprestimoResultadoDto> update(@RequestBody EmprestimoResultadoDto emprestimoResultadoDto) {
-
         try {
             Integer id = emprestimoResultadoDto.getIdResultado();
             EmprestimoResultadoDto updatedResultado = service.update(id, emprestimoResultadoDto);
             return ResponseEntity.ok(updatedResultado);
-
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    /* Remove um resultado de empréstimo pelo id */
+    /* Remove um dado de resultado de empréstimo pelo id */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }

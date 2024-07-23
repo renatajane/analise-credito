@@ -55,6 +55,7 @@ public class RendaFonteController {
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id){
         service.delete(id);
         return ResponseEntity.ok().build();
+    
     }
 
 }
