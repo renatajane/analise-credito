@@ -12,7 +12,7 @@ public class ClienteReadDto {
     // Propriedade completa
     private Integer idCliente;
     private String nome;
-    private Long cpf;
+    private String cpf;
     private Date dataNascimento;
     private String email;
     private String telefone;
@@ -53,11 +53,11 @@ public class ClienteReadDto {
         this.nome = nome;
     }
 
-    public Long getCpf() {
+    public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(Long cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 

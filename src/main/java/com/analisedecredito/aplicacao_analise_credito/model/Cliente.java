@@ -25,7 +25,7 @@ public class Cliente {
     private String nome;
 
     @Column(name = "cpf", unique = true, nullable = false)
-    private Long cpf;
+    private String cpf;
 
     @Column(name = "data_nascimento", nullable = false)
     private Date dataNascimento;
@@ -69,11 +69,11 @@ public class Cliente {
         this.nome = nome;
     }
 
-    public Long getCpf() {
+    public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(Long cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
@@ -123,6 +123,42 @@ public class Cliente {
 
     public void setPerfilCredito(PerfilCredito perfilCredito) {
         this.perfilCredito = perfilCredito;
+    }
+
+    public boolean validaCpf(String cpf) {
+        // Remove caracteres não numéricos
+        cpf = cpf.replaceAll("[^0-9]", "");
+
+        if (cpf.length() != 11 || cpf.matches("(\\d)\\1{10}")) {
+            return false; // CPF deve ter 11 dígitos e não ser uma sequência repetida
+        }
+
+        try {
+            int[] digits = new int[11];
+            for (int i = 0; i < 11; i++) {
+                digits[i] = Character.getNumericValue(cpf.charAt(i));
+            }
+
+            int sum = 0;
+            for (int i = 0; i < 9; i++) {
+                sum += digits[i] * (10 - i);
+            }
+            int firstDigit = (sum * 10) % 11;
+            if (firstDigit == 10) firstDigit = 0;
+
+            if (firstDigit != digits[9]) return false;
+
+            sum = 0;
+            for (int i = 0; i < 10; i++) {
+                sum += digits[i] * (11 - i);
+            }
+            int secondDigit = (sum * 10) % 11;
+            if (secondDigit == 10) secondDigit = 0;
+
+            return secondDigit == digits[10];
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
 

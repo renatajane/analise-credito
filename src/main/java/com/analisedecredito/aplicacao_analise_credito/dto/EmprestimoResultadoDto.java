@@ -1,5 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
+import java.util.Date;
+
 import org.springframework.beans.BeanUtils;
 
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoResultado;
@@ -11,6 +13,7 @@ public class EmprestimoResultadoDto {
     private Integer emprestimoRequisicao;
     private Boolean aprovado;
     private String descricaoResultado;
+    private Date dataResultado;
 
     // Construtor
     public EmprestimoResultadoDto() {
@@ -54,4 +57,11 @@ public class EmprestimoResultadoDto {
         this.descricaoResultado = descricaoResultado;
     }
 
+    public Date getDataResultado() {
+        return dataResultado;
+    }
+
+    public void setDataResultado(Date dataResultado) {
+        this.dataResultado = dataResultado;
+    }    
 }

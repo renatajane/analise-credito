@@ -1,6 +1,6 @@
 package com.analisedecredito.aplicacao_analise_credito.model;
 
-import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoResultadoDto;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,20 +31,15 @@ public class EmprestimoResultado {
     @Column(name="descricao_resultado")
     private String descricaoResultado;
 
+    @Column(name="data_resultado")
+    private Date dataResultado;
+
     // Construtor
     public EmprestimoResultado() {
         
     }
 
-    public EmprestimoResultado(EmprestimoResultadoDto emprestimoResultadoDto, 
-    EmprestimoRequisicao emprestimoRequisicao) {
-        this.idResultado = emprestimoResultadoDto.getIdResultado();
-        this.emprestimoRequisicao = emprestimoRequisicao;
-        this.aprovado = emprestimoResultadoDto.getAprovado();
-        this.descricaoResultado = emprestimoResultadoDto.getDescricaoResultado();
-    }
-
-    // Getters e Setters
+    // Getters e Setters   
     public Integer getIdResultado() {
         return idResultado;
     }
@@ -75,6 +70,14 @@ public class EmprestimoResultado {
 
     public void setDescricaoResultado(String descricaoResultado) {
         this.descricaoResultado = descricaoResultado;
+    }
+
+    public Date getDataResultado() {
+        return dataResultado;
+    }
+
+    public void setDataResultado(Date dataResultado) {
+        this.dataResultado = dataResultado;
     }
 
     

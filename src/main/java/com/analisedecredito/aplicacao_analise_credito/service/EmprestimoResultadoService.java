@@ -58,8 +58,9 @@ public class EmprestimoResultadoService {
                 .findById(emprestimoResultadoDto.getEmprestimoRequisicao());
 
         emprestimoResultado.setIdResultado(emprestimoResultadoDto.getIdResultado());
-        emprestimoResultado.setDescricaoResultado(emprestimoResultadoDto.getDescricaoResultado());
         emprestimoResultado.setAprovado(emprestimoResultadoDto.getAprovado());
+        emprestimoResultado.setDescricaoResultado(emprestimoResultadoDto.getDescricaoResultado());
+        emprestimoResultado.setDataResultado(emprestimoResultadoDto.getDataResultado());        
         emprestimoResultado.setEmprestimoRequisicao(requisicaoOpt
                 .orElseThrow(() -> new ResourceNotFoundException("Requisição de empréstimo não encontrada com o ID: "
                         + emprestimoResultadoDto.getEmprestimoRequisicao())));
@@ -79,6 +80,7 @@ public class EmprestimoResultadoService {
         emprestimoResultado.setIdResultado(emprestimoResultadoDto.getIdResultado());
         emprestimoResultado.setAprovado(emprestimoResultadoDto.getAprovado());
         emprestimoResultado.setDescricaoResultado(emprestimoResultadoDto.getDescricaoResultado());
+        emprestimoResultado.setDataResultado(emprestimoResultadoDto.getDataResultado());
         emprestimoResultado.setEmprestimoRequisicao(requisicao);
 
         EmprestimoResultado updated = repository.save(emprestimoResultado);

@@ -41,7 +41,9 @@ public class ClienteService {
         // if (perfilCreditoOpt.isPresent()) {
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDto.getNome());
-        cliente.setCpf(clienteDto.getCpf());
+        if (cliente.validaCpf(clienteDto.getCpf()) == true) {
+            cliente.setCpf(clienteDto.getCpf());
+        }
         cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());
         cliente.setDataNascimento(clienteDto.getDataNascimento());
         cliente.setEmail(clienteDto.getEmail());
@@ -64,7 +66,9 @@ public class ClienteService {
             if (perfilCreditoOpt.isPresent()) {
                 PerfilCredito perfilCredito = perfilCreditoOpt.get();
                 cliente.setNome(clienteDto.getNome());
-                cliente.setCpf(clienteDto.getCpf());
+                if (cliente.validaCpf(clienteDto.getCpf()) == true) {
+                    cliente.setCpf(clienteDto.getCpf());
+                }
                 cliente.setDataNascimento(clienteDto.getDataNascimento());
                 cliente.setEmail(clienteDto.getEmail());
                 cliente.setTelefone(clienteDto.getTelefone());
