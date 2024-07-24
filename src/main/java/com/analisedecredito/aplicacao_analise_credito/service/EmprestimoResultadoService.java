@@ -1,7 +1,8 @@
 package com.analisedecredito.aplicacao_analise_credito.service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class EmprestimoResultadoService {
     }
 
     /* Retorna um pdf com base no id do resultado do empréstimo */
-    public ByteArrayOutputStream gerarPdf(Integer idPdf) throws DocumentException, FileNotFoundException {
+    public ByteArrayOutputStream gerarPdf(Integer idPdf) throws DocumentException, MalformedURLException, IOException {
         EmprestimoResultado resultadoId = repository.findById(idPdf).orElseThrow(
                 () -> new ResourceNotFoundException("Resultado de empréstimo não encontrado com o ID: " + idPdf));
         EmprestimoResultadoReadDto dto = new EmprestimoResultadoReadDto(resultadoId);

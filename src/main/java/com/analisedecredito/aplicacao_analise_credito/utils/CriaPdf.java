@@ -2,6 +2,10 @@ package com.analisedecredito.aplicacao_analise_credito.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
@@ -22,11 +26,12 @@ import com.itextpdf.text.pdf.PdfWriter;
 @Component
 public class CriaPdf extends PdfPageEventHelper {
 
-    // Propriedades de estilização
-    // Fontes para texto bold e normal
+    // Propriedades globais de estilização
     Font boldFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
     Font boldFontBlack = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+    Font boldFontTitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.BLACK);
     Font normalFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.BLACK);
+    Font footerFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.GRAY);
 
     public ByteArrayOutputStream criaPdfImprimir(EmprestimoResultadoReadDto emprestimoResultadoDto)
             throws DocumentException, FileNotFoundException {
@@ -41,22 +46,10 @@ public class CriaPdf extends PdfPageEventHelper {
         documentoPdf.setMargins(documentoPdf.leftMargin(), documentoPdf.rightMargin(),
                 100, documentoPdf.bottomMargin());
 
+        // Insere conteúdo no PDF
         documentoPdf.open();
         addDadosRequerente(documentoPdf, emprestimoResultadoDto);
         addResultado(documentoPdf, emprestimoResultadoDto);
-        // Adiciona conteúdo ao PDF
-        documentoPdf.add(new Paragraph("Resultado do Empréstimo"));
-        documentoPdf.add(new Paragraph("ID: " + emprestimoResultadoDto.getIdResultado()));
-        documentoPdf.add(new Paragraph("Descrição: " + emprestimoResultadoDto.getDescricaoResultado()));
-        documentoPdf.add(new Paragraph("Aprovado: " + emprestimoResultadoDto.getAprovado()));
-
-        // O que o PDF deve mostrar://
-        // resultado das operações de crédito inclusas (se aprovadas ou não)
-        // com os dados principais dos clientes
-        // datas da aprovação, modalidades do empréstimo, prazos, taxas de juros,
-        // tributos,
-        // valores aprovados para crédito e valores finais a serem pagos
-
         documentoPdf.close();
 
         return baos;
@@ -75,7 +68,7 @@ public class CriaPdf extends PdfPageEventHelper {
         tabelaRequerente.setWidthPercentage(100);
 
         // Adiciona o título da tabela
-        PdfPCell cellTitulo = new PdfPCell(new Paragraph("RESULTADO REQUISIÇÃO",
+        PdfPCell cellTitulo = new PdfPCell(new Paragraph("DADOS DO REQUERENTE",
                 new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE)));
         cellTitulo.setColspan(2);
         cellTitulo.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -84,35 +77,38 @@ public class CriaPdf extends PdfPageEventHelper {
         tabelaRequerente.addCell(cellTitulo);
 
         // Adiciona os dados do cliente
-        addDataRow(tabelaRequerente, "Situação:", cliente.getNome());
-        addDataRow(tabelaRequerente, "Motivo:", formataCpf(cliente.getCpf().toString()));
-        addDataRow(tabelaRequerente, "Telefone:", formataTelefone(cliente.getTelefone().toString()));
-        addDataRow(tabelaRequerente, "Email:", cliente.getEmail());
+        addTableRequerente(tabelaRequerente, "Nome:", cliente.getNome());
+        addTableRequerente(tabelaRequerente, "Data de nascimento:", formataData(cliente.getDataNascimento()));
+        addTableRequerente(tabelaRequerente, "Cpf:", formataCpf(cliente.getCpf().toString()));
+        addTableRequerente(tabelaRequerente, "Telefone:", formataTelefone(cliente.getTelefone().toString()));
+        addTableRequerente(tabelaRequerente, "Email:", cliente.getEmail());
+        addTableRequerente(tabelaRequerente, "Endereço:", cliente.getEndereco());
 
         // Adiciona a tabela ao documento PDF
         documentoPdf.add(tabelaRequerente);
     }
 
-    private void addDataRow(PdfPTable table, String label, String value) {
+    private void addTableRequerente(PdfPTable table, String label, String value) {
         PdfPCell cellLabel = new PdfPCell(new Paragraph(label, boldFontBlack));
+
         cellLabel.setBackgroundColor(BaseColor.WHITE);
-        cellLabel.setBorderColor(new BaseColor(35, 48, 43));
+        cellLabel.setBorder(0);
         cellLabel.setPadding(8f);
         table.addCell(cellLabel);
 
         PdfPCell cellValue = new PdfPCell(new Paragraph(value, normalFont));
         cellValue.setBackgroundColor(BaseColor.WHITE);
-        cellValue.setBorderColor(new BaseColor(35, 48, 43));
+        cellValue.setBorder(0);
         cellValue.setPadding(8f);
         table.addCell(cellValue);
     }
 
-    public void addResultado(Document documentoPdf, EmprestimoResultadoReadDto emprestimoResultadoDto)
+    public void addResultado(Document documentoPdf, EmprestimoResultadoReadDto dto)
             throws DocumentException {
 
         // Adiciona um espaço em branco antes da tabela
         Paragraph spaceParagraph = new Paragraph();
-        spaceParagraph.setSpacingBefore(50f); 
+        spaceParagraph.setSpacingBefore(30f);
         documentoPdf.add(spaceParagraph);
 
         // Cria a tabela com 2 colunas
@@ -132,34 +128,45 @@ public class CriaPdf extends PdfPageEventHelper {
         cellTitulo.setPadding(10f);
         tabelaResultado.addCell(cellTitulo);
 
-        var aprovado = emprestimoResultadoDto.getAprovado();
-        BaseColor statusColor = aprovado ? new BaseColor(0, 128, 0) : new BaseColor(255, 0, 0); // Verde para aprovado,
-                                                                                                // vermelho para
-                                                                                                // reprovado
-
-        addDataRowResultado(tabelaResultado, "Situação:", aprovado ? "Aprovado" : "Reprovado", statusColor);
-        // addDataRowResultado(tabelaResultado, "Telefone:",
-        // formataTelefone(cliente.getTelefone().toString()));
-        // addDataRowResultado(tabelaResultado, "Email:", cliente.getEmail());
+        var aprovado = dto.getAprovado();
+        addTableResultado(tabelaResultado, "Código da requisição:", String.valueOf(dto.getIdResultado()),
+                BaseColor.BLACK);
+        BaseColor statusColor = aprovado ? new BaseColor(0, 128, 0) : new BaseColor(255, 0, 0);
+        addTableResultado(tabelaResultado, "Situação:", aprovado ? "Aprovado" : "Reprovado", statusColor);
+        addTableResultado(tabelaResultado, "Data da requisição:",
+                formataData(dto.getEmprestimoRequisicao().getDataRequisicao()), BaseColor.BLACK);
+        addTableResultado(tabelaResultado, "Modalidade:",
+                dto.getEmprestimoRequisicao().getEmprestimoModalidade().getDescricaoModalidade(), BaseColor.BLACK);
+        addTableResultado(tabelaResultado, "Valor requerido:",
+                formataValor(dto.getEmprestimoRequisicao().getValorRequerido()), BaseColor.BLACK);
+        // PENSAR NOS JUROS********
+        addTableResultado(tabelaResultado, "Iof:",
+                dto.getEmprestimoRequisicao().getIof().getIofTotal().toString(), BaseColor.BLACK);
+        // O que o PDF deve mostrar://
+        // resultado das operações de crédito inclusas (se aprovadas ou não)
+        // com os dados principais dos clientes
+        // ***datas da aprovação****, modalidades do empréstimo, **prazos, taxas de
+        // juros******,
+        // tributos,
+        // valores aprovados para crédito e valores finais a serem pagos
 
         // Adiciona a tabela ao documento PDF
         documentoPdf.add(tabelaResultado);
     }
 
-    private void addDataRowResultado(PdfPTable table, String label, String value, BaseColor textColor) {
-        // Cria a célula para o rótulo com a fonte negrito e cor preta
+    private void addTableResultado(PdfPTable table, String label, String value, BaseColor textColor) {
+
         PdfPCell cellLabel = new PdfPCell(new Paragraph(label, boldFontBlack));
         cellLabel.setBackgroundColor(BaseColor.WHITE);
-        cellLabel.setBorderColor(new BaseColor(35, 48, 43)); // Cor da borda
-        cellLabel.setPadding(8f); // Adiciona um pouco de preenchimento
+        cellLabel.setBorder(0);
+        cellLabel.setPadding(8f);
         table.addCell(cellLabel);
 
-        // Cria a célula para o valor com a fonte normal e a cor de texto especificada
         PdfPCell cellValue = new PdfPCell(
                 new Paragraph(value, new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, textColor)));
-        cellValue.setBackgroundColor(BaseColor.WHITE); // Cor de fundo para os dados
-        cellValue.setBorderColor(new BaseColor(35, 48, 43)); // Cor da borda
-        cellValue.setPadding(8f); // Adiciona um pouco de preenchimento
+        cellValue.setBackgroundColor(BaseColor.WHITE);
+        cellValue.setBorder(0);
+        cellValue.setPadding(8f);
         table.addCell(cellValue);
     }
 
@@ -176,12 +183,25 @@ public class CriaPdf extends PdfPageEventHelper {
 
     public String formataTelefone(String telefone) {
         if (telefone == null || telefone.length() != 11) {
-            return telefone; // Retorna o celular se tiver no formato esperado
+            return telefone;
         }
 
         return "(" + telefone.substring(0, 2) + ") " +
                 telefone.substring(2, 7) + "-" +
                 telefone.substring(7);
+    }
+
+    public String formataData(Date data) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dataFormatada = sdf.format(data);
+        return dataFormatada;
+    }
+
+    public String formataValor(Double valor) {
+        Locale localeBR = new Locale("pt", "BR");
+        NumberFormat dinheiro = NumberFormat.getCurrencyInstance(localeBR);
+        var formatado = dinheiro.format(valor);
+        return formatado;
     }
 
     @Override
@@ -199,7 +219,7 @@ public class CriaPdf extends PdfPageEventHelper {
             header.getDefaultCell().setFixedHeight(40);
             header.getDefaultCell().setBorder(PdfPCell.BOTTOM);
             header.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            header.addCell(new Phrase("Cabeçalho do Relatório"));
+            header.addCell(new Phrase("RELATÓRIO DE OPERAÇÕES DE CRÉDITO", boldFontTitulo));
             header.writeSelectedRows(0, -1, 34, 803, writer.getDirectContent());
         } catch (DocumentException e) {
             throw new ExceptionConverter(e);
@@ -208,6 +228,8 @@ public class CriaPdf extends PdfPageEventHelper {
 
     private void addFooter(PdfWriter writer) {
         PdfPTable footer = new PdfPTable(1);
+        Date dataLocal = new Date();
+
         try {
             footer.setWidths(new int[] { 24 });
             footer.setTotalWidth(527);
@@ -215,7 +237,7 @@ public class CriaPdf extends PdfPageEventHelper {
             footer.getDefaultCell().setFixedHeight(40);
             footer.getDefaultCell().setBorder(PdfPCell.TOP);
             footer.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            footer.addCell(new Phrase("Rodapé do Relatório"));
+            footer.addCell(new Phrase("Relatório gerado em: " + formataData(dataLocal), footerFont));
             footer.writeSelectedRows(0, -1, 34, 50, writer.getDirectContent());
         } catch (DocumentException e) {
             throw new ExceptionConverter(e);
