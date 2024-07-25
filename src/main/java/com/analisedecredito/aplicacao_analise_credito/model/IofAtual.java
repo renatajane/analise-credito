@@ -21,9 +21,6 @@ public class IofAtual {
     @Column(name="id_iof")
     private Integer idIof;
 
-    @Column(name = "iof_diario_maior_prazo", nullable = false)
-    private Double iofDiarioMaiorPrazo;
-
     @Column(name = "iof_diario", nullable = false)
     private Double iofDiario;
 
@@ -39,7 +36,6 @@ public class IofAtual {
     }
     public IofAtual(IofAtualDto iofAtualDto) {
         this.idIof = iofAtualDto.getIdIof();
-        this.iofDiarioMaiorPrazo = iofAtualDto.getIofDiarioMaiorPrazo();
         this.iofDiario = iofAtualDto.getIofDiario();
         this.iofTotal = iofAtualDto.getIofDiario();
         this.dataCalculo = iofAtualDto.getDataCalculo();
@@ -52,14 +48,6 @@ public class IofAtual {
 
     public void setIdIof(Integer idIof) {
         this.idIof = idIof;
-    }
-
-    public Double getIofDiarioMaiorPrazo() {
-        return iofDiarioMaiorPrazo;
-    }
-
-    public void setIofDiarioMaiorPrazo(Double iofDiarioMaiorPrazo) {
-        this.iofDiarioMaiorPrazo = iofDiarioMaiorPrazo;
     }
 
     public Double getIofDiario() {

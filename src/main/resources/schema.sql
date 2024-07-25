@@ -51,24 +51,23 @@ WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Pedro Santos');
 -- Criação da tabela de IofAtual
 CREATE TABLE IF NOT EXISTS iof_atual (
     id_iof SERIAL PRIMARY KEY,
-    iof_diario_maior_prazo DECIMAL(10, 8) NOT NULL,
     iof_diario DECIMAL(10, 8) NOT NULL,
     iof_total DECIMAL(15, 2) NOT NULL, 
     data_calculo DATE NOT NULL
 );
 
 -- Inserir dados na tabela IofAtual apenas se não existirem registros
-INSERT INTO iof_atual (iof_diario_maior_prazo, iof_diario, iof_total, data_calculo)
-SELECT 0.0030, 0.0015, 3.00, '2023-01-01'
+INSERT INTO iof_atual (iof_diario, iof_total, data_calculo)
+SELECT 0.0015, 3.00, '2023-01-01'
 WHERE NOT EXISTS (SELECT 1 FROM iof_atual);
 
-INSERT INTO iof_atual (iof_diario_maior_prazo, iof_diario, iof_total, data_calculo)
-SELECT 0.0025, 0.0015, 3.00, '2023-01-01'
-WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario_maior_prazo = 0.0025);
+INSERT INTO iof_atual (iof_diario, iof_total, data_calculo)
+SELECT 0.0020, 3.00, '2023-01-01'
+WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario= 0.0020);
 
-INSERT INTO iof_atual (iof_diario_maior_prazo, iof_diario, iof_total, data_calculo)
-SELECT 0.0035, 0.0015, 3.00, '2023-01-01'
-WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario_maior_prazo = 0.0035);
+INSERT INTO iof_atual (iof_diario, iof_total, data_calculo)
+SELECT 0.0025, 3.00, '2023-01-01'
+WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario = 0.0025);
 
 -- Criação da tabela de RendaTipo
 CREATE TABLE IF NOT EXISTS renda_tipo (

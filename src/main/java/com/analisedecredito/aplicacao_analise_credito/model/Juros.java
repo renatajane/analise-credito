@@ -10,20 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name ="juros")
+@Table(name = "juros")
 public class Juros {
 
     // Propriedades
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_juros")
+    @Column(name = "id_juros")
     private Integer idJuros;
-
-    @Column(name = "nome_modalidade", nullable = false)
-    private String nomeModalidade;
-
-    @Column(name = "taxa_juros_anual", nullable = false)
-    private Double taxaJurosAnual;
 
     @Column(name = "taxa_juros_mensal", nullable = false)
     private Double taxaJurosMensal;
@@ -42,22 +36,6 @@ public class Juros {
 
     public void setIdJuros(Integer idJuros) {
         this.idJuros = idJuros;
-    }
-
-    public String getNomeModalidade() {
-        return nomeModalidade;
-    }
-
-    public void setNomeModalidade(String nomeModalidade) {
-        this.nomeModalidade = nomeModalidade;
-    }
-
-    public Double getTaxaJurosAnual() {
-        return taxaJurosAnual;
-    }
-
-    public void setTaxaJurosAnual(Double taxaJurosAnual) {
-        this.taxaJurosAnual = taxaJurosAnual;
     }
 
     public Double getTaxaJurosMensal() {
