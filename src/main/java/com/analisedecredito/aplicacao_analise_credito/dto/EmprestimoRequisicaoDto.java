@@ -7,7 +7,7 @@ import org.springframework.beans.BeanUtils;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
 
 public class EmprestimoRequisicaoDto {
-    
+
     // Propriedades
     private Integer idRequisicao;
     private Integer cliente;
@@ -17,18 +17,24 @@ public class EmprestimoRequisicaoDto {
     private Integer emprestimoObjetivo;
     private Integer emprestimoUrgencia;
     private Integer iof;
+    private Integer juros;
+    private Integer prazoMes;
+    private Double valorFinal;
 
     // Construtor
     public EmprestimoRequisicaoDto() {
-        
+
     }
+
     public EmprestimoRequisicaoDto(EmprestimoRequisicao emprestimoRequisicao) {
-        BeanUtils.copyProperties(emprestimoRequisicao, this);        
+        BeanUtils.copyProperties(emprestimoRequisicao, this);
         this.cliente = emprestimoRequisicao.getCliente().getIdCliente();
         this.emprestimoModalidade = emprestimoRequisicao.getEmprestimoModalidade().getIdModalide();
         this.emprestimoObjetivo = emprestimoRequisicao.getEmprestimoObjetivo().getIdObjetivo();
         this.emprestimoUrgencia = emprestimoRequisicao.getEmprestimoObjetivo().getIdObjetivo();
         this.iof = emprestimoRequisicao.getIof().getIdIof();
+        this.juros = emprestimoRequisicao.getJuros().getIdJuros();
+        this.prazoMes = emprestimoRequisicao.getPrazoMes();
     }
 
     // Getters e Setters
@@ -95,5 +101,29 @@ public class EmprestimoRequisicaoDto {
     public void setIof(Integer iof) {
         this.iof = iof;
     }
-    
+
+    public Integer getJuros() {
+        return juros;
+    }
+
+    public void setJuros(Integer juros) {
+        this.juros = juros;
+    }
+
+    public Integer getPrazoMes() {
+        return prazoMes;
+    }
+
+    public void setPrazoMes(Integer prazoMes) {
+        this.prazoMes = prazoMes;
+    }
+
+    public Double getValorFinal() {
+        return valorFinal;
+    }
+
+    public void setValorFinal(Double valorFinal) {
+        this.valorFinal = valorFinal;
+    }
+
 }

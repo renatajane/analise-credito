@@ -1,5 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -133,6 +135,15 @@ public class EmprestimoRequisicaoService {
     public void delete(Integer id){
         EmprestimoRequisicao emprestimoRequisicao = repository.findById(id).get();
         repository.delete(emprestimoRequisicao);
+    }
+
+    public BigDecimal calcularJuros(EmprestimoRequisicaoReadDto requisicao) {
+        double taxaMensal = requisicao.getJuros().getTaxaJurosMensal();
+        int prazoEmMeses = requisicao.getPrazoMes();
+        double valorRequerido = requisicao.getValorRequerido();
+                
+        double juros = valorRequerido * Math.pow((1 + taxaMensal), prazoEmMeses) - valorRequerido;
+        return BigDecimal.valueOf(juros).setScale(2, RoundingMode.HALF_UP);
     }
     
 }

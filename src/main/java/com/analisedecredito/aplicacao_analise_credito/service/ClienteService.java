@@ -71,6 +71,7 @@ public class ClienteService {
                 }
                 cliente.setDataNascimento(clienteDto.getDataNascimento());
                 cliente.setEmail(clienteDto.getEmail());
+                
                 cliente.setTelefone(clienteDto.getTelefone());
                 cliente.setEndereco(clienteDto.getEndereco());
                 cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());
