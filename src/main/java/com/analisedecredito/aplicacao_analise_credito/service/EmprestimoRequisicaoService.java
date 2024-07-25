@@ -1,7 +1,5 @@
 package com.analisedecredito.aplicacao_analise_credito.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +67,7 @@ public class EmprestimoRequisicaoService {
                 .findById(emprestimoRequisicaoDto.getEmprestimoObjetivo());
         Optional<EmprestimoUrgencia> urgenciaOpt = urgenciaRepository
                 .findById(emprestimoRequisicaoDto.getEmprestimoUrgencia());
-                
+
         if (clienteOpt.isPresent()) {
 
             EmprestimoRequisicao emprestimoRequisicao = new EmprestimoRequisicao();
@@ -108,8 +106,8 @@ public class EmprestimoRequisicaoService {
             Optional<EmprestimoUrgencia> urgenciaOpt = urgenciaRepository
                     .findById(emprestimoRequisicaoDto.getEmprestimoUrgencia());
 
-            if (clienteOpt.isPresent() && iofOpt.isPresent() 
-                && modalidadeOpt.isPresent() && objetivoOpt.isPresent()
+            if (clienteOpt.isPresent() && iofOpt.isPresent()
+                    && modalidadeOpt.isPresent() && objetivoOpt.isPresent()
                     && urgenciaOpt.isPresent()) {
                 emprestimoRequisicao.setIdRequisicao(emprestimoRequisicaoDto.getIdRequisicao());
                 emprestimoRequisicao.setValorRequerido(emprestimoRequisicaoDto.getValorRequerido());
@@ -131,19 +129,26 @@ public class EmprestimoRequisicaoService {
         }
     }
 
-    /* Remove uma requisição de empréstimo pelo id */    
-    public void delete(Integer id){
+    /* Remove uma requisição de empréstimo pelo id */
+    public void delete(Integer id) {
         EmprestimoRequisicao emprestimoRequisicao = repository.findById(id).get();
         repository.delete(emprestimoRequisicao);
     }
 
-    public BigDecimal calcularJuros(EmprestimoRequisicaoReadDto requisicao) {
+    public Double calculaJuros(Integer id) {
+        Optional<EmprestimoRequisicao> requisicaoOpt = repository.findById(id);
+        if (!requisicaoOpt.isPresent()) {
+            throw new IllegalArgumentException("Requisição não encontrada para o id: " + id);
+        }
+
+        EmprestimoRequisicao requisicao = requisicaoOpt.get();
         double taxaMensal = requisicao.getJuros().getTaxaJurosMensal();
         int prazoEmMeses = requisicao.getPrazoMes();
         double valorRequerido = requisicao.getValorRequerido();
-                
-        double juros = valorRequerido * Math.pow((1 + taxaMensal), prazoEmMeses) - valorRequerido;
-        return BigDecimal.valueOf(juros).setScale(2, RoundingMode.HALF_UP);
+
+        double umMaisTaxaMensal = valorRequerido * taxaMensal * prazoEmMeses;
+
+        return umMaisTaxaMensal; 
     }
-    
+
 }

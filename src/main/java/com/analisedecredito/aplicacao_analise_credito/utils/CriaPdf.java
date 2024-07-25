@@ -7,9 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoResultadoReadDto;
+import com.analisedecredito.aplicacao_analise_credito.service.EmprestimoRequisicaoService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -25,6 +27,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 @Component
 public class CriaPdf extends PdfPageEventHelper {
+
+    @Autowired
+    EmprestimoRequisicaoService emprestimoRequisicaoService;
 
     // Propriedades globais de estilização
     Font boldFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
@@ -48,7 +53,7 @@ public class CriaPdf extends PdfPageEventHelper {
 
         // Insere conteúdo no PDF
         documentoPdf.open();
-        addDadosRequerente(documentoPdf, emprestimoResultadoDto);
+       // addDadosRequerente(documentoPdf, emprestimoResultadoDto);
         addResultado(documentoPdf, emprestimoResultadoDto);
         documentoPdf.close();
 
@@ -106,6 +111,8 @@ public class CriaPdf extends PdfPageEventHelper {
     public void addResultado(Document documentoPdf, EmprestimoResultadoReadDto dto)
             throws DocumentException {
 
+        Double jurosCalculados = emprestimoRequisicaoService.calculaJuros(dto.getIdResultado());
+
         // Adiciona um espaço em branco antes da tabela
         Paragraph spaceParagraph = new Paragraph();
         spaceParagraph.setSpacingBefore(30f);
@@ -139,9 +146,17 @@ public class CriaPdf extends PdfPageEventHelper {
                 dto.getEmprestimoRequisicao().getEmprestimoModalidade().getDescricaoModalidade(), BaseColor.BLACK);
         addTableResultado(tabelaResultado, "Valor requerido:",
                 formataValor(dto.getEmprestimoRequisicao().getValorRequerido()), BaseColor.BLACK);
-        // PENSAR NOS JUROS********
+        addTableResultado(tabelaResultado, "Taxa de juros mensal:",
+                dto.getEmprestimoRequisicao().getJuros().getTaxaJurosMensal() + " %", BaseColor.BLACK);
+        addTableResultado(tabelaResultado, "Valor de juros a ser pago:",
+                formataValor(jurosCalculados), BaseColor.BLACK);
         addTableResultado(tabelaResultado, "Iof:",
                 dto.getEmprestimoRequisicao().getIof().getIofTotal().toString(), BaseColor.BLACK);
+        addTableResultado(tabelaResultado, "Prazo para pagamento:",
+                dto.getEmprestimoRequisicao().getPrazoMes().toString() + " meses", BaseColor.BLACK);
+        addTableResultado(tabelaResultado, "Valor final a ser pago:",
+                formataValor(dto.getEmprestimoRequisicao().getValorFinal()), BaseColor.BLACK);
+        // PENSAR NOS JUROS********
         // O que o PDF deve mostrar://
         // resultado das operações de crédito inclusas (se aprovadas ou não)
         // com os dados principais dos clientes

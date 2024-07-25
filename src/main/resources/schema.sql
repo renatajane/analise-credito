@@ -188,7 +188,7 @@ SELECT 'Imobiliário', 0.08, 0.0065, '2024-07-25'
 WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Imobiliário' AND data_vigencia = '2024-07-25');
 
 INSERT INTO juros (nome_modalidade, taxa_juros_anual, taxa_juros_mensal, data_vigencia)
-SELECT 'Consignado', 0.1, 0.008, '2024-07-25'
+SELECT 'Consignado', 0.10, 0.008, '2024-07-25'
 WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Consignado' AND data_vigencia = '2024-07-25');
 
 -- Criação da tabela EmprestimoRequisicao
@@ -212,7 +212,7 @@ SELECT 1, 1, 5000.00, '2024-07-18', 12, 5400.00, 1, 2, 1, 1
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-18' AND id_cliente_fk = 1);
 
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk)
-SELECT 2, 2, 7000.00, '2024-07-20', 24, 7980.00, 2, 1, 2, 2
+SELECT 2, 2, 2000.00, '2024-07-20', 3, 7980.00, 2, 1, 2, 2
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-20' AND id_cliente_fk = 2);
 
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk)
