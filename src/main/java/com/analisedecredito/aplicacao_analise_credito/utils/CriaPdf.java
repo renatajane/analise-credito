@@ -146,7 +146,13 @@ public class CriaPdf extends PdfPageEventHelper {
                 BaseColor.BLACK);
         BaseColor statusColor = aprovado ? new BaseColor(0, 128, 0) : new BaseColor(255, 0, 0);
         addTableResultado(tabelaResultado, "Situação:", aprovado ? "Aprovado" : "Reprovado", statusColor);
+        if (!aprovado) {
+            addTableResultado(tabelaResultado, "Motivo da reprovação:",
+                    (dto.getDescricaoResultado()), BaseColor.BLACK);
+        }
         addTableResultado(tabelaResultado, "Data da requisição:",
+                formataData(dto.getEmprestimoRequisicao().getDataRequisicao()), BaseColor.BLACK);
+        addTableResultado(tabelaResultado, "Data da análise:",
                 formataData(dto.getEmprestimoRequisicao().getDataRequisicao()), BaseColor.BLACK);
         addTableResultado(tabelaResultado, "Modalidade:",
                 dto.getEmprestimoRequisicao().getEmprestimoModalidade().getDescricaoModalidade(), BaseColor.BLACK);
@@ -154,7 +160,8 @@ public class CriaPdf extends PdfPageEventHelper {
                 formataValor(dto.getEmprestimoRequisicao().getValorRequerido()), BaseColor.BLACK);
         if (aprovado) {
             addTableResultado(tabelaResultado, "Taxa de juros mensal:",
-            String.format("%.2f %%", dto.getEmprestimoRequisicao().getJuros().getTaxaJurosMensal()), BaseColor.BLACK);
+                    String.format("%.2f %%", dto.getEmprestimoRequisicao().getJuros().getTaxaJurosMensal()),
+                    BaseColor.BLACK);
             addTableResultado(tabelaResultado, "Valor de juros a ser pago:",
                     formataValor(jurosCalculados), BaseColor.BLACK);
             addTableResultado(tabelaResultado, "Taxa de iof:", taxaIofPorcentagem, BaseColor.BLACK);

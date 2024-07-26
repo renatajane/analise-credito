@@ -41,15 +41,15 @@ public class EmprestimoResultadoController {
         return service.list();
     }
 
-    /* Retorna um pdf com base no id do resultado do empréstimo */
-    @GetMapping("/pdf/{id}")
-    public void getPdf(@PathVariable("id") Integer id, HttpServletResponse response) throws DocumentException, IOException {
+    /* Retorna um pdf com base no CPF do cliente */
+    @GetMapping("/pdf/{cpf}")
+    public void getPdfByCpf(@PathVariable("cpf") String cpf, HttpServletResponse response) throws DocumentException, IOException {
         response.setHeader("Expires", "0");
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Pragma", "public");
         response.setContentType("application/pdf");
 
-        ByteArrayOutputStream pdf = service.gerarPdf(id);
+        ByteArrayOutputStream pdf = service.geraPdfCpf(cpf);
 
         if (pdf != null) {
             response.setContentLength(pdf.size());
