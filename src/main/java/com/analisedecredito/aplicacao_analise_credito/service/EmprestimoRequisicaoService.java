@@ -135,6 +135,7 @@ public class EmprestimoRequisicaoService {
         repository.delete(emprestimoRequisicao);
     }
 
+    /* Calcula juros da requisição */
     public Double calculaJuros(Integer id) {
         Optional<EmprestimoRequisicao> requisicaoOpt = repository.findById(id);
         if (!requisicaoOpt.isPresent()) {
@@ -149,6 +150,37 @@ public class EmprestimoRequisicaoService {
         double umMaisTaxaMensal = valorRequerido * taxaMensal * prazoEmMeses;
 
         return umMaisTaxaMensal; 
+    }
+
+    /* Calcula iof da requisição */
+    public Double calculaIof(Integer id) {
+        Optional<EmprestimoRequisicao> requisicaoOpt = repository.findById(id);
+        if (!requisicaoOpt.isPresent()) {
+            throw new IllegalArgumentException("Requisição não encontrada para o id: " + id);
+        }
+
+        EmprestimoRequisicao requisicao = requisicaoOpt.get();
+        double valorRequerido = requisicao.getValorRequerido();
+        double taxaIof = requisicao.getIof().getTaxaIof();
+        double iofTotal = valorRequerido * taxaIof;
+        return iofTotal;
+    }
+
+    /* Calcula valor da parcela */
+    public Double calculaValorParcela(Integer id) {
+        Optional<EmprestimoRequisicao> requisicaoOpt = repository.findById(id);
+        if (!requisicaoOpt.isPresent()) {
+            throw new IllegalArgumentException("Requisição não encontrada para o id: " + id);
+        }
+        EmprestimoRequisicao requisicao = requisicaoOpt.get();
+        var valorRequerido = requisicao.getValorRequerido();
+        var prazoPagamento = requisicao.getPrazoMes();
+        var iof = calculaIof(id);
+        var juros = calculaJuros(id);
+
+        var soma = valorRequerido + iof + juros;
+        var mensalidade = soma/prazoPagamento;
+        return mensalidade;
     }
 
 }

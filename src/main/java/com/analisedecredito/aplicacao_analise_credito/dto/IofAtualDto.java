@@ -10,8 +10,7 @@ public class IofAtualDto {
 
     // Propriedades
     private Integer idIof;
-    private Double iofDiario;
-    private Double iofTotal;
+    private Double taxaIof;
     private Date dataCalculo;
 
     // Construtor
@@ -32,28 +31,20 @@ public class IofAtualDto {
         this.idIof = idIof;
     }
 
-    public Double getIofDiario() {
-        return iofDiario;
-    }
-
-    public void setIofDiario(Double iofDiario) {
-        this.iofDiario = iofDiario;
-    }
-
-    public Double getIofTotal() {
-        return iofTotal;
-    }
-
-    public void setIofTotal(Double iofTotal) {
-        this.iofTotal = iofTotal;
-    }
-
     public Date getDataCalculo() {
         return dataCalculo;
     }
 
     public void setDataCalculo(Date dataCalculo) {
         this.dataCalculo = dataCalculo;
+    }
+
+    public Double getTaxaIof() {
+        return taxaIof;
+    }
+
+    public void setTaxaIof(Double taxaIof) {
+        this.taxaIof = taxaIof;
     }
 
 }

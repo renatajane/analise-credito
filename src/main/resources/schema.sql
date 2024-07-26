@@ -51,23 +51,15 @@ WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Pedro Santos');
 -- Criação da tabela de IofAtual
 CREATE TABLE IF NOT EXISTS iof_atual (
     id_iof SERIAL PRIMARY KEY,
-    iof_diario DECIMAL(10, 8) NOT NULL,
-    iof_total DECIMAL(15, 2) NOT NULL, 
+    taxa_iof DECIMAL(10, 8) NOT NULL,
     data_calculo DATE NOT NULL
 );
 
 -- Inserir dados na tabela IofAtual apenas se não existirem registros
-INSERT INTO iof_atual (iof_diario, iof_total, data_calculo)
-SELECT 0.0015, 3.00, '2023-01-01'
+INSERT INTO iof_atual (taxa_iof, data_calculo)
+SELECT 0.0038, '2024-01-01'
 WHERE NOT EXISTS (SELECT 1 FROM iof_atual);
 
-INSERT INTO iof_atual (iof_diario, iof_total, data_calculo)
-SELECT 0.0020, 3.00, '2023-01-01'
-WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario= 0.0020);
-
-INSERT INTO iof_atual (iof_diario, iof_total, data_calculo)
-SELECT 0.0025, 3.00, '2023-01-01'
-WHERE NOT EXISTS (SELECT 1 FROM iof_atual WHERE iof_diario = 0.0025);
 
 -- Criação da tabela de RendaTipo
 CREATE TABLE IF NOT EXISTS renda_tipo (
@@ -211,7 +203,7 @@ SELECT 1, 1, 5000.00, '2024-07-18', 12, 5400.00, 1, 2, 1, 1
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-18' AND id_cliente_fk = 1);
 
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk)
-SELECT 2, 2, 2000.00, '2024-07-20', 3, 7980.00, 2, 1, 2, 2
+SELECT 2, 2, 2000.00, '2024-07-20', 3, 7980.00, 2, 1, 1, 2
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-20' AND id_cliente_fk = 2);
 
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk)

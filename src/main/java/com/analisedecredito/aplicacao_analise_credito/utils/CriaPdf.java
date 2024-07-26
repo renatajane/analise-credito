@@ -112,6 +112,11 @@ public class CriaPdf extends PdfPageEventHelper {
             throws DocumentException {
 
         Double jurosCalculados = emprestimoRequisicaoService.calculaJuros(dto.getIdResultado());
+        Double taxaIof = dto.getEmprestimoRequisicao().getIof().getTaxaIof();
+        String taxaIofPorcentagem = String.format("%.2f %%", taxaIof * 100);
+        Double iofCalculado = emprestimoRequisicaoService.calculaIof(dto.getIdResultado());
+        Double valorParcela = emprestimoRequisicaoService.calculaValorParcela(dto.getIdResultado());
+        Double valorTotal = iofCalculado + jurosCalculados + dto.getEmprestimoRequisicao().getValorRequerido();
 
         // Adiciona um espaço em branco antes da tabela
         Paragraph spaceParagraph = new Paragraph();
@@ -136,6 +141,7 @@ public class CriaPdf extends PdfPageEventHelper {
         tabelaResultado.addCell(cellTitulo);
 
         var aprovado = dto.getAprovado();
+
         addTableResultado(tabelaResultado, "Código da requisição:", String.valueOf(dto.getIdResultado()),
                 BaseColor.BLACK);
         BaseColor statusColor = aprovado ? new BaseColor(0, 128, 0) : new BaseColor(255, 0, 0);
@@ -146,16 +152,21 @@ public class CriaPdf extends PdfPageEventHelper {
                 dto.getEmprestimoRequisicao().getEmprestimoModalidade().getDescricaoModalidade(), BaseColor.BLACK);
         addTableResultado(tabelaResultado, "Valor requerido:",
                 formataValor(dto.getEmprestimoRequisicao().getValorRequerido()), BaseColor.BLACK);
-        addTableResultado(tabelaResultado, "Taxa de juros mensal:",
-                dto.getEmprestimoRequisicao().getJuros().getTaxaJurosMensal() + " %", BaseColor.BLACK);
-        addTableResultado(tabelaResultado, "Valor de juros a ser pago:",
-                formataValor(jurosCalculados), BaseColor.BLACK);
-        addTableResultado(tabelaResultado, "Iof:",
-                dto.getEmprestimoRequisicao().getIof().getIofTotal().toString(), BaseColor.BLACK);
-        addTableResultado(tabelaResultado, "Prazo para pagamento:",
-                dto.getEmprestimoRequisicao().getPrazoMes().toString() + " meses", BaseColor.BLACK);
-        addTableResultado(tabelaResultado, "Valor final a ser pago:",
-                formataValor(dto.getEmprestimoRequisicao().getValorFinal()), BaseColor.BLACK);
+        if (aprovado) {
+            addTableResultado(tabelaResultado, "Taxa de juros mensal:",
+            String.format("%.2f %%", dto.getEmprestimoRequisicao().getJuros().getTaxaJurosMensal()), BaseColor.BLACK);
+            addTableResultado(tabelaResultado, "Valor de juros a ser pago:",
+                    formataValor(jurosCalculados), BaseColor.BLACK);
+            addTableResultado(tabelaResultado, "Taxa de iof:", taxaIofPorcentagem, BaseColor.BLACK);
+            addTableResultado(tabelaResultado, "Valor de iof a ser pago:",
+                    formataValor(iofCalculado), BaseColor.BLACK);
+            addTableResultado(tabelaResultado, "Valor das parcelas:",
+                    formataValor(valorParcela), BaseColor.BLACK);
+            addTableResultado(tabelaResultado, "Prazo para pagamento:",
+                    dto.getEmprestimoRequisicao().getPrazoMes().toString() + " meses", BaseColor.BLACK);
+            addTableResultado(tabelaResultado, "Valor final a ser pago:",
+                    formataValor(valorTotal), BaseColor.BLACK);
+        }
         // PENSAR NOS JUROS********
         // O que o PDF deve mostrar://
         // resultado das operações de crédito inclusas (se aprovadas ou não)

@@ -18,29 +18,26 @@ public class IofAtual {
     // Propriedades
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_iof")
+    @Column(name = "id_iof")
     private Integer idIof;
 
-    @Column(name = "iof_diario", nullable = false)
-    private Double iofDiario;
-
-    @Column(name = "iof_total", nullable = false)
-    private Double iofTotal;
+    @Column(name = "taxa_iof", nullable = false)
+    private Double taxaIof;
 
     @Column(name = "data_calculo", nullable = false)
     private Date dataCalculo;
 
     // Construtor
     public IofAtual() {
-        
+
     }
+
     public IofAtual(IofAtualDto iofAtualDto) {
         this.idIof = iofAtualDto.getIdIof();
-        this.iofDiario = iofAtualDto.getIofDiario();
-        this.iofTotal = iofAtualDto.getIofDiario();
+        this.taxaIof = iofAtualDto.getTaxaIof();
         this.dataCalculo = iofAtualDto.getDataCalculo();
     }
-    
+
     // Getters e Setters
     public Integer getIdIof() {
         return idIof;
@@ -50,22 +47,6 @@ public class IofAtual {
         this.idIof = idIof;
     }
 
-    public Double getIofDiario() {
-        return iofDiario;
-    }
-
-    public void setIofDiario(Double iofDiario) {
-        this.iofDiario = iofDiario;
-    }
-
-    public Double getIofTotal() {
-        return iofTotal;
-    }
-
-    public void setIofTotal(Double iofTotal) {
-        this.iofTotal = iofTotal;
-    }
-
     public Date getDataCalculo() {
         return dataCalculo;
     }
@@ -73,5 +54,13 @@ public class IofAtual {
     public void setDataCalculo(Date dataCalculo) {
         this.dataCalculo = dataCalculo;
     }
-    
+
+    public Double getTaxaIof() {
+        return taxaIof;
+    }
+
+    public void setTaxaIof(Double taxaIof) {
+        this.taxaIof = taxaIof;
+    }
+
 }
