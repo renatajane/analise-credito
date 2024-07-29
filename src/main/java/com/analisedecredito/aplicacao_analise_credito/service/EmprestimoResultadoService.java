@@ -44,16 +44,22 @@ public class EmprestimoResultadoService {
     }
 
     /* Retorna um pdf com base no id do resultado do empréstimo */
-    public ByteArrayOutputStream geraPdfCpf(String cpf) throws DocumentException, MalformedURLException, IOException {
+    public ByteArrayOutputStream geraPdfCpf(String cpf, Integer id)
+            throws DocumentException, MalformedURLException, IOException {
         List<EmprestimoResultado> resultados = repository.findByClienteCpf(cpf);
-        
+
         if (resultados.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum resultado de empréstimo encontrado para o CPF: " + cpf);
         }
-    
-        EmprestimoResultado resultado = resultados.get(0);
+
+        EmprestimoResultado resultado = resultados.stream()
+                .filter(r -> r.getIdResultado().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Nenhum resultado de empréstimo encontrado para o ID: " + id));
+
         EmprestimoResultadoReadDto dto = new EmprestimoResultadoReadDto(resultado);
-        
+
         return utils.criaPdfImprimir(dto);
     }
 
@@ -66,7 +72,7 @@ public class EmprestimoResultadoService {
         emprestimoResultado.setIdResultado(emprestimoResultadoDto.getIdResultado());
         emprestimoResultado.setAprovado(emprestimoResultadoDto.getAprovado());
         emprestimoResultado.setDescricaoResultado(emprestimoResultadoDto.getDescricaoResultado());
-        emprestimoResultado.setDataResultado(emprestimoResultadoDto.getDataResultado());        
+        emprestimoResultado.setDataResultado(emprestimoResultadoDto.getDataResultado());
         emprestimoResultado.setEmprestimoRequisicao(requisicaoOpt
                 .orElseThrow(() -> new ResourceNotFoundException("Requisição de empréstimo não encontrada com o ID: "
                         + emprestimoResultadoDto.getEmprestimoRequisicao())));
