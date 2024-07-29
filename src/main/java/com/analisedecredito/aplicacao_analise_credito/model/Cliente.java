@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -50,6 +52,10 @@ public class Cliente {
 
     @Column(name = "autorizacao_lgpd", nullable = false)
     private boolean autorizacaoLGPD;
+
+    @Column(name = "data_autorizacao_lgpd")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataAutorizacaoLGPD;
 
     @ManyToOne
     @JoinColumn(name = "id_perfil_credito_fk", referencedColumnName = "id_perfil_credito")
@@ -139,4 +145,13 @@ public class Cliente {
     public void setPerfilCredito(PerfilCredito perfilCredito) {
         this.perfilCredito = perfilCredito;
     }
+
+    public Date getDataAutorizacaoLGPD() {
+        return dataAutorizacaoLGPD;
+    }
+
+    public void setDataAutorizacaoLGPD(Date dataAutorizacaoLGPD) {
+        this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
+    }
+
 }

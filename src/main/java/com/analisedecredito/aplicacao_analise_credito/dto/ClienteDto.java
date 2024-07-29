@@ -17,6 +17,7 @@ public class ClienteDto {
     private String telefone;
     private String endereco;
     private boolean autorizacaoLGPD;
+    private Date dataAutorizacaoLGPD;
     private Integer perfilCredito;
 
     // Construtor
@@ -99,5 +100,13 @@ public class ClienteDto {
 
     public void setPerfilCredito(Integer perfilCredito) {
         this.perfilCredito = perfilCredito;
+    }
+
+    public Date getDataAutorizacaoLGPD() {
+        return dataAutorizacaoLGPD;
+    }
+
+    public void setDataAutorizacaoLGPD(Date dataAutorizacaoLGPD) {
+        this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
     }
 }

@@ -76,9 +76,5 @@ public class Despesa {
     public void setValorDespesa(Double valorDespesa) {
         this.valorDespesa = valorDespesa;
     }
-
-            
-
-
     
 }

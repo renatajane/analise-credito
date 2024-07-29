@@ -1,5 +1,6 @@
 package com.analisedecredito.aplicacao_analise_credito.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.PerfilCredito;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PerfilCreditoRepository;
 
 @Service
@@ -22,6 +24,9 @@ public class ClienteService {
 
     @Autowired
     private PerfilCreditoRepository perfilCreditoRepository;
+
+    @Autowired
+    EmprestimoRequisicaoRepository requisicaoRepository;
 
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
@@ -39,10 +44,17 @@ public class ClienteService {
         // Optional<PerfilCredito> perfilCreditoOpt =
         // perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
         // if (perfilCreditoOpt.isPresent()) {
+
+        if (!clienteDto.getAutorizacaoLGPD()) {
+            throw new IllegalArgumentException(
+                    "O cliente deve autorizar o tratamento de seus dados de acordo com a LGPD.");
+        }
+
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDto.getNome());
-            cliente.setCpf(clienteDto.getCpf());
+        cliente.setCpf(clienteDto.getCpf());
         cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());
+        cliente.setDataAutorizacaoLGPD(new Date());
         cliente.setDataNascimento(clienteDto.getDataNascimento());
         cliente.setEmail(clienteDto.getEmail());
         cliente.setEndereco(clienteDto.getEndereco());
@@ -58,16 +70,21 @@ public class ClienteService {
     /* Atualiza os dados de um cliente existente */
     public ClienteDto update(Integer id, ClienteDto clienteDto) {
         Optional<Cliente> clienteOpt = repository.findById(id);
+
+        if (!clienteDto.getAutorizacaoLGPD()) {
+            throw new IllegalArgumentException(
+                    "O cliente deve autorizar o tratamento de seus dados de acordo com a LGPD.");
+        }
+
         if (clienteOpt.isPresent()) {
             Cliente cliente = clienteOpt.get();
             Optional<PerfilCredito> perfilCreditoOpt = perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
             if (perfilCreditoOpt.isPresent()) {
                 PerfilCredito perfilCredito = perfilCreditoOpt.get();
                 cliente.setNome(clienteDto.getNome());
-                    cliente.setCpf(clienteDto.getCpf());
+                cliente.setCpf(clienteDto.getCpf());
                 cliente.setDataNascimento(clienteDto.getDataNascimento());
                 cliente.setEmail(clienteDto.getEmail());
-                
                 cliente.setTelefone(clienteDto.getTelefone());
                 cliente.setEndereco(clienteDto.getEndereco());
                 cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());

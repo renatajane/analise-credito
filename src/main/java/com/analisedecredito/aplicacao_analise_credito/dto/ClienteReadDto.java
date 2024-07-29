@@ -18,6 +18,7 @@ public class ClienteReadDto {
     private String telefone;
     private String endereco;
     private boolean autorizacaoLGPD;
+    private Date dataAutorizacaoLGPD;
     private PerfilCredito perfilCredito;
 
     // Construtor
@@ -100,4 +101,12 @@ public class ClienteReadDto {
     public void setAutorizacaoLGPD(boolean autorizacaoLGPD) {
         this.autorizacaoLGPD = autorizacaoLGPD;
     }
- }
+
+    public Date getDataAutorizacaoLGPD() {
+        return dataAutorizacaoLGPD;
+    }
+
+    public void setDataAutorizacaoLGPD(Date dataAutorizacaoLGPD) {
+        this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
+    }
+}

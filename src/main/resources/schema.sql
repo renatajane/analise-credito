@@ -32,20 +32,21 @@ CREATE TABLE IF NOT EXISTS cliente (
     telefone VARCHAR(20) NOT NULL,
     endereco VARCHAR(80) NOT NULL,
     autorizacao_lgpd BOOLEAN NOT NULL, 
+    data_autorizacao_lgpd DATE NOT NULL, 
     id_perfil_credito_fk INTEGER REFERENCES perfil_credito (id_perfil_credito) 
 );
 
 -- Verifica se a tabela cliente está vazia e insere dados se necessário
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, id_perfil_credito_fk)
-SELECT 'João Silva', 12345655001, '1985-05-12', 'joaos.silva@example.com', '1111122111', 'Rua A, 123', true, 1
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_credito_fk)
+SELECT 'João Silva', 12345655001, '1985-05-12', 'joaos.silva@example.com', '1111122111', 'Rua A, 123', true, '2024-07-12', 1
 WHERE NOT EXISTS (SELECT 1 FROM cliente LIMIT 1);
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, id_perfil_credito_fk)
-SELECT 'Maria Oliveira', 23880789012, '1990-06-15', 'marias.oliveira@example.com', '2222200222', 'Rua B, 456', true, 2
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_credito_fk)
+SELECT 'Maria Oliveira', 23880789012, '1990-06-15', 'marias.oliveira@example.com', '2222200222', 'Rua B, 456', true, '2024-05-12', 2
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Maria Oliveira');
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, id_perfil_credito_fk)
-SELECT 'Pedro Santos', 39967000123, '1988-07-20', 'pedros.santos@example.com', '3333355333', 'Rua C, 789', true, 3
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_credito_fk)
+SELECT 'Pedro Santos', 39967000123, '1988-07-20', 'pedros.santos@example.com', '3333355333', 'Rua C, 789', true, '2024-07-23', 3
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Pedro Santos');
 
 -- Criação da tabela de IofAtual
