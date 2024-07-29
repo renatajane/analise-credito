@@ -15,12 +15,14 @@ import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoObjetivo;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoUrgencia;
 import com.analisedecredito.aplicacao_analise_credito.model.IofAtual;
+import com.analisedecredito.aplicacao_analise_credito.model.ModalidadePagamento;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoModalidadeRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoObjetivoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoUrgenciaRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.IofAtualRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.ModalidadePagamentoRepository;
 
 @Service
 public class EmprestimoRequisicaoService {
@@ -42,6 +44,9 @@ public class EmprestimoRequisicaoService {
 
     @Autowired
     EmprestimoUrgenciaRepository urgenciaRepository;
+
+    @Autowired
+    ModalidadePagamentoRepository pagamentoRepository;
 
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
@@ -67,6 +72,8 @@ public class EmprestimoRequisicaoService {
                 .findById(emprestimoRequisicaoDto.getEmprestimoObjetivo());
         Optional<EmprestimoUrgencia> urgenciaOpt = urgenciaRepository
                 .findById(emprestimoRequisicaoDto.getEmprestimoUrgencia());
+        Optional<ModalidadePagamento> pagamentoOpt = pagamentoRepository
+                .findById(emprestimoRequisicaoDto.getModalidadePagamento());
 
         if (clienteOpt.isPresent()) {
 
@@ -77,6 +84,7 @@ public class EmprestimoRequisicaoService {
             emprestimoRequisicao.setDataRequisicao(emprestimoRequisicaoDto.getDataRequisicao());
             emprestimoRequisicao.setCliente(clienteOpt.get());
             emprestimoRequisicao.setIof(iofOpt.get());
+            emprestimoRequisicao.setModalidadePagamento(pagamentoOpt.get());
             emprestimoRequisicao.setEmprestimoModalidade(modalidadeOpt.get());
             emprestimoRequisicao.setEmprestimoObjetivo(objetivoOpt.get());
             emprestimoRequisicao.setEmprestimoUrgencia(urgenciaOpt.get());
@@ -105,6 +113,8 @@ public class EmprestimoRequisicaoService {
                     .findById(emprestimoRequisicaoDto.getEmprestimoObjetivo());
             Optional<EmprestimoUrgencia> urgenciaOpt = urgenciaRepository
                     .findById(emprestimoRequisicaoDto.getEmprestimoUrgencia());
+            Optional<ModalidadePagamento> pagamentoOpt = pagamentoRepository
+                    .findById(emprestimoRequisicaoDto.getModalidadePagamento());
 
             if (clienteOpt.isPresent() && iofOpt.isPresent()
                     && modalidadeOpt.isPresent() && objetivoOpt.isPresent()
@@ -114,6 +124,7 @@ public class EmprestimoRequisicaoService {
                 emprestimoRequisicao.setDataRequisicao(emprestimoRequisicaoDto.getDataRequisicao());
                 emprestimoRequisicao.setCliente(clienteOpt.get());
                 emprestimoRequisicao.setIof(iofOpt.get());
+                emprestimoRequisicao.setModalidadePagamento(pagamentoOpt.get());
                 emprestimoRequisicao.setEmprestimoModalidade(modalidadeOpt.get());
                 emprestimoRequisicao.setEmprestimoObjetivo(objetivoOpt.get());
                 emprestimoRequisicao.setEmprestimoUrgencia(urgenciaOpt.get());
@@ -149,7 +160,7 @@ public class EmprestimoRequisicaoService {
 
         double umMaisTaxaMensal = valorRequerido * taxaMensal * prazoEmMeses;
 
-        return umMaisTaxaMensal; 
+        return umMaisTaxaMensal;
     }
 
     /* Calcula iof da requisição */
@@ -179,7 +190,7 @@ public class EmprestimoRequisicaoService {
         var juros = calculaJuros(id);
 
         var soma = valorRequerido + iof + juros;
-        var mensalidade = soma/prazoPagamento;
+        var mensalidade = soma / prazoPagamento;
         return mensalidade;
     }
 

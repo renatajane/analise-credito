@@ -26,6 +26,7 @@ public class EmprestimoRequisicaoReadDto {
     private Juros juros;
     private Integer prazoMes;
     private Double valorFinal;
+    private Integer modalidadePagamento;
 
     // Construtor
     public EmprestimoRequisicaoReadDto() {
@@ -128,5 +129,13 @@ public class EmprestimoRequisicaoReadDto {
 
     public void setValorFinal(Double valorFinal) {
         this.valorFinal = valorFinal;
+    }
+
+    public Integer getModalidadePagamento() {
+        return modalidadePagamento;
+    }
+
+    public void setModalidadePagamento(Integer modalidadePagamento) {
+        this.modalidadePagamento = modalidadePagamento;
     }
 }

@@ -57,6 +57,10 @@ public class EmprestimoRequisicao {
     @JoinColumn(name = "id_juros_fk", referencedColumnName = "id_juros", nullable = false)
     private Juros juros;
 
+    @ManyToOne
+    @JoinColumn(name = "id_modalidade_pagamento_fk", referencedColumnName = "id_modalidade_pagamento", nullable = false)
+    private ModalidadePagamento modalidadePagamento;
+
     // Construtor
     public EmprestimoRequisicao() {
     }
@@ -148,5 +152,13 @@ public class EmprestimoRequisicao {
 
     public void setValorFinal(Double valorFinal) {
         this.valorFinal = valorFinal;
+    }
+
+    public ModalidadePagamento getModalidadePagamento() {
+        return modalidadePagamento;
+    }
+
+    public void setModalidadePagamento(ModalidadePagamento modalidadePagamento) {
+        this.modalidadePagamento = modalidadePagamento;
     }
 }
