@@ -3,8 +3,11 @@ package com.analisedecredito.aplicacao_analise_credito.service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -17,6 +20,7 @@ import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoResultado;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoResultadoRepository;
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdf;
+import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdfGeral;
 import com.itextpdf.text.DocumentException;
 
 @Service
@@ -30,6 +34,9 @@ public class EmprestimoResultadoService {
 
     @Autowired
     CriaPdf utils;
+
+    @Autowired
+    CriaPdfGeral utilsGeral;
 
     /* Retorna um resultado de empréstimo de acordo com o id */
     public EmprestimoResultadoReadDto findById(Integer id) {
@@ -61,6 +68,24 @@ public class EmprestimoResultadoService {
         EmprestimoResultadoReadDto dto = new EmprestimoResultadoReadDto(resultado);
 
         return utils.criaPdfImprimir(dto);
+    }
+
+    /* Gera um PDF com base em um período de datas */
+    public ByteArrayOutputStream geraPdfPorPeriodo(Date inicio, Date fim)
+            throws DocumentException, MalformedURLException, IOException {
+        List<EmprestimoResultado> resultados = repository.findByDataCriacao(inicio, fim);
+
+        if (resultados.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum resultado de empréstimo encontrado no período: " +
+                    new SimpleDateFormat("yyyy-MM-dd").format(inicio) + " a " +
+                    new SimpleDateFormat("yyyy-MM-dd").format(fim));
+        }
+
+        List<EmprestimoResultadoReadDto> dtos = resultados.stream()
+                .map(EmprestimoResultadoReadDto::new)
+                .collect(Collectors.toList());
+
+        return utilsGeral.criaPdfPeriodo(dtos);
     }
 
     /* Cria um novo resultado de empréstimo com base nos dados fornecidos */

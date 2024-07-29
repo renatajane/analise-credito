@@ -53,7 +53,7 @@ public class CriaPdf extends PdfPageEventHelper {
 
         // Insere conteúdo no PDF
         documentoPdf.open();
-        // addDadosRequerente(documentoPdf, emprestimoResultadoDto);
+        addDadosRequerente(documentoPdf, emprestimoResultadoDto);
         addResultado(documentoPdf, emprestimoResultadoDto);
         documentoPdf.close();
 

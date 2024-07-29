@@ -2,9 +2,11 @@ package com.analisedecredito.aplicacao_analise_credito.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoResultadoDto;
@@ -43,13 +46,34 @@ public class EmprestimoResultadoController {
 
     /* Retorna um pdf com base no CPF do cliente */
     @GetMapping("/pdf/{cpf}/{id}")
-    public void getPdfByCpf(@PathVariable("cpf") String cpf, @PathVariable("id") Integer id, HttpServletResponse response) throws DocumentException, IOException {
+    public void getPdfByCpf(@PathVariable("cpf") String cpf, @PathVariable("id") Integer id,
+            HttpServletResponse response) throws DocumentException, IOException {
         response.setHeader("Expires", "0");
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Pragma", "public");
         response.setContentType("application/pdf");
 
         ByteArrayOutputStream pdf = service.geraPdfCpf(cpf, id);
+
+        if (pdf != null) {
+            response.setContentLength(pdf.size());
+            pdf.writeTo(response.getOutputStream());
+            response.getOutputStream().flush();
+        }
+    }
+
+    /* Retorna um pdf com base no período fornecido */
+    @GetMapping("/pdf/periodo")
+    public void getPdfByPeriod(
+            @RequestParam("inicio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
+            @RequestParam("fim") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fim,
+            HttpServletResponse response) throws DocumentException, IOException {
+        response.setHeader("Expires", "0");
+        response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+        response.setHeader("Pragma", "public");
+        response.setContentType("application/pdf");
+
+        ByteArrayOutputStream pdf = service.geraPdfPorPeriodo(inicio, fim);
 
         if (pdf != null) {
             response.setContentLength(pdf.size());
