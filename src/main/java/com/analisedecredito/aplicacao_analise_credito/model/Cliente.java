@@ -10,6 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "cliente")
@@ -21,21 +25,26 @@ public class Cliente {
     @Column(name = "id_cliente")
     private Integer idCliente;
 
+    @Size(min = 1, max = 100, message = "Nome deve ter entre 1 e 100 caracteres")
     @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Valid
     @Column(name = "cpf", unique = true, nullable = false)
     private String cpf;
 
     @Column(name = "data_nascimento", nullable = false)
     private Date dataNascimento;
 
+    @Email(message = "Email deve ser válido")
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Pattern(regexp = "\\(\\d{2}\\) \\d{4,5}-\\d{4}", message = "Telefone deve seguir o formato (XX) XXXX-XXXX ou (XX) XXXXX-XXXX")
     @Column(name = "telefone", nullable = false)
     private String telefone;
 
+    @Size(min = 1, max = 255, message = "Endereço deve ter entre 1 e 255 caracteres")
     @Column(name = "endereco", nullable = false)
     private String endereco;
 
@@ -46,9 +55,9 @@ public class Cliente {
     @JoinColumn(name = "id_perfil_credito_fk", referencedColumnName = "id_perfil_credito")
     private PerfilCredito perfilCredito;
 
-    // Construtor 
+    // Construtor
     public Cliente() {
-        
+
     }
 
     // Getters e Setters
@@ -82,6 +91,12 @@ public class Cliente {
     }
 
     public void setDataNascimento(Date dataNascimento) {
+        if (dataNascimento == null) {
+            throw new IllegalArgumentException("Data de nascimento não pode ser nula");
+        }
+        if (dataNascimento.after(new Date())) {
+            throw new IllegalArgumentException("Data de nascimento deve ser no passado");
+        }
         this.dataNascimento = dataNascimento;
     }
 
@@ -124,41 +139,4 @@ public class Cliente {
     public void setPerfilCredito(PerfilCredito perfilCredito) {
         this.perfilCredito = perfilCredito;
     }
-
-    public boolean validaCpf(String cpf) {
-        // Remove caracteres não numéricos
-        cpf = cpf.replaceAll("[^0-9]", "");
-
-        if (cpf.length() != 11 || cpf.matches("(\\d)\\1{10}")) {
-            return false; // CPF deve ter 11 dígitos e não ser uma sequência repetida
-        }
-
-        try {
-            int[] digits = new int[11];
-            for (int i = 0; i < 11; i++) {
-                digits[i] = Character.getNumericValue(cpf.charAt(i));
-            }
-
-            int sum = 0;
-            for (int i = 0; i < 9; i++) {
-                sum += digits[i] * (10 - i);
-            }
-            int firstDigit = (sum * 10) % 11;
-            if (firstDigit == 10) firstDigit = 0;
-
-            if (firstDigit != digits[9]) return false;
-
-            sum = 0;
-            for (int i = 0; i < 10; i++) {
-                sum += digits[i] * (11 - i);
-            }
-            int secondDigit = (sum * 10) % 11;
-            if (secondDigit == 10) secondDigit = 0;
-
-            return secondDigit == digits[10];
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
-
