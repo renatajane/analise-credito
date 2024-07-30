@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
-import com.analisedecredito.aplicacao_analise_credito.model.PerfilCredito;
+import com.analisedecredito.aplicacao_analise_credito.model.PerfilCliente;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
-import com.analisedecredito.aplicacao_analise_credito.repository.PerfilCreditoRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.PerfilClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepository;
 
 @Service
@@ -24,7 +24,7 @@ public class ClienteService {
     ClienteRepository repository;
 
     @Autowired
-    private PerfilCreditoRepository perfilCreditoRepository;
+    private PerfilClienteRepository perfilClienteRepository;
 
     @Autowired
     EmprestimoRequisicaoRepository requisicaoRepository;
@@ -45,9 +45,6 @@ public class ClienteService {
 
     /* Cria um novo cliente com base nos dados fornecidos */
     public void create(ClienteDto clienteDto) {
-        // Optional<PerfilCredito> perfilCreditoOpt =
-        // perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
-        // if (perfilCreditoOpt.isPresent()) {
 
         if (!clienteDto.getAutorizacaoLGPD()) {
             throw new IllegalArgumentException(
@@ -64,7 +61,7 @@ public class ClienteService {
         cliente.setEndereco(clienteDto.getEndereco());
         cliente.setIdCliente(clienteDto.getIdCliente());
         cliente.setTelefone(clienteDto.getTelefone());
-        cliente.setPerfilCredito(null);
+        cliente.setPerfilCliente(null);
         repository.save(cliente);
         // } else {
         // throw new ResourceNotFoundException("Perfil de crédito não econtrado.");
@@ -82,9 +79,9 @@ public class ClienteService {
 
         if (clienteOpt.isPresent()) {
             Cliente cliente = clienteOpt.get();
-            Optional<PerfilCredito> perfilCreditoOpt = perfilCreditoRepository.findById(clienteDto.getPerfilCredito());
-            if (perfilCreditoOpt.isPresent()) {
-                PerfilCredito perfilCredito = perfilCreditoOpt.get();
+            Optional<PerfilCliente> perfilClienteOpt = perfilClienteRepository.findById(clienteDto.getPerfilCliente());
+            if (perfilClienteOpt.isPresent()) {
+                PerfilCliente perfilCliente = perfilClienteOpt.get();
                 cliente.setNome(clienteDto.getNome());
                 cliente.setCpf(clienteDto.getCpf());
                 cliente.setDataNascimento(clienteDto.getDataNascimento());
@@ -92,12 +89,12 @@ public class ClienteService {
                 cliente.setTelefone(clienteDto.getTelefone());
                 cliente.setEndereco(clienteDto.getEndereco());
                 cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());
-                cliente.setPerfilCredito(perfilCredito);
+                cliente.setPerfilCliente(perfilCliente);
                 Cliente updatedCliente = repository.save(cliente);
                 return new ClienteDto(updatedCliente);
             } else {
                 throw new ResourceNotFoundException(
-                        "Perfil de crédito não encontrado com id " + clienteDto.getPerfilCredito());
+                        "Perfil de crédito não encontrado com id " + clienteDto.getPerfilCliente());
             }
         } else {
             throw new ResourceNotFoundException("Cliente não encontrado com id " + id);

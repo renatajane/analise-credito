@@ -5,7 +5,7 @@ import java.util.Date;
 import org.springframework.beans.BeanUtils;
 
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
-import com.analisedecredito.aplicacao_analise_credito.model.PerfilCredito;
+import com.analisedecredito.aplicacao_analise_credito.model.PerfilCliente;
 
 public class ClienteReadDto {
 
@@ -19,7 +19,7 @@ public class ClienteReadDto {
     private String endereco;
     private boolean autorizacaoLGPD;
     private Date dataAutorizacaoLGPD;
-    private PerfilCredito perfilCredito;
+    private PerfilCliente perfilCliente;
 
     // Construtor
     public ClienteReadDto() {
@@ -30,14 +30,6 @@ public class ClienteReadDto {
     }
 
     // Getter e Setter
-    public PerfilCredito getPerfilCredito() {
-        return perfilCredito;
-    }
-
-    public void setPerfilCredito(PerfilCredito perfilCredito) {
-        this.perfilCredito = perfilCredito;
-    }
-
     public Integer getIdCliente() {
         return idCliente;
     }
@@ -108,5 +100,13 @@ public class ClienteReadDto {
 
     public void setDataAutorizacaoLGPD(Date dataAutorizacaoLGPD) {
         this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
+    }
+
+    public PerfilCliente getPerfilCliente() {
+        return perfilCliente;
+    }
+
+    public void setPerfilCliente(PerfilCliente perfilCliente) {
+        this.perfilCliente = perfilCliente;
     }
 }

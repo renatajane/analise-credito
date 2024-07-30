@@ -13,32 +13,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.analisedecredito.aplicacao_analise_credito.dto.PerfilCreditoDto;
-import com.analisedecredito.aplicacao_analise_credito.service.PerfilCreditoService;
+import com.analisedecredito.aplicacao_analise_credito.dto.PerfilClienteDto;
+import com.analisedecredito.aplicacao_analise_credito.service.PerfilClienteService;
 
 @RestController
-@RequestMapping("/perfil-credito")
-public class PerfilCreditoController {
+@RequestMapping("/perfil-cliente")
+public class PerfilClienteController {
 
     @Autowired
-    PerfilCreditoService service;
+    PerfilClienteService service;
 
     /* Retorna um perfil de crédito de acordo com o id */
     @GetMapping("/{id}")
-    public PerfilCreditoDto findById(@PathVariable("id") Integer id) {
+    public PerfilClienteDto findById(@PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
     /* Retorna uma lista de perfis de créditos cadastrados */
     @GetMapping("/list")
-    public List<PerfilCreditoDto> list() {
+    public List<PerfilClienteDto> list() {
         return service.list();
     }
 
     /* Cria um novo perfil de crédito com base nos dados fornecidos */
     @PostMapping
-    public void create(@RequestBody PerfilCreditoDto perfilCreditoDto) {
-        service.create(perfilCreditoDto);
+    public void create(@RequestBody PerfilClienteDto perfilClienteDto) {
+        service.create(perfilClienteDto);
     }
 
     /*
@@ -46,8 +46,8 @@ public class PerfilCreditoController {
      * fornecidos
      */
     @PutMapping
-    public PerfilCreditoDto update(@RequestBody PerfilCreditoDto perfilCreditoDto) {
-        return service.update(perfilCreditoDto);
+    public PerfilClienteDto update(@RequestBody PerfilClienteDto perfilClienteDto) {
+        return service.update(perfilClienteDto);
     }
 
     /* Remove um tipo de perfil de crédito de acordo com o id */

@@ -58,8 +58,8 @@ public class Cliente {
     private Date dataAutorizacaoLGPD;
 
     @ManyToOne
-    @JoinColumn(name = "id_perfil_credito_fk", referencedColumnName = "id_perfil_credito")
-    private PerfilCredito perfilCredito;
+    @JoinColumn(name = "id_perfil_cliente_fk", referencedColumnName = "id_perfil_cliente")
+    private PerfilCliente perfilCliente;
 
     // Construtor
     public Cliente() {
@@ -138,12 +138,12 @@ public class Cliente {
         this.autorizacaoLGPD = autorizacaoLGPD;
     }
 
-    public PerfilCredito getPerfilCredito() {
-        return perfilCredito;
+    public PerfilCliente getPerfilCliente() {
+        return perfilCliente;
     }
 
-    public void setPerfilCredito(PerfilCredito perfilCredito) {
-        this.perfilCredito = perfilCredito;
+    public void setPerfilCliente(PerfilCliente perfilCliente) {
+        this.perfilCliente = perfilCliente;
     }
 
     public Date getDataAutorizacaoLGPD() {

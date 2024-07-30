@@ -18,7 +18,7 @@ public class ClienteDto {
     private String endereco;
     private boolean autorizacaoLGPD;
     private Date dataAutorizacaoLGPD;
-    private Integer perfilCredito;
+    private Integer perfilCliente;
     private Double rendaTotal;
 
     // Construtor
@@ -27,7 +27,7 @@ public class ClienteDto {
 
     public ClienteDto(Cliente cliente) {
         BeanUtils.copyProperties(cliente, this);
-        this.perfilCredito = cliente.getPerfilCredito().getIdPerfilCredito();
+        this.perfilCliente = cliente.getPerfilCliente().getIdPerfilCliente();
     }
 
     // Getters e Setters
@@ -95,14 +95,6 @@ public class ClienteDto {
         this.autorizacaoLGPD = autorizacaoLGPD;
     }
 
-    public Integer getPerfilCredito() {
-        return perfilCredito;
-    }
-
-    public void setPerfilCredito(Integer perfilCredito) {
-        this.perfilCredito = perfilCredito;
-    }
-
     public Date getDataAutorizacaoLGPD() {
         return dataAutorizacaoLGPD;
     }
@@ -117,5 +109,13 @@ public class ClienteDto {
 
     public void setRendaTotal(Double rendaTotal) {
         this.rendaTotal = rendaTotal;
+    }
+
+    public Integer getPerfilCliente() {
+        return perfilCliente;
+    }
+
+    public void setPerfilCliente(Integer perfilCliente) {
+        this.perfilCliente = perfilCliente;
     }
 }
