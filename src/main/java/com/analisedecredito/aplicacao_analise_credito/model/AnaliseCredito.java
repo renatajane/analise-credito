@@ -2,8 +2,12 @@ package com.analisedecredito.aplicacao_analise_credito.model;
 
 import java.util.Date;
 
+import com.analisedecredito.aplicacao_analise_credito.enums.Identificador;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,6 +22,10 @@ public class AnaliseCredito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_analise_credito")
     private Integer idAnaliseCredito;
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name="identificador", nullable = false)
+    private Identificador identificador;
 
     @Column(name="aspecto", nullable = false)
     private String aspecto;
@@ -35,7 +43,7 @@ public class AnaliseCredito {
     public AnaliseCredito() {
     }
 
-    // Getters e Setters 
+    // Getters e Setters    
     public Integer getIdAnaliseCredito() {
         return idAnaliseCredito;
     }
@@ -74,6 +82,14 @@ public class AnaliseCredito {
 
     public void setDataValidade(Date dataValidade) {
         this.dataValidade = dataValidade;
+    }
+
+    public Identificador getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(Identificador identificador) {
+        this.identificador = identificador;
     }
 
 }
