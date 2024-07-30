@@ -198,6 +198,28 @@ INSERT INTO juros (nome_modalidade, taxa_juros_anual, taxa_juros_mensal, data_vi
 SELECT 'Consignado', 0.10, 0.008, '2024-07-25'
 WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Consignado' AND data_vigencia = '2024-07-25');
 
+-- Criação da tabela EmprestimoParcela
+CREATE TABLE IF NOT EXISTS emprestimo_parcela (
+    id_emprestimo_parcela SERIAL PRIMARY KEY,
+    valor_parcela NUMERIC(15, 2) NOT NULL,
+    data_vencimento DATE NOT NULL
+);
+
+-- Inserir uma parcela com valor e data de vencimento específicos
+INSERT INTO emprestimo_parcela (valor_parcela, data_vencimento)
+SELECT 150.00, '2024-08-01'
+WHERE NOT EXISTS (SELECT 1 FROM emprestimo_parcela WHERE valor_parcela = 150.00 AND data_vencimento = '2024-08-01');
+
+-- Inserir outra parcela com valor e data de vencimento específicos
+INSERT INTO emprestimo_parcela (valor_parcela, data_vencimento)
+SELECT 200.00, '2024-09-01'
+WHERE NOT EXISTS (SELECT 1 FROM emprestimo_parcela WHERE valor_parcela = 200.00 AND data_vencimento = '2024-09-01');
+
+-- Inserir mais uma parcela com valor e data de vencimento específicos
+INSERT INTO emprestimo_parcela (valor_parcela, data_vencimento)
+SELECT 250.00, '2024-10-01'
+WHERE NOT EXISTS (SELECT 1 FROM emprestimo_parcela WHERE valor_parcela = 250.00 AND data_vencimento = '2024-10-01');
+
 -- Criação da tabela EmprestimoRequisicao
 CREATE TABLE IF NOT EXISTS emprestimo_requisicao (
     id_requisicao SERIAL PRIMARY KEY,
@@ -211,20 +233,27 @@ CREATE TABLE IF NOT EXISTS emprestimo_requisicao (
     id_urgencia_fk INTEGER REFERENCES emprestimo_urgencia(id_urgencia),    
     id_iof_fk INTEGER REFERENCES iof_atual(id_iof),
     id_juros_fk INTEGER REFERENCES juros(id_juros),
-    id_modalidade_pagamento_fk INTEGER REFERENCES modalidade_pagamento(id_modalidade_pagamento)
+    id_modalidade_pagamento_fk INTEGER REFERENCES modalidade_pagamento(id_modalidade_pagamento), 
+    id_emprestimo_parcela_fk INTEGER REFERENCES emprestimo_parcela(id_emprestimo_parcela)
 );
 
---Inserir dados na tabela emprestimo_requisicao apenas se não existirem registros
-INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, id_modalidade_pagamento_fk)
-SELECT 1, 1, 5000.00, '2024-07-18', 12, 5400.00, 1, 2, 1, 1, 1
+--Inserir dados na tabela emprestimo_requisicao
+INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, 
+prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, 
+id_modalidade_pagamento_fk, id_emprestimo_parcela_fk)
+SELECT 1, 1, 5000.00, '2024-07-18', 12, 5400.00, 1, 2, 1, 1, 1, 1
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-18' AND id_cliente_fk = 1);
 
-INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, id_modalidade_pagamento_fk)
-SELECT 2, 2, 2000.00, '2024-07-20', 3, 7980.00, 2, 1, 1, 2, 2
+INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, 
+prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, 
+id_modalidade_pagamento_fk, id_emprestimo_parcela_fk)
+SELECT 2, 2, 2000.00, '2024-07-20', 3, 7980.00, 2, 1, 1, 2, 2, 2
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-20' AND id_cliente_fk = 2);
 
-INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, id_modalidade_pagamento_fk)
-SELECT 3, 3, 10000.00, '2024-07-21', 36, 11800.00, 3, 3, 1, 3, 3
+INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido, data_requisicao, 
+prazo_mes, valor_final, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, 
+id_modalidade_pagamento_fk, id_emprestimo_parcela_fk)
+SELECT 3, 3, 10000.00, '2024-07-21', 36, 11800.00, 3, 3, 1, 3, 3, 3
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-21' AND id_cliente_fk = 3);
 
 -- Criação da tabela AnaliseRestricao

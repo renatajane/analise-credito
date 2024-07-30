@@ -61,6 +61,10 @@ public class EmprestimoRequisicao {
     @JoinColumn(name = "id_modalidade_pagamento_fk", referencedColumnName = "id_modalidade_pagamento", nullable = false)
     private ModalidadePagamento modalidadePagamento;
 
+    @ManyToOne
+    @JoinColumn(name = "id_emprestimo_parcela_fk", referencedColumnName = "id_emprestimo_parcela", nullable = false)
+    private EmprestimoParcela parcelas;
+
     // Construtor
     public EmprestimoRequisicao() {
     }
@@ -160,5 +164,13 @@ public class EmprestimoRequisicao {
 
     public void setModalidadePagamento(ModalidadePagamento modalidadePagamento) {
         this.modalidadePagamento = modalidadePagamento;
+    }
+
+    public EmprestimoParcela getParcelas() {
+        return parcelas;
+    }
+
+    public void setParcelas(EmprestimoParcela parcelas) {
+        this.parcelas = parcelas;
     }
 }
