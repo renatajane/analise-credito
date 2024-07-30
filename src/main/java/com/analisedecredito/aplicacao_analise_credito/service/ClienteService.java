@@ -15,6 +15,7 @@ import com.analisedecredito.aplicacao_analise_credito.model.PerfilCredito;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PerfilCreditoRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepository;
 
 @Service
 public class ClienteService {
@@ -27,6 +28,9 @@ public class ClienteService {
 
     @Autowired
     EmprestimoRequisicaoRepository requisicaoRepository;
+
+    @Autowired
+    RendaFonteRepository rendaRepository;
 
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
@@ -98,6 +102,12 @@ public class ClienteService {
         } else {
             throw new ResourceNotFoundException("Cliente não encontrado com id " + id);
         }
+    }
+
+    // Calcula renda total do cliente
+    public void somaRenda(ClienteDto clienteDto){
+        Double valorTotal = rendaRepository.findRendaTotalCliente(clienteDto.getIdCliente());
+        clienteDto.setRendaTotal(valorTotal);
     }
 
     /* Remove um cliente pelo id */

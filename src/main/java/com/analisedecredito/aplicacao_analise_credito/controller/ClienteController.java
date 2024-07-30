@@ -54,6 +54,17 @@ public class ClienteController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    /* Soma a renda total do cliente por id */
+    @GetMapping("/renda/{id}")
+    public ClienteDto getRendaCliente(@PathVariable Integer id) {
+        ClienteDto clienteDto = new ClienteDto(); 
+        clienteDto.setIdCliente(id);
+
+        service.somaRenda(clienteDto);
+
+        return clienteDto;
+    }
 
     /* Remove um cliente pelo id */
     @DeleteMapping("/{id}")

@@ -19,6 +19,7 @@ public class ClienteDto {
     private boolean autorizacaoLGPD;
     private Date dataAutorizacaoLGPD;
     private Integer perfilCredito;
+    private Double rendaTotal;
 
     // Construtor
     public ClienteDto() {
@@ -108,5 +109,13 @@ public class ClienteDto {
 
     public void setDataAutorizacaoLGPD(Date dataAutorizacaoLGPD) {
         this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
+    }
+
+    public Double getRendaTotal() {
+        return rendaTotal;
+    }
+
+    public void setRendaTotal(Double rendaTotal) {
+        this.rendaTotal = rendaTotal;
     }
 }
