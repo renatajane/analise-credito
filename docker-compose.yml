@@ -29,6 +29,33 @@ services:
       depends_on:
       - db
 
+  wiremock:
+    image: wiremock/wiremock
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./stubs:/home/wiremock
+    command: --port 8081
+
+  backend:
+    build:
+      context: .
+      dockerfile: /Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - wiremock
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      APP_PORT: ${APP_PORT}
+      DB_PORT: ${DB_PORT}
+      CONTRIBUINTES_API_HOST: wiremock
+      CONTRIBUINTES_API_PORT: 8081
+
 networks:
   pg-network:
 
