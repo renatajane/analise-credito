@@ -22,6 +22,7 @@ public class ClienteDto {
     private Integer perfilCliente;
     private Double rendaTotal;
     private List<RendaFonteDto> listaRenda;
+    private List<PatrimonioDto> listaPatrimonio;
 
     // Construtor
     public ClienteDto() {
@@ -127,6 +128,14 @@ public class ClienteDto {
 
     public void setListaRenda(List<RendaFonteDto> listaRenda) {
         this.listaRenda = listaRenda;
+    }
+
+    public List<PatrimonioDto> getListaPatrimonio() {
+        return listaPatrimonio;
+    }
+
+    public void setListaPatrimonio(List<PatrimonioDto> listaPatrimonio) {
+        this.listaPatrimonio = listaPatrimonio;
     }
 
 }

@@ -10,13 +10,18 @@ import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
+import com.analisedecredito.aplicacao_analise_credito.dto.PatrimonioDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteDto;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
+import com.analisedecredito.aplicacao_analise_credito.model.Patrimonio;
+import com.analisedecredito.aplicacao_analise_credito.model.PatrimonioTipo;
 import com.analisedecredito.aplicacao_analise_credito.model.PerfilCliente;
 import com.analisedecredito.aplicacao_analise_credito.model.RendaFonte;
 import com.analisedecredito.aplicacao_analise_credito.model.RendaTipo;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.PatrimonioRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.PatrimonioTipoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PerfilClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.RendaTipoRepository;
@@ -38,6 +43,12 @@ public class ClienteService {
 
     @Autowired
     RendaTipoRepository rendaTipoRepository;
+
+    @Autowired
+    PatrimonioRepository patrimonioRepository;
+
+    @Autowired
+    PatrimonioTipoRepository patrimonioTipoRepository;
 
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
@@ -70,14 +81,20 @@ public class ClienteService {
         cliente.setTelefone(clienteDto.getTelefone());
         cliente.setPerfilCliente(null);
         cliente = repository.save(cliente);
-           
+
         for (RendaFonteDto item : clienteDto.getListaRenda()) {
             Optional<RendaTipo> rendaTipoOpt = rendaTipoRepository.findById(item.getIdRendaFonte());
-            RendaFonte renda = new RendaFonte(item, cliente, rendaTipoOpt.get());                 
+            RendaFonte renda = new RendaFonte(item, cliente, rendaTipoOpt.get());
             rendaRepository.save(renda);
         }
 
-        //...
+        for (PatrimonioDto item : clienteDto.getListaPatrimonio()) {
+            Optional<PatrimonioTipo> patrimonioTipoOpt = patrimonioTipoRepository.findById(item.getIdPatrimonio());
+            Patrimonio patrimonio = new Patrimonio(item, cliente, patrimonioTipoOpt.get());
+            patrimonioRepository.save(patrimonio);
+        }
+
+        // ...
 
         // } else {
         // throw new ResourceNotFoundException("Perfil de crédito não econtrado.");
@@ -118,7 +135,7 @@ public class ClienteService {
     }
 
     // Calcula renda total do cliente
-    public void somaRenda(ClienteDto clienteDto){
+    public void somaRenda(ClienteDto clienteDto) {
         Double valorTotal = rendaRepository.findRendaTotalCliente(clienteDto.getIdCliente());
         clienteDto.setRendaTotal(valorTotal);
     }
