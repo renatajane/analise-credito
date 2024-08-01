@@ -68,6 +68,7 @@ public class ClienteController {
         return service.somaPatrimonio(id);
     }
 
+    /* Faz o calculo do score baseado no registro do spc/serasa */
     @GetMapping("/score/{id}")
     public Integer getScoreCliente(@PathVariable("id") Integer id){
         return service.calculaScore(id);

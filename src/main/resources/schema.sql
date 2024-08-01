@@ -3,24 +3,30 @@ CREATE SCHEMA IF NOT EXISTS db_analise;
 
 SET search_path TO db_analise;
 
--- Criação da tabela PerfilCredito
-CREATE TABLE IF NOT EXISTS perfil_credito (
-    id_perfil_credito SERIAL PRIMARY KEY,
-    nome_perfil VARCHAR(100) NOT NULL   
+-- Criação da tabela PerfilCliente
+CREATE TABLE IF NOT EXISTS perfil_cliente (
+    id_perfil_cliente SERIAL PRIMARY KEY,
+    nome_perfil VARCHAR(255) NOT NULL,
+    score DOUBLE PRECISION NOT NULL,
+    percentual_risco DOUBLE PRECISION NOT NULL
 );
 
--- Inserir dados na tabela PerfilCredito apenas se não existirem
-INSERT INTO perfil_credito (nome_perfil)
-SELECT 'Risco Baixo'
-WHERE NOT EXISTS (SELECT 1 FROM perfil_credito WHERE nome_perfil = 'Risco Baixo');
-
-INSERT INTO perfil_credito (nome_perfil)
-SELECT 'Risco Moderado'
-WHERE NOT EXISTS (SELECT 1 FROM perfil_credito WHERE nome_perfil = 'Risco Moderado');
-
-INSERT INTO perfil_credito (nome_perfil)
-SELECT 'Risco Alto'
-WHERE NOT EXISTS (SELECT 1 FROM perfil_credito WHERE nome_perfil = 'Risco Alto');
+-- Inserir 'Perfil de Baixo Risco' se não existir
+INSERT INTO perfil_cliente (nome_perfil, score, percentual_risco)
+SELECT 'Perfil de Baixo Risco', 650, 10
+WHERE NOT EXISTS (
+    SELECT 1 FROM perfil_cliente WHERE nome_perfil = 'Perfil de Baixo Risco'
+);
+INSERT INTO perfil_cliente (nome_perfil, score, percentual_risco)
+SELECT 'Perfil de Risco Moderado', 700, 25
+WHERE NOT EXISTS (
+    SELECT 1 FROM perfil_cliente WHERE nome_perfil = 'Perfil de Risco Moderado'
+);
+INSERT INTO perfil_cliente (nome_perfil, score, percentual_risco)
+SELECT 'Perfil de Alto Risco', 750, 40
+WHERE NOT EXISTS (
+    SELECT 1 FROM perfil_cliente WHERE nome_perfil = 'Perfil de Alto Risco'
+);
 
 -- Criação da tabela ModalidadePagamento
 CREATE TABLE IF NOT EXISTS modalidade_pagamento (
@@ -48,19 +54,19 @@ CREATE TABLE IF NOT EXISTS cliente (
     endereco VARCHAR(80) NOT NULL,
     autorizacao_lgpd BOOLEAN NOT NULL, 
     data_autorizacao_lgpd DATE NOT NULL, 
-    id_perfil_credito_fk INTEGER REFERENCES perfil_credito (id_perfil_credito) 
+    id_perfil_cliente_fk INTEGER REFERENCES perfil_cliente (id_perfil_cliente) 
 );
 
 -- Verifica se a tabela cliente está vazia e insere dados se necessário
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_credito_fk)
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk)
 SELECT 'João Silva', 12345655001, '1985-05-12', 'joaos.silva@example.com', '1111122111', 'Rua A, 123', true, '2024-07-12', 1
 WHERE NOT EXISTS (SELECT 1 FROM cliente LIMIT 1);
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_credito_fk)
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk)
 SELECT 'Maria Oliveira', 23880789012, '1990-06-15', 'marias.oliveira@example.com', '2222200222', 'Rua B, 456', true, '2024-05-12', 2
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Maria Oliveira');
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_credito_fk)
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk)
 SELECT 'Pedro Santos', 39967000123, '1988-07-20', 'pedros.santos@example.com', '3333355333', 'Rua C, 789', true, '2024-07-23', 3
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Pedro Santos');
 
