@@ -12,12 +12,14 @@ import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.PatrimonioDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteDto;
+import com.analisedecredito.aplicacao_analise_credito.model.AnaliseRestricao;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.Patrimonio;
 import com.analisedecredito.aplicacao_analise_credito.model.PatrimonioTipo;
 import com.analisedecredito.aplicacao_analise_credito.model.PerfilCliente;
 import com.analisedecredito.aplicacao_analise_credito.model.RendaFonte;
 import com.analisedecredito.aplicacao_analise_credito.model.RendaTipo;
+import com.analisedecredito.aplicacao_analise_credito.repository.AnaliseRestricaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PatrimonioRepository;
@@ -52,6 +54,9 @@ public class ClienteService {
     @Autowired
     PatrimonioTipoRepository patrimonioTipoRepository;
 
+    @Autowired
+    AnaliseRestricaoRepository restricaoRepository;
+
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
         return new ClienteReadDto(repository.findById(id).get());
@@ -81,7 +86,7 @@ public class ClienteService {
         cliente.setEndereco(clienteDto.getEndereco());
         cliente.setIdCliente(clienteDto.getIdCliente());
         cliente.setTelefone(clienteDto.getTelefone());
-        //cliente.setPerfilCliente();
+        // cliente.setPerfilCliente();
         cliente = repository.save(cliente);
 
         for (RendaFonteDto item : clienteDto.getListaRenda()) {
@@ -142,7 +147,7 @@ public class ClienteService {
 
     /* Calcula renda total do cliente */
     public Double somaRenda(Integer id) {
- 
+
         Optional<Cliente> clienteOptional = repository.findById(id);
         if (clienteOptional.isPresent()) {
             Cliente cliente = clienteOptional.get();
@@ -158,7 +163,7 @@ public class ClienteService {
     }
 
     /* Calcula patrimônio do cliente */
-    public Double somaPatrimonio(Integer id){
+    public Double somaPatrimonio(Integer id) {
 
         Optional<Cliente> clienteOptional = repository.findById(id);
         if (clienteOptional.isPresent()) {
@@ -169,8 +174,42 @@ public class ClienteService {
 
             return clienteDto.getPatrimonioTotal();
         }
-        
+
         return 0.0;
+    }
+
+    /* Calcula score do cliente */
+    public Integer calculaScore(Integer id) {
+
+        Integer scoreBase = 700;
+
+        // Recupera o cliente pelo ID
+        Optional<Cliente> clienteOptional = repository.findById(id);
+        if (!clienteOptional.isPresent()) {
+            throw new IllegalArgumentException("Cliente não encontrado para o ID: " + id);
+        }
+
+        Cliente cliente = clienteOptional.get();
+
+        // Recupera a análise de restrição associada ao cliente
+        Optional<AnaliseRestricao> analiseRestricaoOptional = restricaoRepository
+                .findByClienteId(cliente.getIdCliente());
+        if (!analiseRestricaoOptional.isPresent()) {
+            throw new IllegalArgumentException(
+                    "Análise de restrição não encontrada para o cliente ID: " + cliente.getIdCliente());
+        }
+
+        AnaliseRestricao analiseRestricao = analiseRestricaoOptional.get();
+
+        // Ajusta o score com base nas informações de restrição
+        if (analiseRestricao.getStatusSerasa() != null && analiseRestricao.getStatusSerasa()) {
+            scoreBase -= 100;
+        }
+        if (analiseRestricao.getStatusSpc() != null && analiseRestricao.getStatusSpc()) {
+            scoreBase -= 100;
+        }
+
+        return scoreBase;
     }
 
     /* Remove um cliente pelo id */

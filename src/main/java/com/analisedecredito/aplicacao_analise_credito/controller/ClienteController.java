@@ -68,6 +68,11 @@ public class ClienteController {
         return service.somaPatrimonio(id);
     }
 
+    @GetMapping("/score/{id}")
+    public Integer getScoreCliente(@PathVariable("id") Integer id){
+        return service.calculaScore(id);
+    }
+
     /* Remove um cliente pelo id */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
