@@ -1,6 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 
@@ -20,6 +21,7 @@ public class ClienteDto {
     private Date dataAutorizacaoLGPD;
     private Integer perfilCliente;
     private Double rendaTotal;
+    private List<RendaFonteDto> listaRenda;
 
     // Construtor
     public ClienteDto() {
@@ -118,4 +120,13 @@ public class ClienteDto {
     public void setPerfilCliente(Integer perfilCliente) {
         this.perfilCliente = perfilCliente;
     }
+
+    public List<RendaFonteDto> getListaRenda() {
+        return listaRenda;
+    }
+
+    public void setListaRenda(List<RendaFonteDto> listaRenda) {
+        this.listaRenda = listaRenda;
+    }
+
 }

@@ -10,12 +10,16 @@ import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
+import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteDto;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.PerfilCliente;
+import com.analisedecredito.aplicacao_analise_credito.model.RendaFonte;
+import com.analisedecredito.aplicacao_analise_credito.model.RendaTipo;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PerfilClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.RendaTipoRepository;
 
 @Service
 public class ClienteService {
@@ -31,6 +35,9 @@ public class ClienteService {
 
     @Autowired
     RendaFonteRepository rendaRepository;
+
+    @Autowired
+    RendaTipoRepository rendaTipoRepository;
 
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
@@ -62,7 +69,16 @@ public class ClienteService {
         cliente.setIdCliente(clienteDto.getIdCliente());
         cliente.setTelefone(clienteDto.getTelefone());
         cliente.setPerfilCliente(null);
-        repository.save(cliente);
+        cliente = repository.save(cliente);
+           
+        for (RendaFonteDto item : clienteDto.getListaRenda()) {
+            Optional<RendaTipo> rendaTipoOpt = rendaTipoRepository.findById(item.getIdRendaFonte());
+            RendaFonte renda = new RendaFonte(item, cliente, rendaTipoOpt.get());                 
+            rendaRepository.save(renda);
+        }
+
+        //...
+
         // } else {
         // throw new ResourceNotFoundException("Perfil de crédito não econtrado.");
         // }
