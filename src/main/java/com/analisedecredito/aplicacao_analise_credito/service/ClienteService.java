@@ -158,7 +158,20 @@ public class ClienteService {
     }
 
     /* Calcula patrimônio do cliente */
-    // public
+    public Double somaPatrimonio(Integer id){
+
+        Optional<Cliente> clienteOptional = repository.findById(id);
+        if (clienteOptional.isPresent()) {
+            Cliente cliente = clienteOptional.get();
+            Double patrimonioTotal = patrimonioRepository.findPatrimonioTotalCliente(cliente.getIdCliente());
+            ClienteDto clienteDto = new ClienteDto(cliente);
+            clienteDto.setPatrimonioTotal(patrimonioTotal);
+
+            return clienteDto.getPatrimonioTotal();
+        }
+        
+        return 0.0;
+    }
 
     /* Remove um cliente pelo id */
     public void delete(Integer id) {

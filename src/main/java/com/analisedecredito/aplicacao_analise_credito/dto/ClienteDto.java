@@ -21,6 +21,7 @@ public class ClienteDto {
     private Date dataAutorizacaoLGPD;
     private Integer perfilCliente;
     private Double rendaTotal;
+    private Double patrimonioTotal;
     private List<RendaFonteDto> listaRenda;
     private List<PatrimonioDto> listaPatrimonio;
 
@@ -136,6 +137,14 @@ public class ClienteDto {
 
     public void setListaPatrimonio(List<PatrimonioDto> listaPatrimonio) {
         this.listaPatrimonio = listaPatrimonio;
+    }
+
+    public Double getPatrimonioTotal() {
+        return patrimonioTotal;
+    }
+
+    public void setPatrimonioTotal(Double patrimonioTotal) {
+        this.patrimonioTotal = patrimonioTotal;
     }
 
 }
