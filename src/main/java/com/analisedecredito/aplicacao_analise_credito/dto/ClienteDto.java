@@ -30,7 +30,7 @@ public class ClienteDto {
 
     public ClienteDto(Cliente cliente) {
         BeanUtils.copyProperties(cliente, this);
-        this.perfilCliente = cliente.getPerfilCliente().getIdPerfilCliente();
+        //this.perfilCliente = cliente.getPerfilCliente().getIdPerfilCliente();
     }
 
     // Getters e Setters

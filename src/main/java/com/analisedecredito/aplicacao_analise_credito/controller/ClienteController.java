@@ -58,13 +58,11 @@ public class ClienteController {
     
     /* Soma a renda total do cliente por id */
     @GetMapping("/renda/{id}")
-    public ClienteDto getRendaCliente(@PathVariable Integer id) {
-        ClienteDto clienteDto = new ClienteDto(); 
-        clienteDto.setIdCliente(id);
+    public Double getRendaCliente(@PathVariable("id") Integer id) {
+        // ClienteDto clienteDto = new ClienteDto(); 
+        // clienteDto.setIdCliente(id);
 
-        service.somaRenda(clienteDto);
-
-        return clienteDto;
+        return service.somaRenda(id);
     }
 
     /* Remove um cliente pelo id */

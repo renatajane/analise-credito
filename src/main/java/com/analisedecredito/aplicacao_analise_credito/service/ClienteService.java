@@ -26,6 +26,8 @@ import com.analisedecredito.aplicacao_analise_credito.repository.PerfilClienteRe
 import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.RendaTipoRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class ClienteService {
 
@@ -79,7 +81,7 @@ public class ClienteService {
         cliente.setEndereco(clienteDto.getEndereco());
         cliente.setIdCliente(clienteDto.getIdCliente());
         cliente.setTelefone(clienteDto.getTelefone());
-        cliente.setPerfilCliente(null);
+        //cliente.setPerfilCliente();
         cliente = repository.save(cliente);
 
         for (RendaFonteDto item : clienteDto.getListaRenda()) {
@@ -93,6 +95,10 @@ public class ClienteService {
             Patrimonio patrimonio = new Patrimonio(item, cliente, patrimonioTipoOpt.get());
             patrimonioRepository.save(patrimonio);
         }
+
+        var valorPatrimonio = clienteDto.getListaPatrimonio().get(0).getValorPatrimonio();
+        // if()
+        System.out.println("******" + clienteDto.getListaPatrimonio().get(0).getValorPatrimonio());
 
         // ...
 
@@ -134,11 +140,25 @@ public class ClienteService {
         }
     }
 
-    // Calcula renda total do cliente
-    public void somaRenda(ClienteDto clienteDto) {
-        Double valorTotal = rendaRepository.findRendaTotalCliente(clienteDto.getIdCliente());
-        clienteDto.setRendaTotal(valorTotal);
+    /* Calcula renda total do cliente */
+    public Double somaRenda(Integer id) {
+ 
+        Optional<Cliente> clienteOptional = repository.findById(id);
+        if (clienteOptional.isPresent()) {
+            Cliente cliente = clienteOptional.get();
+            Double rendaTotal = rendaRepository.findRendaTotalCliente(cliente.getIdCliente());
+            ClienteDto clienteDto = new ClienteDto(cliente);
+            clienteDto.setRendaTotal(rendaTotal);
+
+            return clienteDto.getRendaTotal();
+        } else {
+            // Cliente não encontrado, lançar exceção ou retornar valor padrão
+            throw new EntityNotFoundException("Cliente não encontrado para o ID: " + id);
+        }
     }
+
+    /* Calcula patrimônio do cliente */
+    // public
 
     /* Remove um cliente pelo id */
     public void delete(Integer id) {
