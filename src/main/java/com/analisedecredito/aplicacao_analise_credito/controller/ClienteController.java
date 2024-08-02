@@ -3,7 +3,6 @@ package com.analisedecredito.aplicacao_analise_credito.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
+import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.service.ClienteService;
 
 @RestController

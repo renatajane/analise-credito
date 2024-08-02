@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
@@ -13,6 +12,7 @@ import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.DespesaDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.PatrimonioDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteDto;
+import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.model.AnaliseRestricao;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.Despesa;
@@ -231,7 +231,6 @@ public class ClienteService {
 
             return clienteDto.getPatrimonioTotal();
         }
-
         return 0.0;
     }
 

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.DespesaDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.DespesaReadDto;
+import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.Despesa;
 import com.analisedecredito.aplicacao_analise_credito.model.DespesaTipo;
