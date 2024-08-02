@@ -22,8 +22,10 @@ public class ClienteDto {
     private Integer perfilCliente;
     private Double rendaTotal;
     private Double patrimonioTotal;
+    private Double despesaTotal;
     private List<RendaFonteDto> listaRenda;
     private List<PatrimonioDto> listaPatrimonio;
+    private List<DespesaDto> listaDespesa;
 
     // Construtor
     public ClienteDto() {
@@ -31,7 +33,6 @@ public class ClienteDto {
 
     public ClienteDto(Cliente cliente) {
         BeanUtils.copyProperties(cliente, this);
-        //this.perfilCliente = cliente.getPerfilCliente().getIdPerfilCliente();
     }
 
     // Getters e Setters
@@ -145,6 +146,22 @@ public class ClienteDto {
 
     public void setPatrimonioTotal(Double patrimonioTotal) {
         this.patrimonioTotal = patrimonioTotal;
+    }
+
+    public List<DespesaDto> getListaDespesa() {
+        return listaDespesa;
+    }
+
+    public void setListaDespesa(List<DespesaDto> listaDespesa) {
+        this.listaDespesa = listaDespesa;
+    }
+
+    public Double getDespesaTotal() {
+        return despesaTotal;
+    }
+
+    public void setDespesaTotal(Double despesaTotal) {
+        this.despesaTotal = despesaTotal;
     }
 
 }

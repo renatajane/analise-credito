@@ -38,7 +38,7 @@ public class ClienteController {
     }
 
     /* Cria um novo cliente com base nos dados fornecidos */
-    
+
     @PostMapping
     public void create(@RequestBody ClienteDto clienteDto) {
         service.create(clienteDto);
@@ -55,7 +55,7 @@ public class ClienteController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     /* Soma a renda total do cliente por id */
     @GetMapping("/renda/{id}")
     public Double getRendaCliente(@PathVariable("id") Integer id) {
@@ -64,14 +64,20 @@ public class ClienteController {
 
     /* Soma o patrimônio total do cliente por id */
     @GetMapping("/patrimonio/{id}")
-    public Double getPatrimonioCliente(@PathVariable("id") Integer id){
+    public Double getPatrimonioCliente(@PathVariable("id") Integer id) {
         return service.somaPatrimonio(id);
     }
 
     /* Faz o calculo do score baseado no registro do spc/serasa */
     @GetMapping("/score/{id}")
-    public Integer getScoreCliente(@PathVariable("id") Integer id){
+    public Integer getScoreCliente(@PathVariable("id") Integer id) {
         return service.calculaScore(id);
+    }
+
+    /* Soma o despesa total do cliente por id */
+    @GetMapping("/despesa/{id}")
+    public Double getDespesaCliente(@PathVariable("id") Integer id) {
+        return service.somaDespesa(id);
     }
 
     /* Remove um cliente pelo id */

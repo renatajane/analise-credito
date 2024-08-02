@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.analisedecredito.aplicacao_analise_credito.dto.AnaliseRestricaoDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
+import com.analisedecredito.aplicacao_analise_credito.dto.DespesaDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.PatrimonioDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteDto;
 import com.analisedecredito.aplicacao_analise_credito.model.AnaliseRestricao;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
+import com.analisedecredito.aplicacao_analise_credito.model.Despesa;
+import com.analisedecredito.aplicacao_analise_credito.model.DespesaTipo;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
 import com.analisedecredito.aplicacao_analise_credito.model.Patrimonio;
 import com.analisedecredito.aplicacao_analise_credito.model.PatrimonioTipo;
@@ -23,6 +25,8 @@ import com.analisedecredito.aplicacao_analise_credito.model.RendaFonte;
 import com.analisedecredito.aplicacao_analise_credito.model.RendaTipo;
 import com.analisedecredito.aplicacao_analise_credito.repository.AnaliseRestricaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.DespesaRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.DespesaTipoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PatrimonioRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PatrimonioTipoRepository;
@@ -58,6 +62,12 @@ public class ClienteService {
 
     @Autowired
     AnaliseRestricaoRepository restricaoRepository;
+
+    @Autowired
+    DespesaTipoRepository despesaTipoRepository;
+
+    @Autowired
+    DespesaRepository despesaRepository;
 
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
@@ -101,14 +111,20 @@ public class ClienteService {
             Patrimonio patrimonio = new Patrimonio(item, cliente, patrimonioTipoOpt.get());
             patrimonioRepository.save(patrimonio);
         }
-       
+
+        for (DespesaDto item : clienteDto.getListaDespesa()) {
+            Optional<DespesaTipo> despesaTipoOpt = despesaTipoRepository.findById(item.getIdDespesa());
+            Despesa despesa = new Despesa(item, cliente, despesaTipoOpt.get());
+            despesaRepository.save(despesa);
+        }
+
         // Determinando o perfil do cliente baseado na lógica de negócio
         Double valorPatrimonio = somaPatrimonio(cliente.getIdCliente());
         List<EmprestimoRequisicao> requisicoes = requisicaoRepository.findRequisicao(clienteDto.getIdCliente());
 
         if (!requisicoes.isEmpty() && requisicoes.get(0).getValorRequerido() > valorPatrimonio) {
             Optional<PerfilCliente> perfilClienteOpt = perfilClienteRepository.findById(clienteDto.getPerfilCliente());
-            
+
             if (perfilClienteOpt.isPresent()) {
                 PerfilCliente perfilCliente = perfilClienteOpt.get();
 
@@ -214,6 +230,22 @@ public class ClienteService {
             clienteDto.setPatrimonioTotal(patrimonioTotal);
 
             return clienteDto.getPatrimonioTotal();
+        }
+
+        return 0.0;
+    }
+
+    /* Calcula despesa do cliente */
+    public Double somaDespesa(Integer id) {
+
+        Optional<Cliente> clienteOptional = repository.findById(id);
+        if (clienteOptional.isPresent()) {
+            Cliente cliente = clienteOptional.get();
+            Double despesaTotal = despesaRepository.findDespesaTotalCliente(cliente.getIdCliente());
+            ClienteDto clienteDto = new ClienteDto(cliente);
+            clienteDto.setDespesaTotal(despesaTotal);
+
+            return clienteDto.getDespesaTotal();
         }
 
         return 0.0;
