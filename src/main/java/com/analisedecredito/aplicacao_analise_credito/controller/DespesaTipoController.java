@@ -14,32 +14,60 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.DespesaTipoDto;
-import com.analisedecredito.aplicacao_analise_credito.repository.DespesaTipoRepository;
 import com.analisedecredito.aplicacao_analise_credito.service.DespesaTipoService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("/despesa-tipo")
 public class DespesaTipoController {
 
     @Autowired
-    DespesaTipoRepository repository;
-
-    @Autowired
     DespesaTipoService service;
 
-    /* Retorna um tipo de despesa de acordo com o id */
+    @Operation(
+        summary = "Encontra um tipo de despesa por ID",
+        description = "Este endpoint retorna um tipo de despesa com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID do tipo de despesa", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Tipo de despesa encontrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Tipo de despesa não encontrado")
+        }
+    )
     @GetMapping("/{id}")
-    public DespesaTipoDto findById(@PathVariable("id") Integer id) {
+    public DespesaTipoDto findById(
+        @PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
-    /* Retorna uma lista de todos os tipos de despesas cadastrados */
+    @Operation(
+        summary = "Lista todos os tipos de despesas",
+        description = "Este endpoint retorna uma lista de todos os tipos de despesas cadastrados.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de tipos de despesas retornada com sucesso")
+        }
+    )
     @GetMapping("/list")
     public List<DespesaTipoDto> list() {
         return service.list();
     }
 
-    /* Cria um novo tipo de despesa com base nos dados fornecidos */
+    @Operation(
+        summary = "Cria um novo tipo de despesa",
+        description = "Este endpoint cria um novo tipo de despesa com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados do tipo de despesa a ser criado",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = DespesaTipoDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Tipo de despesa criado com sucesso")
+        }
+    )
     @PostMapping
     public void create(@RequestBody DespesaTipoDto despesaTipoDto) {
         if (despesaTipoDto.getDescricaoDespesaTipo() == null ||
@@ -49,13 +77,36 @@ public class DespesaTipoController {
         service.create(despesaTipoDto);
     }
 
-    /* Atualiza os dados de um tipo de despesa existente */
+    @Operation(
+        summary = "Atualiza um tipo de despesa existente",
+        description = "Este endpoint atualiza os dados de um tipo de despesa existente com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados atualizados do tipo de despesa",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = DespesaTipoDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Tipo de despesa atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
+            @ApiResponse(responseCode = "404", description = "Tipo de despesa não encontrado")
+        }
+    )
     @PutMapping
-    private void update (@RequestBody DespesaTipoDto despesaTipoDto){
+    private void update(@RequestBody DespesaTipoDto despesaTipoDto){
         service.update(despesaTipoDto);
     }
 
-    /* Remove um dado de tipo de despesa pelo id */
+    @Operation(
+        summary = "Remove um tipo de despesa por ID",
+        description = "Este endpoint remove um tipo de despesa com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID do tipo de despesa a ser removido", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Tipo de despesa removido com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Tipo de despesa não encontrado")
+        }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id){
         service.delete(id);

@@ -18,6 +18,10 @@ import com.analisedecredito.aplicacao_analise_credito.dto.DespesaReadDto;
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.service.DespesaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("/despesa")
 public class DespesaController {
@@ -25,19 +29,47 @@ public class DespesaController {
     @Autowired
     DespesaService service;
 
-    /* Retorna despesa de acordo com o id */
+    @Operation(
+        summary = "Encontra uma despesa por ID",
+        description = "Este endpoint retorna uma despesa com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID da despesa", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Despesa encontrada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Despesa não encontrada")
+        }
+    )
     @GetMapping("/{id}")
-    public DespesaReadDto findById(@PathVariable("id") Integer id) {
+    public DespesaReadDto findById(
+        @PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
-    /* Retorna uma lista de todas as despesas cadastrados */
+    @Operation(
+        summary = "Lista todas as despesas",
+        description = "Este endpoint retorna uma lista de todas as despesas cadastradas.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de despesas retornada com sucesso")
+        }
+    )
     @GetMapping("/list")
     public List<DespesaReadDto> list() {
         return service.list();
     }
 
-    /* Cria uma nova despesa com base nos dados fornecidos */
+    @Operation(
+        summary = "Cria uma nova despesa",
+        description = "Este endpoint cria uma nova despesa com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados da despesa a ser criada",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = DespesaDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Despesa criada com sucesso")
+        }
+    )
     @PostMapping
     public DespesaDto createDespesa(@RequestBody DespesaDto despesaDto) {
         // Verifica se o despesaDto recebido não é nulo e se o cliente está presente
@@ -49,7 +81,21 @@ public class DespesaController {
         return service.create(despesaDto);
     }
 
-     /* Atualiza os dados de uma despesa existente */
+    @Operation(
+        summary = "Atualiza uma despesa existente",
+        description = "Este endpoint atualiza os dados de uma despesa existente com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados atualizados da despesa",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = DespesaDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Despesa atualizada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Despesa não encontrada")
+        }
+    )
     @PutMapping
     public ResponseEntity<DespesaDto> update(@RequestBody DespesaDto despesaDto) {
         try {
@@ -61,7 +107,15 @@ public class DespesaController {
         }
     }
 
-    /* Remove uma despesa pelo id */
+    @Operation(
+        summary = "Remove uma despesa pelo ID",
+        description = "Este endpoint remove uma despesa com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID da despesa a ser removida", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Despesa removida com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Despesa não encontrada")
+        }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id){
         service.delete(id);
