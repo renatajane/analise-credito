@@ -38,8 +38,8 @@ public class EmprestimoRequisicao {
     @Column(name = "prazo_mes", nullable = false)
     private Integer prazoMes;
 
-    @Column(name = "valor_final", nullable = false)
-    private Double valorFinal;
+    @Column(name = "dia_pagamento", nullable = false)
+    private Integer diaPagamento;
 
     @ManyToOne
     @JoinColumn(name = "id_objetivo_fk", referencedColumnName = "id_objetivo", nullable = false)
@@ -64,6 +64,27 @@ public class EmprestimoRequisicao {
     @ManyToOne
     @JoinColumn(name = "id_emprestimo_parcela_fk", referencedColumnName = "id_emprestimo_parcela", nullable = false)
     private EmprestimoParcela parcelas;
+
+    @Column(name = "aprovado")
+    private Boolean aprovado;
+
+    @Column(name = "descricao_resultado")
+    private String descricaoResultado;
+
+    @Column(name = "data_resultado")
+    private Date dataResultado;
+
+    @Column(name = "juros_calculado")
+    private Double jurosCalculado;
+
+    @Column(name = "iof_calculado")
+    private Double iofCalculado;
+
+    @Column(name = "valor_parcela")
+    private Double valorParcela;
+
+    @Column(name = "valor_total")
+    private Double valorTotal;
 
     // Construtor
     public EmprestimoRequisicao() {
@@ -150,14 +171,6 @@ public class EmprestimoRequisicao {
         this.prazoMes = prazoMes;
     }
 
-    public Double getValorFinal() {
-        return valorFinal;
-    }
-
-    public void setValorFinal(Double valorFinal) {
-        this.valorFinal = valorFinal;
-    }
-
     public ModalidadePagamento getModalidadePagamento() {
         return modalidadePagamento;
     }
@@ -172,5 +185,69 @@ public class EmprestimoRequisicao {
 
     public void setParcelas(EmprestimoParcela parcelas) {
         this.parcelas = parcelas;
+    }
+
+    public Integer getDiaPagamento() {
+        return diaPagamento;
+    }
+
+    public void setDiaPagamento(Integer diaPagamento) {
+        this.diaPagamento = diaPagamento;
+    }
+
+    public Boolean getAprovado() {
+        return aprovado;
+    }
+
+    public void setAprovado(Boolean aprovado) {
+        this.aprovado = aprovado;
+    }
+
+    public String getDescricaoResultado() {
+        return descricaoResultado;
+    }
+
+    public void setDescricaoResultado(String descricaoResultado) {
+        this.descricaoResultado = descricaoResultado;
+    }
+
+    public Date getDataResultado() {
+        return dataResultado;
+    }
+
+    public void setDataResultado(Date dataResultado) {
+        this.dataResultado = dataResultado;
+    }
+
+    public Double getJurosCalculado() {
+        return jurosCalculado;
+    }
+
+    public void setJurosCalculado(Double jurosCalculado) {
+        this.jurosCalculado = jurosCalculado;
+    }
+
+    public Double getIofCalculado() {
+        return iofCalculado;
+    }
+
+    public void setIofCalculado(Double iofCalculado) {
+        this.iofCalculado = iofCalculado;
+    }
+
+    public Double getValorParcela() {
+        return valorParcela;
+    }
+
+    public void setValorParcela(Double valorParcela) {
+        this.valorParcela = valorParcela;
+    }
+
+    public Double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(Double valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }

@@ -96,26 +96,31 @@ public class ClienteService {
         cliente.setDataNascimento(clienteDto.getDataNascimento());
         cliente.setEmail(clienteDto.getEmail());
         cliente.setEndereco(clienteDto.getEndereco());
-        cliente.setIdCliente(clienteDto.getIdCliente());
         cliente.setTelefone(clienteDto.getTelefone());
         cliente = repository.save(cliente);
 
-        for (RendaFonteDto item : clienteDto.getListaRenda()) {
-            Optional<RendaTipo> rendaTipoOpt = rendaTipoRepository.findById(item.getIdRendaFonte());
-            RendaFonte renda = new RendaFonte(item, cliente, rendaTipoOpt.get());
-            rendaRepository.save(renda);
+        if (clienteDto.getListaRenda() != null && !clienteDto.getListaRenda().isEmpty()) {
+            for (RendaFonteDto item : clienteDto.getListaRenda()) {
+                Optional<RendaTipo> rendaTipoOpt = rendaTipoRepository.findById(item.getIdRendaFonte());
+                RendaFonte renda = new RendaFonte(item, cliente, rendaTipoOpt.get());
+                rendaRepository.save(renda);
+            }
         }
 
-        for (PatrimonioDto item : clienteDto.getListaPatrimonio()) {
-            Optional<PatrimonioTipo> patrimonioTipoOpt = patrimonioTipoRepository.findById(item.getIdPatrimonio());
-            Patrimonio patrimonio = new Patrimonio(item, cliente, patrimonioTipoOpt.get());
-            patrimonioRepository.save(patrimonio);
+        if (clienteDto.getListaPatrimonio() != null && !clienteDto.getListaPatrimonio().isEmpty()) {
+            for (PatrimonioDto item : clienteDto.getListaPatrimonio()) {
+                Optional<PatrimonioTipo> patrimonioTipoOpt = patrimonioTipoRepository.findById(item.getIdPatrimonio());
+                Patrimonio patrimonio = new Patrimonio(item, cliente, patrimonioTipoOpt.get());
+                patrimonioRepository.save(patrimonio);
+            }
         }
 
-        for (DespesaDto item : clienteDto.getListaDespesa()) {
-            Optional<DespesaTipo> despesaTipoOpt = despesaTipoRepository.findById(item.getIdDespesa());
-            Despesa despesa = new Despesa(item, cliente, despesaTipoOpt.get());
-            despesaRepository.save(despesa);
+        if (clienteDto.getListaDespesa() != null && !clienteDto.getListaDespesa().isEmpty()) {
+            for (DespesaDto item : clienteDto.getListaDespesa()) {
+                Optional<DespesaTipo> despesaTipoOpt = despesaTipoRepository.findById(item.getIdDespesa());
+                Despesa despesa = new Despesa(item, cliente, despesaTipoOpt.get());
+                despesaRepository.save(despesa);
+            }
         }
 
         // Determinando o perfil do cliente baseado na lógica de negócio

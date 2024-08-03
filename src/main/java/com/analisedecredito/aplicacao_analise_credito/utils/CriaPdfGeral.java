@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
-import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoResultadoReadDto;
+import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.service.EmprestimoRequisicaoService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -37,7 +37,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
     Font footerFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.GRAY);
 
     // Método para criar PDF com base em uma lista de resultados
-    public ByteArrayOutputStream criaPdfPeriodo(List<EmprestimoResultadoReadDto> emprestimoResultadoDto)
+    public ByteArrayOutputStream criaPdfPeriodo(List<EmprestimoRequisicaoReadDto> emprestimoRequisicaoDto)
             throws DocumentException, FileNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document documentoPdf = new Document();
@@ -53,7 +53,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
         documentoPdf.open();
 
         // Adiciona o conteúdo ao documento
-        addCabecalho(documentoPdf, emprestimoResultadoDto);
+        addCabecalho(documentoPdf, emprestimoRequisicaoDto);
 
         // Fecha o documento
         documentoPdf.close();
@@ -62,7 +62,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
     }
 
     // Adiciona o cabeçalho e o conteúdo do PDF
-    private void addCabecalho(Document documentoPdf, List<EmprestimoResultadoReadDto> dtoRead)
+    private void addCabecalho(Document documentoPdf, List<EmprestimoRequisicaoReadDto> dtoRead)
             throws DocumentException {
         // Cria e configura a tabela
         PdfPTable tabelaResultados = new PdfPTable(6);
@@ -75,7 +75,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
         addTableHeader(tabelaResultados);
 
         // Adiciona os dados dos empréstimos
-        for (EmprestimoResultadoReadDto dto : dtoRead) {
+        for (EmprestimoRequisicaoReadDto dto : dtoRead) {
             addTableRow(tabelaResultados, dto);
         }
 
@@ -94,14 +94,14 @@ public class CriaPdfGeral extends PdfPageEventHelper {
     }
 
     // Adiciona uma célula de dados à tabela
-    private void addTableRow(PdfPTable tabela, EmprestimoResultadoReadDto dto) {
-        addTableCell(tabela, dto.getIdResultado().toString(), normalFont);
-        addTableCell(tabela, dto.getEmprestimoRequisicao().getCliente().getNome(), normalFont);
-        addTableCell(tabela, dto.getEmprestimoRequisicao().getEmprestimoModalidade().getDescricaoModalidade(),
+    private void addTableRow(PdfPTable tabela, EmprestimoRequisicaoReadDto dto) {
+        addTableCell(tabela, dto.getIdRequisicao().toString(), normalFont);
+        addTableCell(tabela, dto.getCliente().getNome(), normalFont);
+        addTableCell(tabela, dto.getEmprestimoModalidade().getDescricaoModalidade(),
                 normalFont);
-        addTableCell(tabela, formataValor(dto.getEmprestimoRequisicao().getValorRequerido()),
+        addTableCell(tabela, formataValor(dto.getValorRequerido()),
                 normalFont);
-        addTableCell(tabela, formataData(dto.getEmprestimoRequisicao().getDataRequisicao()), normalFont);
+        addTableCell(tabela, formataData(dto.getDataRequisicao()), normalFont);
         // Define a cor da fonte com base na aprovação
         Font statusFont = dto.getAprovado()
                 ? new Font(normalFont.getFamily(), normalFont.getSize(), normalFont.getStyle(),

@@ -14,36 +14,36 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="analise_credito")
+@Table(name = "analise_credito")
 public class AnaliseCredito {
-    
+
     // Propriedades
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_analise_credito")
+    @Column(name = "id_analise_credito")
     private Integer idAnaliseCredito;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name="identificador", nullable = false)
+    @Column(name = "identificador", nullable = false)
     private Identificador identificador;
 
-    @Column(name="aspecto", nullable = false)
+    @Column(name = "aspecto", nullable = false)
     private String aspecto;
 
-    @Column(name="valor", nullable = false)
+    @Column(name = "valor", nullable = false)
     private Double valor;
 
-    @Column(name="vigente", nullable = false)
+    @Column(name = "vigente", nullable = false)
     private Boolean vigente;
 
-    @Column(name="data_validade", nullable = false)
+    @Column(name = "data_validade", nullable = false)
     private Date dataValidade;
 
     // Construtor
     public AnaliseCredito() {
     }
 
-    // Getters e Setters    
+    // Getters e Setters
     public Integer getIdAnaliseCredito() {
         return idAnaliseCredito;
     }

@@ -1,7 +1,13 @@
 package com.analisedecredito.aplicacao_analise_credito.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +21,7 @@ import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoObjetivo;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoUrgencia;
 import com.analisedecredito.aplicacao_analise_credito.model.IofAtual;
+import com.analisedecredito.aplicacao_analise_credito.model.Juros;
 import com.analisedecredito.aplicacao_analise_credito.model.ModalidadePagamento;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoModalidadeRepository;
@@ -22,7 +29,11 @@ import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoObjet
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoUrgenciaRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.IofAtualRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.JurosRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.ModalidadePagamentoRepository;
+import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdf;
+import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdfGeral;
+import com.itextpdf.text.DocumentException;
 
 @Service
 public class EmprestimoRequisicaoService {
@@ -47,6 +58,15 @@ public class EmprestimoRequisicaoService {
 
     @Autowired
     ModalidadePagamentoRepository pagamentoRepository;
+
+    @Autowired
+    JurosRepository jurosRepository;
+
+    @Autowired
+    CriaPdf utils;
+
+    @Autowired
+    CriaPdfGeral utilsGeral;
 
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
@@ -74,6 +94,7 @@ public class EmprestimoRequisicaoService {
                 .findById(emprestimoRequisicaoDto.getEmprestimoUrgencia());
         Optional<ModalidadePagamento> pagamentoOpt = pagamentoRepository
                 .findById(emprestimoRequisicaoDto.getModalidadePagamento());
+        Juros juros = jurosRepository.findByDataJuros(new Date());
 
         if (clienteOpt.isPresent()) {
 
@@ -81,13 +102,24 @@ public class EmprestimoRequisicaoService {
 
             emprestimoRequisicao.setIdRequisicao(emprestimoRequisicaoDto.getIdRequisicao());
             emprestimoRequisicao.setValorRequerido(emprestimoRequisicaoDto.getValorRequerido());
-            emprestimoRequisicao.setDataRequisicao(emprestimoRequisicaoDto.getDataRequisicao());
+            emprestimoRequisicao.setDataRequisicao(new Date());
             emprestimoRequisicao.setCliente(clienteOpt.get());
             emprestimoRequisicao.setIof(iofOpt.get());
+            emprestimoRequisicao.setPrazoMes(emprestimoRequisicaoDto.getPrazoMes());
             emprestimoRequisicao.setModalidadePagamento(pagamentoOpt.get());
             emprestimoRequisicao.setEmprestimoModalidade(modalidadeOpt.get());
             emprestimoRequisicao.setEmprestimoObjetivo(objetivoOpt.get());
             emprestimoRequisicao.setEmprestimoUrgencia(urgenciaOpt.get());
+            emprestimoRequisicao.setDiaPagamento(emprestimoRequisicaoDto.getDiaPagamento());
+            emprestimoRequisicao.setJuros(juros);
+            emprestimoRequisicao.setAprovado(emprestimoRequisicaoDto.getAprovado());
+            emprestimoRequisicao.setDescricaoResultado(emprestimoRequisicaoDto.getDescricaoResultado());
+            emprestimoRequisicao.setDataResultado(emprestimoRequisicaoDto.getDataResultado());
+            emprestimoRequisicao.setJurosCalculado(calculaJuros(juros, emprestimoRequisicaoDto.getPrazoMes(),
+            emprestimoRequisicaoDto.getValorRequerido()));
+            emprestimoRequisicao.setIofCalculado(calculaIof(emprestimoRequisicaoDto, iofOpt.get()));
+            emprestimoRequisicao.setValorTotal(calculaValorTotal(emprestimoRequisicaoDto));
+            emprestimoRequisicao.setValorParcela(calculaValorParcela(emprestimoRequisicaoDto));
 
             repository.save(emprestimoRequisicao);
         } else {
@@ -147,51 +179,80 @@ public class EmprestimoRequisicaoService {
     }
 
     /* Calcula juros da requisição */
-    public Double calculaJuros(Integer id) {
-        Optional<EmprestimoRequisicao> requisicaoOpt = repository.findById(id);
-        if (!requisicaoOpt.isPresent()) {
-            throw new IllegalArgumentException("Requisição não encontrada para o id: " + id);
-        }
+    public Double calculaJuros(Juros juros, int prazoEmMeses, double valorRequerido) {
 
-        EmprestimoRequisicao requisicao = requisicaoOpt.get();
-        double taxaMensal = requisicao.getJuros().getTaxaJurosMensal();
-        int prazoEmMeses = requisicao.getPrazoMes();
-        double valorRequerido = requisicao.getValorRequerido();
+        double taxaMensal = juros.getTaxaJurosMensal();
+        double calculoTotal = valorRequerido * taxaMensal * prazoEmMeses;
 
-        double umMaisTaxaMensal = valorRequerido * taxaMensal * prazoEmMeses;
-
-        return umMaisTaxaMensal;
+        return calculoTotal;
     }
 
     /* Calcula iof da requisição */
-    public Double calculaIof(Integer id) {
-        Optional<EmprestimoRequisicao> requisicaoOpt = repository.findById(id);
-        if (!requisicaoOpt.isPresent()) {
-            throw new IllegalArgumentException("Requisição não encontrada para o id: " + id);
-        }
+    public Double calculaIof(EmprestimoRequisicaoDto requisicaoDto, IofAtual iof) {
 
-        EmprestimoRequisicao requisicao = requisicaoOpt.get();
-        double valorRequerido = requisicao.getValorRequerido();
-        double taxaIof = requisicao.getIof().getTaxaIof();
+        double valorRequerido = requisicaoDto.getValorRequerido();
+        double taxaIof = iof.getTaxaIof();
         double iofTotal = valorRequerido * taxaIof;
         return iofTotal;
     }
 
-    /* Calcula valor da parcela */
-    public Double calculaValorParcela(Integer id) {
-        Optional<EmprestimoRequisicao> requisicaoOpt = repository.findById(id);
-        if (!requisicaoOpt.isPresent()) {
-            throw new IllegalArgumentException("Requisição não encontrada para o id: " + id);
-        }
-        EmprestimoRequisicao requisicao = requisicaoOpt.get();
-        var valorRequerido = requisicao.getValorRequerido();
-        var prazoPagamento = requisicao.getPrazoMes();
-        var iof = calculaIof(id);
-        var juros = calculaJuros(id);
+    /* Calcula valor total da requisição */
+    public Double calculaValorTotal(EmprestimoRequisicaoDto dto) {
+        double valorRequerido = dto.getValorRequerido();
+        double iof = dto.getIofCalculado();
+        double juros = dto.getJurosCalculado();
+        return iof + juros + valorRequerido;
 
+    }
+
+    /* Calcula valor da parcela */
+    public Double calculaValorParcela(EmprestimoRequisicaoDto dto) {
+
+        var valorRequerido = dto.getValorRequerido();
+        var prazoPagamento = dto.getPrazoMes();
+        var iof = dto.getIofCalculado();
+        var juros = dto.getJurosCalculado();
         var soma = valorRequerido + iof + juros;
         var mensalidade = soma / prazoPagamento;
         return mensalidade;
+    }
+
+    /* Retorna um pdf com base no id do resultado do empréstimo */
+    public ByteArrayOutputStream geraPdfCpf(String cpf, Integer id)
+            throws DocumentException, MalformedURLException, IOException {
+        List<EmprestimoRequisicao> requisicoes = repository.findByClienteCpf(cpf);
+
+        if (requisicoes.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum resultado de empréstimo encontrado para o CPF: " + cpf);
+        }
+
+        EmprestimoRequisicao requisicao = requisicoes.stream()
+                .filter(r -> r.getIdRequisicao().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Nenhum resultado de empréstimo encontrado para o ID: " + id));
+
+        EmprestimoRequisicaoReadDto dto = new EmprestimoRequisicaoReadDto(requisicao);
+
+        return utils.criaPdfImprimir(dto);
+    }
+
+    /* Gera um PDF com base em um período de datas */
+    public ByteArrayOutputStream geraPdfPorPeriodo(Date inicio, Date fim)
+            throws DocumentException, MalformedURLException, IOException {
+        List<EmprestimoRequisicao> resultados = repository.findByDataCriacao(inicio, fim);
+
+        if (resultados.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum resultado de empréstimo encontrado no período: " +
+                    new SimpleDateFormat("yyyy-MM-dd").format(inicio) + " a " +
+                    new SimpleDateFormat("yyyy-MM-dd").format(fim));
+        }
+
+        List<EmprestimoRequisicaoReadDto> dtos = resultados.stream()
+                .map(EmprestimoRequisicaoReadDto::new)
+                .collect(Collectors.toList());
+
+        return utilsGeral.criaPdfPeriodo(dtos);
     }
 
 }

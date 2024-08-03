@@ -7,11 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoResultadoReadDto;
-import com.analisedecredito.aplicacao_analise_credito.service.EmprestimoRequisicaoService;
+import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoReadDto;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -28,9 +26,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 @Component
 public class CriaPdf extends PdfPageEventHelper {
 
-    @Autowired
-    EmprestimoRequisicaoService emprestimoRequisicaoService;
-
     // Propriedades globais de estilização
     Font boldFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
     Font boldFontBlack = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
@@ -38,7 +33,7 @@ public class CriaPdf extends PdfPageEventHelper {
     Font normalFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.BLACK);
     Font footerFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.GRAY);
 
-    public ByteArrayOutputStream criaPdfImprimir(EmprestimoResultadoReadDto emprestimoResultadoDto)
+    public ByteArrayOutputStream criaPdfImprimir(EmprestimoRequisicaoReadDto emprestimoRequisicao)
             throws DocumentException, FileNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document documentoPdf = new Document();
@@ -53,17 +48,17 @@ public class CriaPdf extends PdfPageEventHelper {
 
         // Insere conteúdo no PDF
         documentoPdf.open();
-        addDadosRequerente(documentoPdf, emprestimoResultadoDto);
-        addResultado(documentoPdf, emprestimoResultadoDto);
+        addDadosRequerente(documentoPdf, emprestimoRequisicao);
+        addResultado(documentoPdf, emprestimoRequisicao);
         documentoPdf.close();
 
         return baos;
     }
 
-    public void addDadosRequerente(Document documentoPdf, EmprestimoResultadoReadDto emprestimoResultadoDto)
+    public void addDadosRequerente(Document documentoPdf, EmprestimoRequisicaoReadDto emprestimoRequisicao)
             throws DocumentException {
 
-        var cliente = emprestimoResultadoDto.getEmprestimoRequisicao().getCliente();
+        var cliente = emprestimoRequisicao.getCliente();
 
         // Cria a tabela com 2 colunas
         PdfPTable tabelaRequerente = new PdfPTable(2);
@@ -108,15 +103,15 @@ public class CriaPdf extends PdfPageEventHelper {
         table.addCell(cellValue);
     }
 
-    public void addResultado(Document documentoPdf, EmprestimoResultadoReadDto dto)
+    public void addResultado(Document documentoPdf, EmprestimoRequisicaoReadDto dto)
             throws DocumentException {
 
-        Double jurosCalculados = emprestimoRequisicaoService.calculaJuros(dto.getIdResultado());
-        Double taxaIof = dto.getEmprestimoRequisicao().getIof().getTaxaIof();
+        Double jurosCalculados = dto.getJurosCalculado();
+        Double taxaIof = dto.getIof().getTaxaIof();
         String taxaIofPorcentagem = String.format("%.2f %%", taxaIof * 100);
-        Double iofCalculado = emprestimoRequisicaoService.calculaIof(dto.getIdResultado());
-        Double valorParcela = emprestimoRequisicaoService.calculaValorParcela(dto.getIdResultado());
-        Double valorTotal = iofCalculado + jurosCalculados + dto.getEmprestimoRequisicao().getValorRequerido();
+        Double iofCalculado = dto.getIofCalculado();
+        Double valorParcela = dto.getValorParcela();
+        Double valorTotal = dto.getValorTotal();
 
         // Adiciona um espaço em branco antes da tabela
         Paragraph spaceParagraph = new Paragraph();
@@ -142,7 +137,7 @@ public class CriaPdf extends PdfPageEventHelper {
 
         var aprovado = dto.getAprovado();
 
-        addTableResultado(tabelaResultado, "Código da requisição:", String.valueOf(dto.getIdResultado()),
+        addTableResultado(tabelaResultado, "Código da requisição:", String.valueOf(dto.getIdRequisicao()),
                 BaseColor.BLACK);
         BaseColor statusColor = aprovado ? new BaseColor(0, 128, 0) : new BaseColor(255, 0, 0);
         addTableResultado(tabelaResultado, "Situação:", aprovado ? "Aprovado" : "Reprovado", statusColor);
@@ -151,16 +146,16 @@ public class CriaPdf extends PdfPageEventHelper {
                     (dto.getDescricaoResultado()), BaseColor.BLACK);
         }
         addTableResultado(tabelaResultado, "Data da requisição:",
-                formataData(dto.getEmprestimoRequisicao().getDataRequisicao()), BaseColor.BLACK);
+                formataData(dto.getDataRequisicao()), BaseColor.BLACK);
         addTableResultado(tabelaResultado, "Data da análise:",
-                formataData(dto.getEmprestimoRequisicao().getDataRequisicao()), BaseColor.BLACK);
+                formataData(dto.getDataResultado()), BaseColor.BLACK);
         addTableResultado(tabelaResultado, "Modalidade:",
-                dto.getEmprestimoRequisicao().getEmprestimoModalidade().getDescricaoModalidade(), BaseColor.BLACK);
+                dto.getEmprestimoModalidade().getDescricaoModalidade(), BaseColor.BLACK);
         addTableResultado(tabelaResultado, "Valor requerido:",
-                formataValor(dto.getEmprestimoRequisicao().getValorRequerido()), BaseColor.BLACK);
+                formataValor(dto.getValorRequerido()), BaseColor.BLACK);
         if (aprovado) {
             addTableResultado(tabelaResultado, "Taxa de juros mensal:",
-                    String.format("%.2f %%", dto.getEmprestimoRequisicao().getJuros().getTaxaJurosMensal()),
+                    String.format("%.2f %%", dto.getJuros().getTaxaJurosMensal()),
                     BaseColor.BLACK);
             addTableResultado(tabelaResultado, "Valor de juros a ser pago:",
                     formataValor(jurosCalculados), BaseColor.BLACK);
@@ -170,7 +165,7 @@ public class CriaPdf extends PdfPageEventHelper {
             addTableResultado(tabelaResultado, "Valor das parcelas:",
                     formataValor(valorParcela), BaseColor.BLACK);
             addTableResultado(tabelaResultado, "Prazo para pagamento:",
-                    dto.getEmprestimoRequisicao().getPrazoMes().toString() + " meses", BaseColor.BLACK);
+                    dto.getPrazoMes() + " meses", BaseColor.BLACK);
             addTableResultado(tabelaResultado, "Valor final a ser pago:",
                     formataValor(valorTotal), BaseColor.BLACK);
         }

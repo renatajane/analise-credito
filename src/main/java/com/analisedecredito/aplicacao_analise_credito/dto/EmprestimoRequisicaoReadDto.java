@@ -25,8 +25,15 @@ public class EmprestimoRequisicaoReadDto {
     private IofAtual iof;
     private Juros juros;
     private Integer prazoMes;
-    private Double valorFinal;
     private Integer modalidadePagamento;
+    private Integer diaPagamento;
+    private Boolean aprovado;
+    private String descricaoResultado;
+    private Date dataResultado;
+    private Double jurosCalculado;
+    private Double iofCalculado;
+    private Double valorParcela;
+    private Double valorTotal;
 
     // Construtor
     public EmprestimoRequisicaoReadDto() {
@@ -123,19 +130,75 @@ public class EmprestimoRequisicaoReadDto {
         this.prazoMes = prazoMes;
     }
 
-    public Double getValorFinal() {
-        return valorFinal;
-    }
-
-    public void setValorFinal(Double valorFinal) {
-        this.valorFinal = valorFinal;
-    }
-
     public Integer getModalidadePagamento() {
         return modalidadePagamento;
     }
 
     public void setModalidadePagamento(Integer modalidadePagamento) {
         this.modalidadePagamento = modalidadePagamento;
+    }
+
+    public Integer getDiaPagamento() {
+        return diaPagamento;
+    }
+
+    public void setDiaPagamento(Integer diaPagamento) {
+        this.diaPagamento = diaPagamento;
+    }
+
+    public Boolean getAprovado() {
+        return aprovado;
+    }
+
+    public void setAprovado(Boolean aprovado) {
+        this.aprovado = aprovado;
+    }
+
+    public String getDescricaoResultado() {
+        return descricaoResultado;
+    }
+
+    public void setDescricaoResultado(String descricaoResultado) {
+        this.descricaoResultado = descricaoResultado;
+    }
+
+    public Date getDataResultado() {
+        return dataResultado;
+    }
+
+    public void setDataResultado(Date dataResultado) {
+        this.dataResultado = dataResultado;
+    }
+
+    public Double getJurosCalculado() {
+        return jurosCalculado;
+    }
+
+    public void setJurosCalculado(Double jurosCalculado) {
+        this.jurosCalculado = jurosCalculado;
+    }
+
+    public Double getIofCalculado() {
+        return iofCalculado;
+    }
+
+    public void setIofCalculado(Double iofCalculado) {
+        this.iofCalculado = iofCalculado;
+    }
+
+    public Double getValorParcela() {
+        return valorParcela;
+    }
+
+    public void setValorParcela(Double valorParcela) {
+        this.valorParcela = valorParcela;
+    }
+
+    public Double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(Double valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }
