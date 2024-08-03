@@ -19,6 +19,10 @@ import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoRe
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.service.EmprestimoRequisicaoService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("/emprestimo-requisicao")
 public class EmprestimoRequisicaoController {
@@ -26,25 +30,68 @@ public class EmprestimoRequisicaoController {
     @Autowired
     EmprestimoRequisicaoService service;
 
-    /* Retorna uma requisição de empréstimo de acordo com o id */
+    @Operation(
+        summary = "Encontra uma requisição de empréstimo por ID",
+        description = "Este endpoint retorna uma requisição de empréstimo com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID da requisição de empréstimo", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Requisição de empréstimo encontrada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Requisição de empréstimo não encontrada")
+        }
+    )
     @GetMapping("/{id}")
     public EmprestimoRequisicaoReadDto findById(@PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
-    /* Retorna uma lista requisições de empréstimos cadastrados */
+    @Operation(
+        summary = "Lista todas as requisições de empréstimos",
+        description = "Este endpoint retorna uma lista de todas as requisições de empréstimos cadastradas.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de requisições de empréstimos retornada com sucesso")
+        }
+    )
     @GetMapping("/list")
     public List<EmprestimoRequisicaoReadDto> list() {
         return service.list();
     }
 
-    /* Cria uma nova requisição de empréstimo com base nos dados fornecidos */
+    @Operation(
+        summary = "Cria uma nova requisição de empréstimo",
+        description = "Este endpoint cria uma nova requisição de empréstimo com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados da requisição de empréstimo a ser criada",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = EmprestimoRequisicaoDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Requisição de empréstimo criada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+        }
+    )
     @PostMapping
     public void create(@RequestBody EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
         service.create(emprestimoRequisicaoDto);
     }
 
-    /* Atualiza os dados de uma requisição de empréstimo existente */
+    @Operation(
+        summary = "Atualiza uma requisição de empréstimo existente",
+        description = "Este endpoint atualiza os dados de uma requisição de empréstimo existente com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados atualizados da requisição de empréstimo",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = EmprestimoRequisicaoDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Requisição de empréstimo atualizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
+            @ApiResponse(responseCode = "404", description = "Requisição de empréstimo não encontrada")
+        }
+    )
     @PutMapping()
     public ResponseEntity<EmprestimoRequisicaoDto> updateEmprestimo(
             @RequestBody EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
@@ -60,11 +107,18 @@ public class EmprestimoRequisicaoController {
         }
     }
 
-    /* Remove uma requisição de empréstimo pelo id */  
+    @Operation(
+        summary = "Remove uma requisição de empréstimo por ID",
+        description = "Este endpoint remove uma requisição de empréstimo com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID da requisição de empréstimo a ser removida", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Requisição de empréstimo removida com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Requisição de empréstimo não encontrada")
+        }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete (@PathVariable("id") Integer id){
         service.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }

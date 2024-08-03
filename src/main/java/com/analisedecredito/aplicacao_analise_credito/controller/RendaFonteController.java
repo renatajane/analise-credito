@@ -17,6 +17,10 @@ import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.service.RendaFonteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("/renda-fonte")
 public class RendaFonteController {
@@ -24,25 +28,67 @@ public class RendaFonteController {
     @Autowired
     RendaFonteService service;
 
-    /* Retorna uma fonte de renda de acordo com o id */
+    @Operation(
+        summary = "Retorna uma fonte de renda de acordo com o id",
+        description = "Este endpoint retorna uma fonte de renda com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID da fonte de renda", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Fonte de renda encontrada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Fonte de renda não encontrada")
+        }
+    )
     @GetMapping("/{id}")
     public RendaFonteReadDto findById(@PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
-    /* Retorna uma lista de todas as fontes de renda cadastradas */
+    @Operation(
+        summary = "Retorna uma lista de todas as fontes de renda cadastradas",
+        description = "Este endpoint retorna uma lista de todas as fontes de renda cadastradas.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de fontes de renda retornada com sucesso")
+        }
+    )
     @GetMapping
     public List<RendaFonteReadDto> list() {
         return service.list();
     }
 
-    /* Cria uma nova fonte de renda com base nos dados fornecidos */
+    @Operation(
+        summary = "Cria uma nova fonte de renda com base nos dados fornecidos",
+        description = "Este endpoint cria uma nova fonte de renda com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados da fonte de renda a ser criada",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = RendaFonteDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Fonte de renda criada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+        }
+    )
     @PostMapping
     public void create(@RequestBody RendaFonteDto rendaFonteDto) {
         service.create(rendaFonteDto);
     }
 
-    /* Atualiza os dados de uma fonte de renda existente */
+    @Operation(
+        summary = "Atualiza os dados de uma fonte de renda existente",
+        description = "Este endpoint atualiza os dados de uma fonte de renda existente com base nos dados fornecidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Dados da fonte de renda a ser atualizada",
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = RendaFonteDto.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Fonte de renda atualizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+        }
+    )
     @PutMapping
     public ResponseEntity<RendaFonteDto> update(@RequestBody RendaFonteDto rendaFonteDto) {
         Integer id = rendaFonteDto.getIdRendaFonte();
@@ -50,12 +96,18 @@ public class RendaFonteController {
         return ResponseEntity.ok(updatedFonteRenda);
     }
 
-    /* Remove um dado de fonte de renda pelo id */
+    @Operation(
+        summary = "Remove uma fonte de renda pelo id",
+        description = "Este endpoint remove uma fonte de renda com base no ID fornecido.",
+        parameters = @Parameter(name = "id", description = "ID da fonte de renda", example = "1", required = true),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Fonte de renda removida com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Fonte de renda não encontrada")
+        }
+    )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id){
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         service.delete(id);
         return ResponseEntity.ok().build();
-    
     }
-
 }
