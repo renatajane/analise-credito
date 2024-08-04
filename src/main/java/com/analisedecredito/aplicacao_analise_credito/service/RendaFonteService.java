@@ -27,6 +27,9 @@ public class RendaFonteService {
     @Autowired
     RendaTipoRepository rendaTipoRepository;
 
+    @Autowired
+    ClienteService clienteService;
+
     /* Retorna uma fonte de renda de acordo com o id */
     public RendaFonteReadDto findById(Integer id){
         return new RendaFonteReadDto(repository.findById(id).get());
@@ -52,6 +55,8 @@ public class RendaFonteService {
         rendaFonte.setValorRenda(rendaFonteDto.getValorRenda());
 
         repository.save(rendaFonte);
+
+        clienteService.definePerfilCliente(clienteOpt.get().getIdCliente());
     }
 
     /* Atualiza os dados de uma fonte de renda existente */
@@ -69,6 +74,7 @@ public class RendaFonteService {
         rendaFonte.setValorRenda(rendaFonteDto.getValorRenda());
 
         RendaFonte updated = repository.save(rendaFonte);
+        clienteService.definePerfilCliente(clienteOpt.get().getIdCliente());
         return new RendaFonteDto(updated);
     }
 
@@ -76,6 +82,7 @@ public class RendaFonteService {
     public void delete(Integer id){
         RendaFonte rendaFonte = repository.findById(id).get();
         repository.delete(rendaFonte);
+        clienteService.definePerfilCliente(rendaFonte.getCliente().getIdCliente());
     }
 
 }

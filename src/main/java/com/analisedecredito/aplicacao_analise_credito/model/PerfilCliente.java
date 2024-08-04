@@ -23,7 +23,7 @@ public class PerfilCliente {
     private String nomePerfil;
 
     @Column(name = "score", nullable = false)
-    private Double score;
+    private Integer score;
 
     @Column(name = "percentual_risco", nullable = false)
     private Double percentualRisco;
@@ -55,20 +55,20 @@ public class PerfilCliente {
         this.nomePerfil = nomePerfil;
     }
 
-    public Double getScore() {
-        return score;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
-    }
-
     public Double getPercentualRisco() {
         return percentualRisco;
     }
 
     public void setPercentualRisco(Double percentualRisco) {
         this.percentualRisco = percentualRisco;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
 }

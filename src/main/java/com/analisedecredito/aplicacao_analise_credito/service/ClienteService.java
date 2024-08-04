@@ -9,21 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
-import com.analisedecredito.aplicacao_analise_credito.dto.DespesaDto;
-import com.analisedecredito.aplicacao_analise_credito.dto.PatrimonioDto;
-import com.analisedecredito.aplicacao_analise_credito.dto.RendaFonteDto;
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
-import com.analisedecredito.aplicacao_analise_credito.model.AnaliseRestricao;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
-import com.analisedecredito.aplicacao_analise_credito.model.Despesa;
-import com.analisedecredito.aplicacao_analise_credito.model.DespesaTipo;
-import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
-import com.analisedecredito.aplicacao_analise_credito.model.Patrimonio;
-import com.analisedecredito.aplicacao_analise_credito.model.PatrimonioTipo;
 import com.analisedecredito.aplicacao_analise_credito.model.PerfilCliente;
-import com.analisedecredito.aplicacao_analise_credito.model.RendaFonte;
-import com.analisedecredito.aplicacao_analise_credito.model.RendaTipo;
-import com.analisedecredito.aplicacao_analise_credito.repository.AnaliseRestricaoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.DespesaRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.DespesaTipoRepository;
@@ -61,9 +49,6 @@ public class ClienteService {
     PatrimonioTipoRepository patrimonioTipoRepository;
 
     @Autowired
-    AnaliseRestricaoRepository restricaoRepository;
-
-    @Autowired
     DespesaTipoRepository despesaTipoRepository;
 
     @Autowired
@@ -97,81 +82,76 @@ public class ClienteService {
         cliente.setEmail(clienteDto.getEmail());
         cliente.setEndereco(clienteDto.getEndereco());
         cliente.setTelefone(clienteDto.getTelefone());
+        cliente.setSpcSerasa(clienteDto.getSpcSerasa());
         cliente = repository.save(cliente);
 
-        if (clienteDto.getListaRenda() != null && !clienteDto.getListaRenda().isEmpty()) {
-            for (RendaFonteDto item : clienteDto.getListaRenda()) {
-                Optional<RendaTipo> rendaTipoOpt = rendaTipoRepository.findById(item.getIdRendaFonte());
-                RendaFonte renda = new RendaFonte(item, cliente, rendaTipoOpt.get());
-                rendaRepository.save(renda);
-            }
-        }
+        definePerfilCliente(cliente.getIdCliente());
 
-        if (clienteDto.getListaPatrimonio() != null && !clienteDto.getListaPatrimonio().isEmpty()) {
-            for (PatrimonioDto item : clienteDto.getListaPatrimonio()) {
-                Optional<PatrimonioTipo> patrimonioTipoOpt = patrimonioTipoRepository.findById(item.getIdPatrimonio());
-                Patrimonio patrimonio = new Patrimonio(item, cliente, patrimonioTipoOpt.get());
-                patrimonioRepository.save(patrimonio);
-            }
-        }
+        // if (clienteDto.getListaRenda() != null &&
+        // !clienteDto.getListaRenda().isEmpty()) {
+        // for (RendaFonteDto item : clienteDto.getListaRenda()) {
+        // Optional<RendaTipo> rendaTipoOpt =
+        // rendaTipoRepository.findById(item.getIdRendaFonte());
+        // RendaFonte renda = new RendaFonte(item, cliente, rendaTipoOpt.get());
+        // rendaRepository.save(renda);
+        // }
+        // }
 
-        if (clienteDto.getListaDespesa() != null && !clienteDto.getListaDespesa().isEmpty()) {
-            for (DespesaDto item : clienteDto.getListaDespesa()) {
-                Optional<DespesaTipo> despesaTipoOpt = despesaTipoRepository.findById(item.getIdDespesa());
-                Despesa despesa = new Despesa(item, cliente, despesaTipoOpt.get());
-                despesaRepository.save(despesa);
-            }
-        }
+        // if (clienteDto.getListaPatrimonio() != null &&
+        // !clienteDto.getListaPatrimonio().isEmpty()) {
+        // for (PatrimonioDto item : clienteDto.getListaPatrimonio()) {
+        // Optional<PatrimonioTipo> patrimonioTipoOpt =
+        // patrimonioTipoRepository.findById(item.getIdPatrimonio());
+        // Patrimonio patrimonio = new Patrimonio(item, cliente,
+        // patrimonioTipoOpt.get());
+        // patrimonioRepository.save(patrimonio);
+        // }
+        // }
+
+        // if (clienteDto.getListaDespesa() != null &&
+        // !clienteDto.getListaDespesa().isEmpty()) {
+        // for (DespesaDto item : clienteDto.getListaDespesa()) {
+        // Optional<DespesaTipo> despesaTipoOpt =
+        // despesaTipoRepository.findById(item.getIdDespesa());
+        // Despesa despesa = new Despesa(item, cliente, despesaTipoOpt.get());
+        // despesaRepository.save(despesa);
+        // }
+        // }
 
         // Determinando o perfil do cliente baseado na lógica de negócio
-        Double valorPatrimonio = somaPatrimonio(cliente.getIdCliente());
-        List<EmprestimoRequisicao> requisicoes = requisicaoRepository.findRequisicao(clienteDto.getIdCliente());
-
-        if (!requisicoes.isEmpty() && requisicoes.get(0).getValorRequerido() > valorPatrimonio) {
-            Optional<PerfilCliente> perfilClienteOpt = perfilClienteRepository.findById(clienteDto.getPerfilCliente());
-
-            if (perfilClienteOpt.isPresent()) {
-                PerfilCliente perfilCliente = perfilClienteOpt.get();
-
-                // Obtendo informações de análise de restrição para determinar o score
-                Optional<AnaliseRestricao> analiseRestricaoOpt = restricaoRepository
-                        .findByClienteId(clienteDto.getIdCliente());
-
-                if (analiseRestricaoOpt.isPresent()) {
-
-                    // Lógica para determinar o score baseado no status das restrições
-                    double score = calculaScore(clienteDto.getIdCliente());
-                    perfilCliente.setScore(score);
-
-                    // Determinando o nome do perfil com base no score ou outras lógicas
-                    if (score < 500) {
-                        perfilCliente.setNomePerfil("Perfil de Alto Risco");
-                    } else if (score < 700) {
-                        perfilCliente.setNomePerfil("Perfil de Risco Médio");
-                    } else {
-                        perfilCliente.setNomePerfil("Perfil de Baixo Risco");
-                    }
-
-                    cliente.setPerfilCliente(perfilCliente);
-                } else {
-                    throw new IllegalArgumentException(
-                            "Análise de restrição não encontrada para o cliente ID: " + clienteDto.getIdCliente());
-                }
-            } else {
-                throw new IllegalArgumentException(
-                        "Perfil de crédito não encontrado para o ID: " + clienteDto.getPerfilCliente());
-            }
-        } else {
-            // Lógica para caso o valor requerido seja menor que o patrimônio, se necessário
-            // Exemplo: definir um perfil padrão ou de menor risco
-            PerfilCliente perfilClienteDefault = perfilClienteRepository.findByNomePerfil("Perfil de Baixo Risco")
-                    .orElseThrow(
-                            () -> new IllegalArgumentException("Perfil padrão não encontrado"));
-            cliente.setPerfilCliente(perfilClienteDefault);
-        }
 
         // Atualizando o cliente com o perfil
-        cliente = repository.save(cliente);
+        // cliente = repository.save(cliente);
+    }
+
+    public void definePerfilCliente(Integer idCliente) {
+
+        Double valorDespesa = somaDespesa(idCliente);
+        Double valorRenda = somaRenda(idCliente);
+        Optional<Cliente> clienteOpt = repository.findById(idCliente);
+        Cliente cliente = clienteOpt.get();
+
+        // Score base inicial
+        Integer scoreBase = 700;
+
+        if (!clienteOpt.isPresent()) {
+            throw new IllegalArgumentException("Cliente não encontrado");
+        }
+
+        if (clienteOpt.get().getSpcSerasa()) {
+            scoreBase -= 100;
+        }
+        if (valorDespesa > 0.50 * valorRenda) {
+            scoreBase -= 100;
+        }
+        if (valorDespesa < 0.30 * valorRenda) {
+            scoreBase += 100;
+        }
+
+        PerfilCliente perfilCliente = perfilClienteRepository.findScore(scoreBase);
+        cliente.setPerfilCliente(perfilCliente);
+        repository.save(cliente);
+
     }
 
     /* Atualiza os dados de um cliente existente */
@@ -197,6 +177,9 @@ public class ClienteService {
                 cliente.setAutorizacaoLGPD(clienteDto.getAutorizacaoLGPD());
                 cliente.setPerfilCliente(perfilCliente);
                 Cliente updatedCliente = repository.save(cliente);
+
+                definePerfilCliente(id);
+
                 return new ClienteDto(updatedCliente);
             } else {
                 throw new ResourceNotFoundException(
@@ -253,40 +236,6 @@ public class ClienteService {
         }
 
         return 0.0;
-    }
-
-    /* Calcula score do cliente */
-    public Integer calculaScore(Integer id) {
-
-        Integer scoreBase = 700;
-
-        // Recupera o cliente pelo ID
-        Optional<Cliente> clienteOptional = repository.findById(id);
-        if (!clienteOptional.isPresent()) {
-            throw new IllegalArgumentException("Cliente não encontrado para o ID: " + id);
-        }
-
-        Cliente cliente = clienteOptional.get();
-
-        // Recupera a análise de restrição associada ao cliente
-        Optional<AnaliseRestricao> analiseRestricaoOptional = restricaoRepository
-                .findByClienteId(cliente.getIdCliente());
-        if (!analiseRestricaoOptional.isPresent()) {
-            throw new IllegalArgumentException(
-                    "Análise de restrição não encontrada para o cliente ID: " + cliente.getIdCliente());
-        }
-
-        AnaliseRestricao analiseRestricao = analiseRestricaoOptional.get();
-
-        // Ajusta o score com base nas informações de restrição
-        if (analiseRestricao.getStatusSerasa() != null && analiseRestricao.getStatusSerasa()) {
-            scoreBase -= 100;
-        }
-        if (analiseRestricao.getStatusSpc() != null && analiseRestricao.getStatusSpc()) {
-            scoreBase -= 100;
-        }
-
-        return scoreBase;
     }
 
     /* Remove um cliente pelo id */

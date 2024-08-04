@@ -61,6 +61,9 @@ public class Cliente {
     @JoinColumn(name = "id_perfil_cliente_fk", referencedColumnName = "id_perfil_cliente")
     private PerfilCliente perfilCliente;
 
+    @Column(name = "spc_serasa", nullable = false)
+    private boolean spcSerasa;
+
     // Construtor
     public Cliente() {
 
@@ -152,6 +155,14 @@ public class Cliente {
 
     public void setDataAutorizacaoLGPD(Date dataAutorizacaoLGPD) {
         this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
+    }
+
+    public boolean getSpcSerasa() {
+        return spcSerasa;
+    }
+
+    public void setSpcSerasa(boolean spcSerasa) {
+        this.spcSerasa = spcSerasa;
     }
 
 }

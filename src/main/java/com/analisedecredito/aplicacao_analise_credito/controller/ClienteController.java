@@ -29,67 +29,36 @@ public class ClienteController {
     @Autowired
     ClienteService service;
 
-    @Operation(
-        summary = "Encontra um cliente por ID",
-        description = "Este endpoint retorna um cliente com base no ID fornecido.",
-        parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true),
-        responses = {
+    @Operation(summary = "Encontra um cliente por ID", description = "Este endpoint retorna um cliente com base no ID fornecido.", parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true), responses = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-        }
-    )
+    })
     @GetMapping("/{id}")
     public ClienteReadDto findById(
-        @PathVariable("id") Integer id) {
+            @PathVariable("id") Integer id) {
         return service.findById(id);
     }
 
-    @Operation(
-        summary = "Lista todos os clientes",
-        description = "Este endpoint retorna uma lista de todos os clientes cadastrados.",
-        responses = {
+    @Operation(summary = "Lista todos os clientes", description = "Este endpoint retorna uma lista de todos os clientes cadastrados.", responses = {
             @ApiResponse(responseCode = "200", description = "Lista de clientes retornada com sucesso")
-        }
-    )
+    })
     @GetMapping("/list")
     public List<ClienteReadDto> list() {
         return service.list();
     }
 
-    @Operation(
-        summary = "Cria um novo cliente",
-        description = "Este endpoint cria um novo cliente com base nos dados fornecidos.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Dados do cliente a ser criado",
-            required = true,
-            content = @io.swagger.v3.oas.annotations.media.Content(
-                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ClienteDto.class)
-            )
-        ),
-        responses = {
+    @Operation(summary = "Cria um novo cliente", description = "Este endpoint cria um novo cliente com base nos dados fornecidos.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Dados do cliente a ser criado", required = true, content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ClienteDto.class))), responses = {
             @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso")
-        }
-    )
+    })
     @PostMapping
     public void create(@RequestBody ClienteDto clienteDto) {
         service.create(clienteDto);
     }
 
-    @Operation(
-        summary = "Atualiza um cliente existente",
-        description = "Este endpoint atualiza os dados de um cliente existente com base nos dados fornecidos.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Dados atualizados do cliente",
-            required = true,
-            content = @io.swagger.v3.oas.annotations.media.Content(
-                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ClienteDto.class)
-            )
-        ),
-        responses = {
+    @Operation(summary = "Atualiza um cliente existente", description = "Este endpoint atualiza os dados de um cliente existente com base nos dados fornecidos.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Dados atualizados do cliente", required = true, content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ClienteDto.class))), responses = {
             @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-        }
-    )
+    })
     @PutMapping
     public ResponseEntity<ClienteDto> update(@RequestBody ClienteDto clienteDto) {
         try {
@@ -101,71 +70,37 @@ public class ClienteController {
         }
     }
 
-    @Operation(
-        summary = "Soma a renda total do cliente por ID",
-        description = "Este endpoint retorna a soma da renda total de um cliente com base no ID fornecido.",
-        parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true),
-        responses = {
+    @Operation(summary = "Soma a renda total do cliente por ID", description = "Este endpoint retorna a soma da renda total de um cliente com base no ID fornecido.", parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true), responses = {
             @ApiResponse(responseCode = "200", description = "Renda total do cliente retornada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-        }
-    )
+    })
     @GetMapping("/renda/{id}")
     public Double getRendaCliente(@PathVariable("id") Integer id) {
         return service.somaRenda(id);
     }
 
-    @Operation(
-        summary = "Soma o patrimônio total do cliente por ID",
-        description = "Este endpoint retorna a soma do patrimônio total de um cliente com base no ID fornecido.",
-        parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true),
-        responses = {
+    @Operation(summary = "Soma o patrimônio total do cliente por ID", description = "Este endpoint retorna a soma do patrimônio total de um cliente com base no ID fornecido.", parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true), responses = {
             @ApiResponse(responseCode = "200", description = "Patrimônio total do cliente retornado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-        }
-    )
+    })
     @GetMapping("/patrimonio/{id}")
     public Double getPatrimonioCliente(@PathVariable("id") Integer id) {
         return service.somaPatrimonio(id);
     }
 
-    @Operation(
-        summary = "Calcula o score do cliente baseado no SPC/Serasa",
-        description = "Este endpoint retorna o score do cliente baseado no registro do SPC/Serasa com base no ID fornecido.",
-        parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true),
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Score do cliente retornado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-        }
-    )
-    @GetMapping("/score/{id}")
-    public Integer getScoreCliente(@PathVariable("id") Integer id) {
-        return service.calculaScore(id);
-    }
-
-    @Operation(
-        summary = "Soma a despesa total do cliente por ID",
-        description = "Este endpoint retorna a soma das despesas totais de um cliente com base no ID fornecido.",
-        parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true),
-        responses = {
+    @Operation(summary = "Soma a despesa total do cliente por ID", description = "Este endpoint retorna a soma das despesas totais de um cliente com base no ID fornecido.", parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true), responses = {
             @ApiResponse(responseCode = "200", description = "Despesa total do cliente retornada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-        }
-    )
+    })
     @GetMapping("/despesa/{id}")
     public Double getDespesaCliente(@PathVariable("id") Integer id) {
         return service.somaDespesa(id);
     }
 
-    @Operation(
-        summary = "Remove um cliente pelo ID",
-        description = "Este endpoint remove um cliente com base no ID fornecido.",
-        parameters = @Parameter(name = "id", description = "ID do cliente a ser removido", example = "1", required = true),
-        responses = {
+    @Operation(summary = "Remove um cliente pelo ID", description = "Este endpoint remove um cliente com base no ID fornecido.", parameters = @Parameter(name = "id", description = "ID do cliente a ser removido", example = "1", required = true), responses = {
             @ApiResponse(responseCode = "200", description = "Cliente removido com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-        }
-    )
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         service.delete(id);

@@ -28,6 +28,9 @@ public class DespesaService {
     @Autowired
     DespesaTipoRepository despesaTipoRepository;
 
+    @Autowired
+    ClienteService clienteService;
+
     /* Retorna despesa de acordo com o id */
     public DespesaReadDto findById(Integer id) {
         return new DespesaReadDto(repository.findById(id).get());
@@ -60,6 +63,8 @@ public class DespesaService {
         despesa.setValorDespesa(despesaDto.getValorDespesa());
         repository.save(despesa);
 
+        clienteService.definePerfilCliente(clienteOpt.get().getIdCliente());
+
         return new DespesaDto(despesa);
     }
 
@@ -81,6 +86,9 @@ public class DespesaService {
                 despesa.setValorDespesa(despesaDto.getValorDespesa());
 
                 Despesa updatedDespesa= repository.save(despesa);
+
+                clienteService.definePerfilCliente(clienteOpt.get().getIdCliente());
+
                 return new DespesaDto(updatedDespesa);
             } else {
                 throw new ResourceNotFoundException(
@@ -95,6 +103,8 @@ public class DespesaService {
     public void delete(Integer id){
         Despesa despesa = repository.findById(id).get();
         repository.delete(despesa);
+
+        clienteService.definePerfilCliente(despesa.getCliente().getIdCliente());
     }
 
 }

@@ -13,17 +13,17 @@ CREATE TABLE IF NOT EXISTS perfil_cliente (
 
 -- Inserir 'Perfil de Baixo Risco' se não existir
 INSERT INTO perfil_cliente (nome_perfil, score, percentual_risco)
-SELECT 'Perfil de Baixo Risco', 650, 10
+SELECT 'Perfil de Baixo Risco', 700, 10
 WHERE NOT EXISTS (
     SELECT 1 FROM perfil_cliente WHERE nome_perfil = 'Perfil de Baixo Risco'
 );
 INSERT INTO perfil_cliente (nome_perfil, score, percentual_risco)
-SELECT 'Perfil de Risco Moderado', 700, 25
+SELECT 'Perfil de Risco Moderado', 600, 25
 WHERE NOT EXISTS (
     SELECT 1 FROM perfil_cliente WHERE nome_perfil = 'Perfil de Risco Moderado'
 );
 INSERT INTO perfil_cliente (nome_perfil, score, percentual_risco)
-SELECT 'Perfil de Alto Risco', 750, 40
+SELECT 'Perfil de Alto Risco', 500, 40
 WHERE NOT EXISTS (
     SELECT 1 FROM perfil_cliente WHERE nome_perfil = 'Perfil de Alto Risco'
 );
@@ -54,20 +54,21 @@ CREATE TABLE IF NOT EXISTS cliente (
     endereco VARCHAR(80) NOT NULL,
     autorizacao_lgpd BOOLEAN NOT NULL, 
     data_autorizacao_lgpd DATE NOT NULL, 
+    spc_serasa BOOLEAN NOT NULL, 
     id_perfil_cliente_fk INTEGER REFERENCES perfil_cliente (id_perfil_cliente) 
 );
 
 -- Verifica se a tabela cliente está vazia e insere dados se necessário
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk)
-SELECT 'João Silva', 12345655001, '1985-05-12', 'joaos.silva@example.com', '1111122111', 'Rua A, 123', true, '2024-07-12', 1
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa)
+SELECT 'João Silva', 12345655001, '1985-05-12', 'joaos.silva@example.com', '1111122111', 'Rua A, 123', true, '2024-07-12', 1, true
 WHERE NOT EXISTS (SELECT 1 FROM cliente LIMIT 1);
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk)
-SELECT 'Maria Oliveira', 23880789012, '1990-06-15', 'marias.oliveira@example.com', '2222200222', 'Rua B, 456', true, '2024-05-12', 2
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa)
+SELECT 'Maria Oliveira', 23880789012, '1990-06-15', 'marias.oliveira@example.com', '2222200222', 'Rua B, 456', true, '2024-05-12', 2, false
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Maria Oliveira');
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk)
-SELECT 'Pedro Santos', 39967000123, '1988-07-20', 'pedros.santos@example.com', '3333355333', 'Rua C, 789', true, '2024-07-23', 3
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa)
+SELECT 'Pedro Santos', 39967000123, '1988-07-20', 'pedros.santos@example.com', '3333355333', 'Rua C, 789', true, '2024-07-23', 3, true
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Pedro Santos');
 
 -- Criação da tabela de IofAtual
@@ -347,35 +348,3 @@ WHERE NOT EXISTS (
     AND id_patrimonio_tipo_fk = 3
 );
 
--- Criação da tabela EmprestimoResultado
-CREATE TABLE IF NOT EXISTS emprestimo_resultado (
-    id_resultado SERIAL PRIMARY KEY,
-    id_requisicao_fk INTEGER REFERENCES emprestimo_requisicao(id_requisicao),
-    aprovado BOOLEAN NOT NULL,
-    descricao_resultado TEXT
-);
-
--- Inserir dados na tabela emprestimo_resultado apenas se não existirem registros
-INSERT INTO emprestimo_resultado (id_requisicao_fk, aprovado, descricao_resultado)
-SELECT 1, true, 'Aprovado'
-WHERE NOT EXISTS (
-    SELECT 1 
-    FROM emprestimo_resultado 
-    WHERE id_requisicao_fk = 1
-);
-
-INSERT INTO emprestimo_resultado (id_requisicao_fk, aprovado, descricao_resultado)
-SELECT 2, false, 'Reprovado'
-WHERE NOT EXISTS (
-    SELECT 1 
-    FROM emprestimo_resultado 
-    WHERE id_requisicao_fk = 2
-);
-
-INSERT INTO emprestimo_resultado (id_requisicao_fk, aprovado, descricao_resultado)
-SELECT 3, true, 'Aprovado com restrições'
-WHERE NOT EXISTS (
-    SELECT 1 
-    FROM emprestimo_resultado 
-    WHERE id_requisicao_fk = 3
-);

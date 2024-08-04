@@ -1,7 +1,6 @@
 package com.analisedecredito.aplicacao_analise_credito.dto;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 
@@ -23,9 +22,7 @@ public class ClienteDto {
     private Double rendaTotal;
     private Double patrimonioTotal;
     private Double despesaTotal;
-    private List<RendaFonteDto> listaRenda;
-    private List<PatrimonioDto> listaPatrimonio;
-    private List<DespesaDto> listaDespesa;
+    private Boolean spcSerasa;
 
     // Construtor
     public ClienteDto() {
@@ -124,36 +121,12 @@ public class ClienteDto {
         this.perfilCliente = perfilCliente;
     }
 
-    public List<RendaFonteDto> getListaRenda() {
-        return listaRenda;
-    }
-
-    public void setListaRenda(List<RendaFonteDto> listaRenda) {
-        this.listaRenda = listaRenda;
-    }
-
-    public List<PatrimonioDto> getListaPatrimonio() {
-        return listaPatrimonio;
-    }
-
-    public void setListaPatrimonio(List<PatrimonioDto> listaPatrimonio) {
-        this.listaPatrimonio = listaPatrimonio;
-    }
-
     public Double getPatrimonioTotal() {
         return patrimonioTotal;
     }
 
     public void setPatrimonioTotal(Double patrimonioTotal) {
         this.patrimonioTotal = patrimonioTotal;
-    }
-
-    public List<DespesaDto> getListaDespesa() {
-        return listaDespesa;
-    }
-
-    public void setListaDespesa(List<DespesaDto> listaDespesa) {
-        this.listaDespesa = listaDespesa;
     }
 
     public Double getDespesaTotal() {
@@ -164,4 +137,11 @@ public class ClienteDto {
         this.despesaTotal = despesaTotal;
     }
 
+    public Boolean getSpcSerasa() {
+        return spcSerasa;
+    }
+
+    public void setSpcSerasa(Boolean spcSerasa) {
+        this.spcSerasa = spcSerasa;
+    }
 }
