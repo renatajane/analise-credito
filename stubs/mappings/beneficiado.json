@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/beneficiado/84688392052"
+  },
+  "response": {
+    "status": 200,
+    "body": "{ \"info\": { \"cpf\": \"84688392052\",  \"valorBeneficio\": 750.00 } }",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

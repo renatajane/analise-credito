@@ -29,12 +29,12 @@ services:
       - db
 
   wiremock:
-    image: wiremock/wiremock
+    image: wiremock/wiremock:latest
     ports:
-      - "8081:8081"
+      - "8082:8081"
     volumes:
       - ./stubs:/home/wiremock
-    command: --port 8081
+    command: --port 8081 
 
 networks:
   pg-network:
