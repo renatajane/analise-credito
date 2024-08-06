@@ -31,6 +31,7 @@ import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoUrgen
 import com.analisedecredito.aplicacao_analise_credito.repository.IofAtualRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.JurosRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.ModalidadePagamentoRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.PatrimonioRepository;
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdf;
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdfGeral;
 import com.itextpdf.text.DocumentException;
@@ -68,6 +69,9 @@ public class EmprestimoRequisicaoService {
     @Autowired
     CriaPdfGeral utilsGeral;
 
+    @Autowired
+    PatrimonioRepository patrimonioRepository;
+
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
         return new EmprestimoRequisicaoReadDto(repository.findById(id).get());
@@ -79,13 +83,9 @@ public class EmprestimoRequisicaoService {
         return listaEmprestimo.stream().map(EmprestimoRequisicaoReadDto::new).toList();
     }
 
-    /* Cria uma nova requisição de empréstimo com base nos dados fornecidos */
     public void create(EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
-
-        Optional<Cliente> clienteOpt = clienteRepository
-                .findById(emprestimoRequisicaoDto.getCliente());
-        Optional<IofAtual> iofOpt = iofAtualRepository
-                .findById(emprestimoRequisicaoDto.getIof());
+        Optional<Cliente> clienteOpt = clienteRepository.findById(emprestimoRequisicaoDto.getCliente());
+        //Optional<IofAtual> iofOpt = iofAtualRepository.findById(emprestimoRequisicaoDto.getIof());
         Optional<EmprestimoModalidade> modalidadeOpt = modalidadeRepository
                 .findById(emprestimoRequisicaoDto.getEmprestimoModalidade());
         Optional<EmprestimoObjetivo> objetivoOpt = objetivoRepository
@@ -95,8 +95,10 @@ public class EmprestimoRequisicaoService {
         Optional<ModalidadePagamento> pagamentoOpt = pagamentoRepository
                 .findById(emprestimoRequisicaoDto.getModalidadePagamento());
         Juros juros = jurosRepository.findByDataJuros(new Date());
+        IofAtual iof = iofAtualRepository.findByDataIof(new Date());
 
-        if (clienteOpt.isPresent()) {
+        if (clienteOpt.isPresent() && modalidadeOpt.isPresent() && objetivoOpt.isPresent() &&
+                urgenciaOpt.isPresent() && pagamentoOpt.isPresent()) {
 
             EmprestimoRequisicao emprestimoRequisicao = new EmprestimoRequisicao();
 
@@ -104,7 +106,7 @@ public class EmprestimoRequisicaoService {
             emprestimoRequisicao.setValorRequerido(emprestimoRequisicaoDto.getValorRequerido());
             emprestimoRequisicao.setDataRequisicao(new Date());
             emprestimoRequisicao.setCliente(clienteOpt.get());
-            emprestimoRequisicao.setIof(iofOpt.get());
+            emprestimoRequisicao.setIof(iof);
             emprestimoRequisicao.setPrazoMes(emprestimoRequisicaoDto.getPrazoMes());
             emprestimoRequisicao.setModalidadePagamento(pagamentoOpt.get());
             emprestimoRequisicao.setEmprestimoModalidade(modalidadeOpt.get());
@@ -112,19 +114,34 @@ public class EmprestimoRequisicaoService {
             emprestimoRequisicao.setEmprestimoUrgencia(urgenciaOpt.get());
             emprestimoRequisicao.setDiaPagamento(emprestimoRequisicaoDto.getDiaPagamento());
             emprestimoRequisicao.setJuros(juros);
-            emprestimoRequisicao.setAprovado(emprestimoRequisicaoDto.getAprovado());
             emprestimoRequisicao.setDescricaoResultado(emprestimoRequisicaoDto.getDescricaoResultado());
             emprestimoRequisicao.setDataResultado(emprestimoRequisicaoDto.getDataResultado());
-            emprestimoRequisicao.setJurosCalculado(calculaJuros(juros, emprestimoRequisicaoDto.getPrazoMes(),
-            emprestimoRequisicaoDto.getValorRequerido()));
-            emprestimoRequisicao.setIofCalculado(calculaIof(emprestimoRequisicaoDto, iofOpt.get()));
-            emprestimoRequisicao.setValorTotal(calculaValorTotal(emprestimoRequisicaoDto));
-            emprestimoRequisicao.setValorParcela(calculaValorParcela(emprestimoRequisicaoDto));
-
+            
+            // Calcula o IOF
+            double iofCalculado = iof.getTaxaIof() * emprestimoRequisicaoDto.getValorRequerido();
+            emprestimoRequisicao.setIofCalculado(iofCalculado);
             repository.save(emprestimoRequisicao);
+            // Calcula o valor total do empréstimo e o valor da parcela
+            //double jurosCalculado = calculaJuros(juros.getTaxaJurosMensal(), emprestimoRequisicaoDto.getPrazoMes(),
+                   /// emprestimoRequisicaoDto.getValorRequerido());
+            //emprestimoRequisicao.setJurosCalculado(jurosCalculado);
+           // emprestimoRequisicao.setValorTotal(calculaValorTotal(emprestimoRequisicaoDto));
+            //emprestimoRequisicao.setValorParcela(calculaValorParcela(emprestimoRequisicaoDto));
+
+            // Salva o emprestimoRequisicao com valores calculados
+            repository.save(emprestimoRequisicao);
+
+            // Verifica o patrimônio do cliente
+            Double valorPatrimonioCliente = patrimonioRepository
+                    .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
+
+            System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
+
+            // Decide se o empréstimo é aprovado com base no patrimônio do cliente
+            //emprestimoRequisicaoDto.setAprovado(valorPatrimonioCliente > emprestimoRequisicaoDto.getValorTotal());
+            System.out.println("emprestimo requisicao +++ " + emprestimoRequisicaoDto.getAprovado());
         } else {
-            throw new ResourceNotFoundException(
-                    "Cliente não encontrado com id " + emprestimoRequisicaoDto.getCliente());
+            throw new ResourceNotFoundException("Dados necessários não encontrados.");
         }
     }
 
@@ -179,10 +196,9 @@ public class EmprestimoRequisicaoService {
     }
 
     /* Calcula juros da requisição */
-    public Double calculaJuros(Juros juros, int prazoEmMeses, double valorRequerido) {
+    public Double calculaJuros(Double juros, int prazoEmMeses, double valorRequerido) {
 
-        double taxaMensal = juros.getTaxaJurosMensal();
-        double calculoTotal = valorRequerido * taxaMensal * prazoEmMeses;
+        double calculoTotal = valorRequerido * juros * prazoEmMeses;
 
         return calculoTotal;
     }

@@ -24,7 +24,6 @@ public class EmprestimoObjetivo {
 
     // Construtor
     public EmprestimoObjetivo() {
-        super();
     }
 
     public EmprestimoObjetivo(EmprestimoObjetivoDto emprestimoObjetivoDto) {

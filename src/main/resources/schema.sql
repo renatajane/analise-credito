@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS iof_atual (
 
 -- Inserir dados na tabela IofAtual apenas se não existirem registros
 INSERT INTO iof_atual (taxa_iof, data_calculo)
-SELECT 0.0038, '2024-01-01'
+SELECT 0.0038, '2030-01-01'
 WHERE NOT EXISTS (SELECT 1 FROM iof_atual);
 
 
@@ -194,16 +194,8 @@ CREATE TABLE IF NOT EXISTS juros (
 
 --Inserir dados na tabela juros apenas se não existirem registros
 INSERT INTO juros (nome_modalidade, taxa_juros_anual, taxa_juros_mensal, data_vigencia)
-SELECT 'Pessoal', 0.15, 0.012, '2024-07-25'
-WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Pessoal' AND data_vigencia = '2024-07-25');
-
-INSERT INTO juros (nome_modalidade, taxa_juros_anual, taxa_juros_mensal, data_vigencia)
-SELECT 'Imobiliário', 0.08, 0.0065, '2024-07-25'
-WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Imobiliário' AND data_vigencia = '2024-07-25');
-
-INSERT INTO juros (nome_modalidade, taxa_juros_anual, taxa_juros_mensal, data_vigencia)
-SELECT 'Consignado', 0.10, 0.008, '2024-07-25'
-WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Consignado' AND data_vigencia = '2024-07-25');
+SELECT 'Consignado', 0.10, 0.008, '2030-07-25'
+WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Consignado' AND data_vigencia = '2030-07-25');
 
 -- Criação da tabela EmprestimoParcela
 CREATE TABLE IF NOT EXISTS emprestimo_parcela (
@@ -261,13 +253,13 @@ WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido,
     prazo_mes, valor_total, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, 
     id_modalidade_pagamento_fk, id_emprestimo_parcela_fk, data_requisicao, aprovado, descricao_resultado, data_resultado, dia_pagamento, juros_calculado, iof_calculado, valor_parcela)
-SELECT 2, 2, 2000.00, 15, 7980.00, 2, 1, 1, 1, 2, 2, '2024-07-20', true, 'teste descricao2', '2024-07-20', 15, 100.00, 20.00, 300.00
+SELECT 2, 2, 2000.00, 15, 7980.00, 2, 1, 1, 1, 1, 2, '2024-07-20', true, 'teste descricao2', '2024-07-20', 15, 100.00, 20.00, 300.00
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-20' AND id_cliente_fk = 2);
 
 INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requerido,
     prazo_mes, valor_total, id_objetivo_fk, id_urgencia_fk, id_iof_fk, id_juros_fk, 
     id_modalidade_pagamento_fk, id_emprestimo_parcela_fk, data_requisicao, aprovado, descricao_resultado, data_resultado, dia_pagamento, juros_calculado, iof_calculado, valor_parcela)
-SELECT 3, 3, 10000.00, 20, 11800.00, 3, 3, 1, 3, 3, 3, '2024-07-21', true, 'teste descricao3', '2024-07-20', 30, 200.00, 100.00, 800.00
+SELECT 3, 3, 10000.00, 20, 11800.00, 3, 3, 1, 1, 3, 3, '2024-07-21', true, 'teste descricao3', '2024-07-20', 30, 200.00, 100.00, 800.00
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-21' AND id_cliente_fk = 3);
 
 

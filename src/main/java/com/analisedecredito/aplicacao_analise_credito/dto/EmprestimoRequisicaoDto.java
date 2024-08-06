@@ -43,6 +43,7 @@ public class EmprestimoRequisicaoDto {
         this.iof = emprestimoRequisicao.getIof().getIdIof();
         this.juros = emprestimoRequisicao.getJuros().getIdJuros();
         this.prazoMes = emprestimoRequisicao.getPrazoMes();
+        this.modalidadePagamento = emprestimoRequisicao.getModalidadePagamento().getIdModalidadePagamento();
     }
 
     // Getters e Setters
