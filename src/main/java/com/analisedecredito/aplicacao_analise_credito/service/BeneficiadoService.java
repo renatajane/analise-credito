@@ -1,22 +1,34 @@
-// package com.analisedecredito.aplicacao_analise_credito.service;
+package com.analisedecredito.aplicacao_analise_credito.service;
 
-// import org.springframework.beans.factory.annotation.Value;
-// import org.springframework.stereotype.Service;
-// import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
-// @Service
-// public class BeneficiadoService {
+import com.analisedecredito.aplicacao_analise_credito.dto.BeneficiadoDto;
 
-//     private final RestTemplate restTemplate;
-//     private final String wiremockBaseUrl;
+@Service
+public class BeneficiadoService {
 
-//     public BeneficiadoService(RestTemplate restTemplate, @Value("${wiremock.url}") String wiremockBaseUrl) {
-//         this.restTemplate = restTemplate;
-//         this.wiremockBaseUrl = wiremockBaseUrl;
-//     }
+    @Autowired
+    private RestTemplate restTemplate;
 
-//     public String getBeneficiadoInfo(String cpf) {
-//         String url = wiremockBaseUrl + "/beneficiado/" + cpf;
-//         return restTemplate.getForObject(url, String.class);
-//     }
-// }
+    @Value("${wiremock.url}")
+    private String wiremockBaseUrl;
+
+    public BeneficiadoService() {
+    }
+
+    public BeneficiadoDto buscaBeneficiado(String cpf) throws RestClientException {
+        String url = wiremockBaseUrl + "/beneficiado/" + cpf;
+
+        try {
+            return restTemplate.getForObject(url, BeneficiadoDto.class);
+        } catch (RestClientException e) {
+            throw new RestClientException("Nenhum dado encontrado para o CPF: " + cpf, e);
+        }
+
+    }
+
+}

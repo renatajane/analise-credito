@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
+import com.analisedecredito.aplicacao_analise_credito.model.Beneficiado;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoModalidade;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoObjetivo;
@@ -41,6 +42,8 @@ import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepos
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdf;
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdfGeral;
 import com.itextpdf.text.DocumentException;
+
+import jakarta.validation.Valid;
 
 @Service
 public class EmprestimoRequisicaoService {
@@ -83,6 +86,9 @@ public class EmprestimoRequisicaoService {
 
     @Autowired
     DespesaRepository despesaRepository;
+
+    @Valid
+    private Beneficiado beneficiado;
 
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
@@ -153,40 +159,47 @@ public class EmprestimoRequisicaoService {
                     .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
 
             Double valorRendaCliente = rendaFonteRepository
-            .findRendaTotalCliente(clienteOpt.get().getIdCliente());
+                    .findRendaTotalCliente(clienteOpt.get().getIdCliente());
 
-            Double despesaCliente = despesaRepository.
-            findDespesaTotalCliente(clienteOpt.get().getIdCliente());
+            Double despesaCliente = despesaRepository.findDespesaTotalCliente(clienteOpt.get().getIdCliente());
 
-            //emprestimoRequisicaoDto.getRendaTotal
-            System.out.println("minha renda +++++" + valorRendaCliente);        
+            // emprestimoRequisicaoDto.getRendaTotal
+            System.out.println("minha renda +++++" + valorRendaCliente);
             System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
             System.out.println("minha despesa +++++" + despesaCliente);
 
             var perfilCliente = clienteOpt.get().getPerfilCliente().getNomePerfil();
 
-            if(valorRendaCliente > despesaCliente){
+            if (valorRendaCliente > despesaCliente) {
                 emprestimoRequisicao.setAprovado(true);
-                emprestimoRequisicao.setDescricaoResultado("Seu perfil atende aos requisitos, por isso o empréstimo foi aprovado.");
-            } else{
+            } else {
                 emprestimoRequisicao.setAprovado(false);
-                emprestimoRequisicao.setDescricaoResultado("Não autorizado pelo fato do valor de despesar ser maior que a renda.");
-            } if(valorParcela > (valorRendaCliente * 0.30)){
+                
+            }
+            if (valorParcela > (valorRendaCliente * 0.30)) {
                 emprestimoRequisicao.setAprovado(false);
-            } 
+            }
 
-            if(perfilCliente.contains("Perfil de Baixo Risco")){
+            if (emprestimoRequisicao.getAprovado() == true) {
+                emprestimoRequisicao
+                        .setDescricaoResultado("Seu perfil atende aos requisitos, por isso o empréstimo foi aprovado.");
+            } else {
+                emprestimoRequisicao
+                        .setDescricaoResultado("Não autorizado pelo fato do valor de despesar ser maior que a renda.");
+            }
+
+            if (perfilCliente.contains("Perfil de Baixo Risco")) {
                 System.out.println("Arrasou!");
             }
-            System.out.println("perfil do meu cliente ******"+ clienteOpt.get().getPerfilCliente().getNomePerfil());
+            System.out.println("perfil do meu cliente ******" + clienteOpt.get().getPerfilCliente().getNomePerfil());
 
-
+            System.out.println("meu beneficiadoaqui =====" + beneficiado.getCpf());
             // Salva o emprestimoRequisicao com valores calculados
             repository.save(emprestimoRequisicao);
 
             // Verifica o patrimônio do cliente
-            //Double valorPatrimonioCliente = patrimonioRepository
-                   // .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
+            // Double valorPatrimonioCliente = patrimonioRepository
+            // .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
 
             System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
 
