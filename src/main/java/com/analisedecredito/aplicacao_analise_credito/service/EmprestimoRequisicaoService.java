@@ -2,10 +2,14 @@ package com.analisedecredito.aplicacao_analise_credito.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +28,7 @@ import com.analisedecredito.aplicacao_analise_credito.model.IofAtual;
 import com.analisedecredito.aplicacao_analise_credito.model.Juros;
 import com.analisedecredito.aplicacao_analise_credito.model.ModalidadePagamento;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.DespesaRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoModalidadeRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoObjetivoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
@@ -32,6 +37,7 @@ import com.analisedecredito.aplicacao_analise_credito.repository.IofAtualReposit
 import com.analisedecredito.aplicacao_analise_credito.repository.JurosRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.ModalidadePagamentoRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.PatrimonioRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepository;
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdf;
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdfGeral;
 import com.itextpdf.text.DocumentException;
@@ -72,6 +78,12 @@ public class EmprestimoRequisicaoService {
     @Autowired
     PatrimonioRepository patrimonioRepository;
 
+    @Autowired
+    RendaFonteRepository rendaFonteRepository;
+
+    @Autowired
+    DespesaRepository despesaRepository;
+
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
         return new EmprestimoRequisicaoReadDto(repository.findById(id).get());
@@ -84,8 +96,8 @@ public class EmprestimoRequisicaoService {
     }
 
     public void create(EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
+
         Optional<Cliente> clienteOpt = clienteRepository.findById(emprestimoRequisicaoDto.getCliente());
-        //Optional<IofAtual> iofOpt = iofAtualRepository.findById(emprestimoRequisicaoDto.getIof());
         Optional<EmprestimoModalidade> modalidadeOpt = modalidadeRepository
                 .findById(emprestimoRequisicaoDto.getEmprestimoModalidade());
         Optional<EmprestimoObjetivo> objetivoOpt = objetivoRepository
@@ -115,30 +127,72 @@ public class EmprestimoRequisicaoService {
             emprestimoRequisicao.setDiaPagamento(emprestimoRequisicaoDto.getDiaPagamento());
             emprestimoRequisicao.setJuros(juros);
             emprestimoRequisicao.setDescricaoResultado(emprestimoRequisicaoDto.getDescricaoResultado());
-            emprestimoRequisicao.setDataResultado(emprestimoRequisicaoDto.getDataResultado());
-            
-            // Calcula o IOF
-            double iofCalculado = iof.getTaxaIof() * emprestimoRequisicaoDto.getValorRequerido();
-            emprestimoRequisicao.setIofCalculado(iofCalculado);
-            repository.save(emprestimoRequisicao);
-            // Calcula o valor total do empréstimo e o valor da parcela
-            //double jurosCalculado = calculaJuros(juros.getTaxaJurosMensal(), emprestimoRequisicaoDto.getPrazoMes(),
-                   /// emprestimoRequisicaoDto.getValorRequerido());
-            //emprestimoRequisicao.setJurosCalculado(jurosCalculado);
-           // emprestimoRequisicao.setValorTotal(calculaValorTotal(emprestimoRequisicaoDto));
-            //emprestimoRequisicao.setValorParcela(calculaValorParcela(emprestimoRequisicaoDto));
+            emprestimoRequisicao.setDataResultado(new Date());
 
-            // Salva o emprestimoRequisicao com valores calculados
-            repository.save(emprestimoRequisicao);
+            // Calcula os juros
+            double jurosCalculado = calculaJuros(juros.getTaxaJurosMensal(), emprestimoRequisicaoDto.getPrazoMes(),
+                    emprestimoRequisicaoDto.getValorRequerido());
+            emprestimoRequisicao.setJurosCalculado(jurosCalculado);
+
+            // Calcula o IOF
+            double iofCalculado = calculaIof(emprestimoRequisicaoDto, iof);
+            emprestimoRequisicao.setIofCalculado(iofCalculado);
+
+            // Calcula o valor total do empréstimo
+            double valorTotal = calculaValorTotal(emprestimoRequisicaoDto.getValorRequerido(), iofCalculado,
+                    jurosCalculado);
+            emprestimoRequisicao.setValorTotal(valorTotal);
+
+            // Calcula o valor da parcela
+            Double valorParcela = calculaValorParcela(emprestimoRequisicaoDto.getValorRequerido(), iofCalculado,
+                    jurosCalculado, emprestimoRequisicaoDto.getPrazoMes());
+            emprestimoRequisicao.setValorParcela(valorParcela);
 
             // Verifica o patrimônio do cliente
             Double valorPatrimonioCliente = patrimonioRepository
                     .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
 
+            Double valorRendaCliente = rendaFonteRepository
+            .findRendaTotalCliente(clienteOpt.get().getIdCliente());
+
+            Double despesaCliente = despesaRepository.
+            findDespesaTotalCliente(clienteOpt.get().getIdCliente());
+
+            //emprestimoRequisicaoDto.getRendaTotal
+            System.out.println("minha renda +++++" + valorRendaCliente);        
+            System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
+            System.out.println("minha despesa +++++" + despesaCliente);
+
+            var perfilCliente = clienteOpt.get().getPerfilCliente().getNomePerfil();
+
+            if(valorRendaCliente > despesaCliente){
+                emprestimoRequisicao.setAprovado(true);
+                emprestimoRequisicao.setDescricaoResultado("Seu perfil atende aos requisitos, por isso o empréstimo foi aprovado.");
+            } else{
+                emprestimoRequisicao.setAprovado(false);
+                emprestimoRequisicao.setDescricaoResultado("Não autorizado pelo fato do valor de despesar ser maior que a renda.");
+            } if(valorParcela > (valorRendaCliente * 0.30)){
+                emprestimoRequisicao.setAprovado(false);
+            } 
+
+            if(perfilCliente.contains("Perfil de Baixo Risco")){
+                System.out.println("Arrasou!");
+            }
+            System.out.println("perfil do meu cliente ******"+ clienteOpt.get().getPerfilCliente().getNomePerfil());
+
+
+            // Salva o emprestimoRequisicao com valores calculados
+            repository.save(emprestimoRequisicao);
+
+            // Verifica o patrimônio do cliente
+            //Double valorPatrimonioCliente = patrimonioRepository
+                   // .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
+
             System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
 
             // Decide se o empréstimo é aprovado com base no patrimônio do cliente
-            //emprestimoRequisicaoDto.setAprovado(valorPatrimonioCliente > emprestimoRequisicaoDto.getValorTotal());
+            // emprestimoRequisicaoDto.setAprovado(valorPatrimonioCliente >
+            // emprestimoRequisicaoDto.getValorTotal());
             System.out.println("emprestimo requisicao +++ " + emprestimoRequisicaoDto.getAprovado());
         } else {
             throw new ResourceNotFoundException("Dados necessários não encontrados.");
@@ -196,7 +250,7 @@ public class EmprestimoRequisicaoService {
     }
 
     /* Calcula juros da requisição */
-    public Double calculaJuros(Double juros, int prazoEmMeses, double valorRequerido) {
+    public Double calculaJuros(Double juros, Integer prazoEmMeses, Double valorRequerido) {
 
         double calculoTotal = valorRequerido * juros * prazoEmMeses;
 
@@ -213,24 +267,27 @@ public class EmprestimoRequisicaoService {
     }
 
     /* Calcula valor total da requisição */
-    public Double calculaValorTotal(EmprestimoRequisicaoDto dto) {
-        double valorRequerido = dto.getValorRequerido();
-        double iof = dto.getIofCalculado();
-        double juros = dto.getJurosCalculado();
-        return iof + juros + valorRequerido;
-
+    public Double calculaValorTotal(Double valorRequerido, Double iofCalculado, Double jurosCalculado) {
+        return valorRequerido + iofCalculado + jurosCalculado;
     }
 
     /* Calcula valor da parcela */
-    public Double calculaValorParcela(EmprestimoRequisicaoDto dto) {
+    public Double calculaValorParcela(Double valorRequerido, Double iofCalculado,
+            Double jurosCalculado, Integer prazoEmMes) {
 
-        var valorRequerido = dto.getValorRequerido();
-        var prazoPagamento = dto.getPrazoMes();
-        var iof = dto.getIofCalculado();
-        var juros = dto.getJurosCalculado();
-        var soma = valorRequerido + iof + juros;
-        var mensalidade = soma / prazoPagamento;
-        return mensalidade;
+        var soma = valorRequerido + iofCalculado + jurosCalculado;
+        var mensalidade = soma / prazoEmMes;
+
+        // Arredondar para duas casas decimais
+        BigDecimal mensalidadeArredondada = new BigDecimal(mensalidade).setScale(2, RoundingMode.HALF_UP);
+
+        return mensalidadeArredondada.doubleValue();
+    }
+
+    public String formataValorParaReal(Double valor) {
+        // Formatar o valor para Real (BRL)
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        return currencyFormatter.format(valor);
     }
 
     /* Retorna um pdf com base no id do resultado do empréstimo */

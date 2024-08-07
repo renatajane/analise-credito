@@ -61,10 +61,6 @@ public class EmprestimoRequisicao {
     @JoinColumn(name = "id_modalidade_pagamento_fk", referencedColumnName = "id_modalidade_pagamento", nullable = false)
     private ModalidadePagamento modalidadePagamento;
 
-   // @ManyToOne
-    //@JoinColumn(name = "id_emprestimo_parcela_fk", referencedColumnName = "id_emprestimo_parcela", nullable = false)
-    //private EmprestimoParcela parcelas;
-
     @Column(name = "aprovado")
     private Boolean aprovado;
 
@@ -83,8 +79,8 @@ public class EmprestimoRequisicao {
     @Column(name = "valor_parcela")
     private Double valorParcela;
 
-    // @Column(name = "valor_total")
-    // private Double valorTotal;
+    @Column(name = "valor_total")
+    private Double valorTotal;
 
     // Construtor
     public EmprestimoRequisicao() {
@@ -179,14 +175,6 @@ public class EmprestimoRequisicao {
         this.modalidadePagamento = modalidadePagamento;
     }
 
-    // public EmprestimoParcela getParcelas() {
-    //     return parcelas;
-    // }
-
-    // public void setParcelas(EmprestimoParcela parcelas) {
-    //     this.parcelas = parcelas;
-    // }
-
     public Integer getDiaPagamento() {
         return diaPagamento;
     }
@@ -243,11 +231,11 @@ public class EmprestimoRequisicao {
         this.valorParcela = valorParcela;
     }
 
-    // public Double getValorTotal() {
-    //     return valorTotal;
-    // }
+    public Double getValorTotal() {
+        return valorTotal;
+    }
 
-    // public void setValorTotal(Double valorTotal) {
-    //     this.valorTotal = valorTotal;
-    // }
+    public void setValorTotal(Double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
 }

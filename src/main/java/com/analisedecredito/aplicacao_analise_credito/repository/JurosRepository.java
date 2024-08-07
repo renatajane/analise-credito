@@ -13,5 +13,5 @@ import com.analisedecredito.aplicacao_analise_credito.model.Juros;
 public interface JurosRepository extends JpaRepository<Juros, Integer> {
 
     @Query("SELECT j FROM Juros j WHERE j.dataVigencia >= :data")
-    Juros findByDataJuros(@Param("data") Date data);    
+    Juros findByDataJuros(@Param("data") Date data); 
 }
