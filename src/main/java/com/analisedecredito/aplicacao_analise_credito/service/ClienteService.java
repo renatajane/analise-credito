@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.analisedecredito.aplicacao_analise_credito.dto.BeneficiadoDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
@@ -54,6 +55,9 @@ public class ClienteService {
     @Autowired
     DespesaRepository despesaRepository;
 
+    @Autowired
+    private BeneficiadoService beneficiadoService;
+
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
         return new ClienteReadDto(repository.findById(id).get());
@@ -83,6 +87,12 @@ public class ClienteService {
         cliente.setEndereco(clienteDto.getEndereco());
         cliente.setTelefone(clienteDto.getTelefone());
         cliente.setSpcSerasa(clienteDto.getSpcSerasa());
+
+        // Processa o beneficiado sem interromper o fluxo
+        BeneficiadoDto info = processarBeneficiado(clienteDto.getCpf());
+        System.out.println("meu beneficiado CPF +++++" + info.getCpf());
+        System.out.println("meu beneficiado Valor +++++" + info.getValorBeneficio());
+
         cliente = repository.save(cliente);
 
         definePerfilCliente(cliente.getIdCliente());
@@ -124,6 +134,15 @@ public class ClienteService {
         // cliente = repository.save(cliente);
     }
 
+    public BeneficiadoDto processarBeneficiado(String cpf) {
+        BeneficiadoDto beneficiado = beneficiadoService.buscaBeneficiado(cpf);
+
+        if (beneficiado != null) {
+            return beneficiado;
+        }
+        return new BeneficiadoDto(cpf, null); // Retorna o CPF e valor null se não encontrado
+    }
+
     public void definePerfilCliente(Integer idCliente) {
 
         Double valorDespesa = somaDespesa(idCliente);
@@ -142,7 +161,7 @@ public class ClienteService {
             scoreBase -= 100;
         }
         if (valorDespesa > 0.50 * valorRenda) {
-            scoreBase -= 100;
+            scoreBase -= 200;
         }
         if (valorDespesa < 0.30 * valorRenda) {
             scoreBase += 100;

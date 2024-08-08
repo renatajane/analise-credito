@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.analisedecredito.aplicacao_analise_credito.dto.BeneficiadoDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
@@ -84,9 +83,6 @@ public class EmprestimoRequisicaoService {
 
     @Autowired
     DespesaRepository despesaRepository;
-
-    @Autowired
-    private BeneficiadoService beneficiadoService;
 
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
@@ -166,11 +162,6 @@ public class EmprestimoRequisicaoService {
             System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
             System.out.println("minha despesa +++++" + despesaCliente);
 
-            // Processa o beneficiado sem interromper o fluxo
-            BeneficiadoDto info = processarBeneficiado(clienteOpt.get().getCpf());
-            System.out.println("meu beneficiado CPF +++++" + info.getCpf());
-            System.out.println("meu beneficiado Valor +++++" + info.getValorBeneficio());
-
             var perfilCliente = clienteOpt.get().getPerfilCliente().getNomePerfil();
 
             if (valorRendaCliente > despesaCliente) {
@@ -214,14 +205,7 @@ public class EmprestimoRequisicaoService {
         }
     }
 
-    public BeneficiadoDto processarBeneficiado(String cpf) {
-        BeneficiadoDto beneficiado = beneficiadoService.buscaBeneficiado(cpf);
-
-        if (beneficiado != null) {
-            return beneficiado;
-        }
-        return new BeneficiadoDto(cpf, null); // Retorna o CPF e valor null se não encontrado
-    }
+   
 
     /* Atualiza os dados de uma requisição de empréstimo existente */
     public EmprestimoRequisicaoDto update(Integer id, EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
