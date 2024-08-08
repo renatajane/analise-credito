@@ -5,7 +5,7 @@
   },
   "response": {
     "status": 200,
-    "body": "{ \"info\": { \"cpf\": \"84688392052\",  \"valorBeneficio\": 750.00 } }",
+    "body": "{  \"cpf\": \"84688392052\",  \"valorBeneficio\": 750.00  }",
     "headers": {
       "Content-Type": "application/json"
     }

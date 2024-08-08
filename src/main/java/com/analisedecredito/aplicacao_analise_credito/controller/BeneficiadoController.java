@@ -17,7 +17,7 @@ public class BeneficiadoController {
     @Autowired
     private BeneficiadoService beneficiadoService;
 
-    @GetMapping("/beneficiado/{cpf}")
+    @GetMapping("/{cpf}")
     public ResponseEntity<BeneficiadoDto> getBeneficiado(@PathVariable String cpf) {
         try {
             BeneficiadoDto beneficiado = beneficiadoService.buscaBeneficiado(cpf);

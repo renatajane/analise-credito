@@ -24,9 +24,10 @@ public class BeneficiadoService {
         String url = wiremockBaseUrl + "/beneficiado/" + cpf;
 
         try {
-            return restTemplate.getForObject(url, BeneficiadoDto.class);
-        } catch (RestClientException e) {
-            throw new RestClientException("Nenhum dado encontrado para o CPF: " + cpf, e);
+            BeneficiadoDto beneficiado = restTemplate.getForObject(url, BeneficiadoDto.class);
+            return beneficiado;
+        } catch (Exception e) {
+            throw new RestClientException("Nenhum dado encontrado para o CPF: " + cpf);
         }
 
     }

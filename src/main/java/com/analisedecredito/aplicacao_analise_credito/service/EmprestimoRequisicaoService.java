@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.analisedecredito.aplicacao_analise_credito.dto.BeneficiadoDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.EmprestimoRequisicaoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
-import com.analisedecredito.aplicacao_analise_credito.model.Beneficiado;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoModalidade;
 import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoObjetivo;
@@ -42,8 +42,6 @@ import com.analisedecredito.aplicacao_analise_credito.repository.RendaFonteRepos
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdf;
 import com.analisedecredito.aplicacao_analise_credito.utils.CriaPdfGeral;
 import com.itextpdf.text.DocumentException;
-
-import jakarta.validation.Valid;
 
 @Service
 public class EmprestimoRequisicaoService {
@@ -87,9 +85,6 @@ public class EmprestimoRequisicaoService {
     @Autowired
     DespesaRepository despesaRepository;
 
-    @Valid
-    private Beneficiado beneficiado;
-
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
         return new EmprestimoRequisicaoReadDto(repository.findById(id).get());
@@ -100,6 +95,7 @@ public class EmprestimoRequisicaoService {
         List<EmprestimoRequisicao> listaEmprestimo = repository.findAll();
         return listaEmprestimo.stream().map(EmprestimoRequisicaoReadDto::new).toList();
     }
+
 
     public void create(EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
 
@@ -163,6 +159,10 @@ public class EmprestimoRequisicaoService {
 
             Double despesaCliente = despesaRepository.findDespesaTotalCliente(clienteOpt.get().getIdCliente());
 
+            var a = buscaBeneficiado();
+            System.out.println("meu beneficiadooo +++++" + a.getCpf());
+            System.out.println("meu beneficiadooo +++++" + a.getValorBeneficio());
+
             // emprestimoRequisicaoDto.getRendaTotal
             System.out.println("minha renda +++++" + valorRendaCliente);
             System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
@@ -193,7 +193,6 @@ public class EmprestimoRequisicaoService {
             }
             System.out.println("perfil do meu cliente ******" + clienteOpt.get().getPerfilCliente().getNomePerfil());
 
-            System.out.println("meu beneficiadoaqui =====" + beneficiado.getCpf());
             // Salva o emprestimoRequisicao com valores calculados
             repository.save(emprestimoRequisicao);
 
@@ -210,6 +209,11 @@ public class EmprestimoRequisicaoService {
         } else {
             throw new ResourceNotFoundException("Dados necessários não encontrados.");
         }
+    }
+
+    public BeneficiadoDto buscaBeneficiado (){
+        BeneficiadoDto dto = new BeneficiadoDto();
+        return dto;
     }
 
     /* Atualiza os dados de uma requisição de empréstimo existente */
