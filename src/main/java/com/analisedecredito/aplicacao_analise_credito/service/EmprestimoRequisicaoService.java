@@ -85,6 +85,9 @@ public class EmprestimoRequisicaoService {
     @Autowired
     DespesaRepository despesaRepository;
 
+    @Autowired
+    private BeneficiadoService beneficiadoService;
+
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
         return new EmprestimoRequisicaoReadDto(repository.findById(id).get());
@@ -95,7 +98,6 @@ public class EmprestimoRequisicaoService {
         List<EmprestimoRequisicao> listaEmprestimo = repository.findAll();
         return listaEmprestimo.stream().map(EmprestimoRequisicaoReadDto::new).toList();
     }
-
 
     public void create(EmprestimoRequisicaoDto emprestimoRequisicaoDto) {
 
@@ -159,14 +161,15 @@ public class EmprestimoRequisicaoService {
 
             Double despesaCliente = despesaRepository.findDespesaTotalCliente(clienteOpt.get().getIdCliente());
 
-            var a = buscaBeneficiado();
-            System.out.println("meu beneficiadooo +++++" + a.getCpf());
-            System.out.println("meu beneficiadooo +++++" + a.getValorBeneficio());
-
             // emprestimoRequisicaoDto.getRendaTotal
             System.out.println("minha renda +++++" + valorRendaCliente);
             System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
             System.out.println("minha despesa +++++" + despesaCliente);
+
+            // Processa o beneficiado sem interromper o fluxo
+            BeneficiadoDto info = processarBeneficiado(clienteOpt.get().getCpf());
+            System.out.println("meu beneficiado CPF +++++" + info.getCpf());
+            System.out.println("meu beneficiado Valor +++++" + info.getValorBeneficio());
 
             var perfilCliente = clienteOpt.get().getPerfilCliente().getNomePerfil();
 
@@ -174,7 +177,7 @@ public class EmprestimoRequisicaoService {
                 emprestimoRequisicao.setAprovado(true);
             } else {
                 emprestimoRequisicao.setAprovado(false);
-                
+
             }
             if (valorParcela > (valorRendaCliente * 0.30)) {
                 emprestimoRequisicao.setAprovado(false);
@@ -211,9 +214,13 @@ public class EmprestimoRequisicaoService {
         }
     }
 
-    public BeneficiadoDto buscaBeneficiado (){
-        BeneficiadoDto dto = new BeneficiadoDto();
-        return dto;
+    public BeneficiadoDto processarBeneficiado(String cpf) {
+        BeneficiadoDto beneficiado = beneficiadoService.buscaBeneficiado(cpf);
+
+        if (beneficiado != null) {
+            return beneficiado;
+        }
+        return new BeneficiadoDto(cpf, null); // Retorna o CPF e valor null se não encontrado
     }
 
     /* Atualiza os dados de uma requisição de empréstimo existente */
