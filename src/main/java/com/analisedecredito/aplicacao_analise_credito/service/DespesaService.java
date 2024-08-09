@@ -62,8 +62,9 @@ public class DespesaService {
                     "Tipo de despesa não encontrado com o id " + despesaDto.getDespesaTipo());
         }
 
-        // Cria a nova despesa
         Despesa despesa = new Despesa(despesaDto, clienteOpt.get(), despesaTipoOpt.get());
+        despesa.setValorDespesa(despesaDto.getValorDespesa());
+        despesa.setDespesaTipo(despesaTipoOpt.get());
         repository.save(despesa);
 
         // Define o perfil do cliente após criar a despesa
@@ -71,7 +72,10 @@ public class DespesaService {
 
         // Calcula a despesa total incluindo todas as despesas e parcelas de empréstimos
         Double despesaTotal = calculaDespesaTotal(clienteOpt.get().getIdCliente());
-        despesaDto.setDespesaTotal(despesaTotal); // Armazena o valor no DTO
+        despesaDto.setDespesaTotal(despesaTotal); 
+
+        // Atualiza o ID gerado no DTO
+        despesaDto.setIdDespesa(despesa.getIdDespesa());
 
         return despesaDto;
     }

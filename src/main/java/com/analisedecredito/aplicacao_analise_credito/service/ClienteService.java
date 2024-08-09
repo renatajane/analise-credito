@@ -12,6 +12,7 @@ import com.analisedecredito.aplicacao_analise_credito.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
+import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
 import com.analisedecredito.aplicacao_analise_credito.model.PerfilCliente;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.DespesaRepository;
@@ -145,7 +146,7 @@ public class ClienteService {
 
     public void definePerfilCliente(Integer idCliente) {
 
-        Double valorDespesa = somaDespesa(idCliente);
+        Double valorDespesa = calculaDespesaTotal(idCliente);
         Double valorRenda = somaRenda(idCliente);
         Optional<Cliente> clienteOpt = repository.findById(idCliente);
         Cliente cliente = clienteOpt.get();
@@ -241,20 +242,36 @@ public class ClienteService {
         return 0.0;
     }
 
-    /* Calcula despesa do cliente */
-    public Double somaDespesa(Integer id) {
+    /*
+     * Calcula a despesa total do cliente, incluindo todas as despesas e parcelas de
+     * empréstimos
+     */
+    public Double calculaDespesaTotal(Integer idCliente) {
 
-        Optional<Cliente> clienteOptional = repository.findById(id);
-        if (clienteOptional.isPresent()) {
-            Cliente cliente = clienteOptional.get();
-            Double despesaTotal = despesaRepository.findDespesaTotalCliente(cliente.getIdCliente());
-            ClienteDto clienteDto = new ClienteDto(cliente);
-            clienteDto.setDespesaTotal(despesaTotal);
-
-            return clienteDto.getDespesaTotal();
+        // Verifica se o cliente existe
+        Optional<Cliente> clienteOpt = repository.findById(idCliente);
+        if (clienteOpt.isEmpty()) {
+            throw new ResourceNotFoundException("Cliente não encontrado com o id " + idCliente);
         }
 
-        return 0.0;
+        Cliente cliente = clienteOpt.get();
+
+        // Calcula a soma de todas as despesas do cliente
+        Double despesaTotal = despesaRepository.findDespesaTotalCliente(cliente.getIdCliente());
+
+        // Verifica se o cliente tem requisições de empréstimo ativas
+        List<EmprestimoRequisicao> emprestimosAtivos = requisicaoRepository
+                .findRequisicao(cliente.getIdCliente());
+
+        // Soma os valores das parcelas das requisições ativas às despesas totais
+        if (emprestimosAtivos != null && !emprestimosAtivos.isEmpty()) {
+            for (EmprestimoRequisicao emprestimo : emprestimosAtivos) {
+                System.out.println("Valor da Parcela: " + emprestimo.getValorParcela());
+                despesaTotal += emprestimo.getValorParcela();
+            }
+        }
+
+        return despesaTotal;
     }
 
     /* Remove um cliente pelo id */

@@ -200,12 +200,11 @@ public class EmprestimoRequisicaoService {
             // emprestimoRequisicaoDto.setAprovado(valorPatrimonioCliente >
             // emprestimoRequisicaoDto.getValorTotal());
             System.out.println("emprestimo requisicao +++ " + emprestimoRequisicaoDto.getAprovado());
+
         } else {
             throw new ResourceNotFoundException("Dados necessários não encontrados.");
         }
     }
-
-   
 
     /* Atualiza os dados de uma requisição de empréstimo existente */
     public EmprestimoRequisicaoDto update(Integer id, EmprestimoRequisicaoDto emprestimoRequisicaoDto) {

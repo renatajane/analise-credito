@@ -94,7 +94,7 @@ public class ClienteController {
     })
     @GetMapping("/despesa/{id}")
     public Double getDespesaCliente(@PathVariable("id") Integer id) {
-        return service.somaDespesa(id);
+        return service.calculaDespesaTotal(id);
     }
 
     @Operation(summary = "Remove um cliente pelo ID", description = "Este endpoint remove um cliente com base no ID fornecido.", parameters = @Parameter(name = "id", description = "ID do cliente a ser removido", example = "1", required = true), responses = {
