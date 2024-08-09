@@ -11,6 +11,7 @@ public class DespesaDto {
     private Integer cliente;
     private Integer despesaTipo;
     private Double valorDespesa;
+    private Double despesaTotal; 
 
     // Construtor
     public DespesaDto() {
@@ -53,5 +54,13 @@ public class DespesaDto {
 
     public void setValorDespesa(Double valorDespesa) {
         this.valorDespesa = valorDespesa;
+    }
+
+    public Double getDespesaTotal() {
+        return despesaTotal;
+    }
+
+    public void setDespesaTotal(Double despesaTotal) {
+        this.despesaTotal = despesaTotal;
     }
 }

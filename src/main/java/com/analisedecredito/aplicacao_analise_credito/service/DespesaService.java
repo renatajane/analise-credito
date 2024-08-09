@@ -12,9 +12,11 @@ import com.analisedecredito.aplicacao_analise_credito.exception.ResourceNotFound
 import com.analisedecredito.aplicacao_analise_credito.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.model.Despesa;
 import com.analisedecredito.aplicacao_analise_credito.model.DespesaTipo;
+import com.analisedecredito.aplicacao_analise_credito.model.EmprestimoRequisicao;
 import com.analisedecredito.aplicacao_analise_credito.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.DespesaRepository;
 import com.analisedecredito.aplicacao_analise_credito.repository.DespesaTipoRepository;
+import com.analisedecredito.aplicacao_analise_credito.repository.EmprestimoRequisicaoRepository;
 
 @Service
 public class DespesaService {
@@ -31,6 +33,9 @@ public class DespesaService {
     @Autowired
     ClienteService clienteService;
 
+    @Autowired
+    EmprestimoRequisicaoRepository emprestimoRequisicaoRepository;
+
     /* Retorna despesa de acordo com o id */
     public DespesaReadDto findById(Integer id) {
         return new DespesaReadDto(repository.findById(id).get());
@@ -45,6 +50,7 @@ public class DespesaService {
     /* Cria uma nova despesa com base nos dados fornecidos */
     public DespesaDto create(DespesaDto despesaDto) {
 
+        // Verifica se o cliente e o tipo de despesa existem
         Optional<Cliente> clienteOpt = clienteRepository.findById(despesaDto.getCliente());
         Optional<DespesaTipo> despesaTipoOpt = despesaTipoRepository.findById(despesaDto.getDespesaTipo());
 
@@ -56,21 +62,50 @@ public class DespesaService {
                     "Tipo de despesa não encontrado com o id " + despesaDto.getDespesaTipo());
         }
 
-        Despesa despesa = new Despesa();
-        despesa.setIdDespesa(despesaDto.getIdDespesa());
-        despesa.setCliente(clienteOpt.get());
-        despesa.setDespesaTipo(despesaTipoOpt.get());
-        despesa.setValorDespesa(despesaDto.getValorDespesa());
+        // Cria a nova despesa
+        Despesa despesa = new Despesa(despesaDto, clienteOpt.get(), despesaTipoOpt.get());
         repository.save(despesa);
 
+        // Define o perfil do cliente após criar a despesa
         clienteService.definePerfilCliente(clienteOpt.get().getIdCliente());
 
-        return new DespesaDto(despesa);
+        // Calcula a despesa total incluindo todas as despesas e parcelas de empréstimos
+        Double despesaTotal = calculaDespesaTotal(clienteOpt.get().getIdCliente());
+        despesaDto.setDespesaTotal(despesaTotal); // Armazena o valor no DTO
+
+        return despesaDto;
     }
 
-     /* Atualiza os dados de uma despesa existente */
-    public DespesaDto update(Integer id,DespesaDto despesaDto) {
-          
+    public Double calculaDespesaTotal(Integer idCliente) {
+
+        // Verifica se o cliente existe
+        Optional<Cliente> clienteOpt = clienteRepository.findById(idCliente);
+        if (clienteOpt.isEmpty()) {
+            throw new ResourceNotFoundException("Cliente não encontrado com o id " + idCliente);
+        }
+
+        Cliente cliente = clienteOpt.get();
+
+        // Calcula a soma de todas as despesas do cliente
+        Double despesaTotal = repository.findDespesaTotalCliente(cliente.getIdCliente());
+
+        // Verifica se o cliente tem requisições de empréstimo ativas
+        List<EmprestimoRequisicao> emprestimosAtivos = emprestimoRequisicaoRepository
+                .findRequisicao(cliente.getIdCliente());
+
+        // Soma os valores das parcelas das requisições ativas às despesas totais
+        if (emprestimosAtivos != null && !emprestimosAtivos.isEmpty()) {
+            for (EmprestimoRequisicao emprestimo : emprestimosAtivos) {
+                despesaTotal += emprestimo.getValorParcela();
+            }
+        }
+
+        return despesaTotal;
+    }
+
+    /* Atualiza os dados de uma despesa existente */
+    public DespesaDto update(Integer id, DespesaDto despesaDto) {
+
         Optional<Despesa> despesaOpt = repository.findById(id);
         if (despesaOpt.isPresent()) {
             Despesa despesa = despesaOpt.get();
@@ -85,7 +120,7 @@ public class DespesaService {
                 despesa.setIdDespesa(despesaDto.getIdDespesa());
                 despesa.setValorDespesa(despesaDto.getValorDespesa());
 
-                Despesa updatedDespesa= repository.save(despesa);
+                Despesa updatedDespesa = repository.save(despesa);
 
                 clienteService.definePerfilCliente(clienteOpt.get().getIdCliente());
 
@@ -100,7 +135,7 @@ public class DespesaService {
     }
 
     /* Remove uma despesa pelo id */
-    public void delete(Integer id){
+    public void delete(Integer id) {
         Despesa despesa = repository.findById(id).get();
         repository.delete(despesa);
 
