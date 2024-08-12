@@ -95,7 +95,7 @@ public class DespesaService {
 
         // Verifica se o cliente tem requisições de empréstimo ativas
         List<EmprestimoRequisicao> emprestimosAtivos = emprestimoRequisicaoRepository
-                .findRequisicao(cliente.getIdCliente());
+                .findRequisicaoByIdCliente(cliente.getIdCliente());
 
         // Soma os valores das parcelas das requisições ativas às despesas totais
         if (emprestimosAtivos != null && !emprestimosAtivos.isEmpty()) {

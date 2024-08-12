@@ -84,6 +84,9 @@ public class EmprestimoRequisicaoService {
     @Autowired
     DespesaRepository despesaRepository;
 
+    @Autowired
+    ClienteService clienteService;
+
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
         return new EmprestimoRequisicaoReadDto(repository.findById(id).get());
@@ -112,12 +115,24 @@ public class EmprestimoRequisicaoService {
         if (clienteOpt.isPresent() && modalidadeOpt.isPresent() && objetivoOpt.isPresent() &&
                 urgenciaOpt.isPresent() && pagamentoOpt.isPresent()) {
 
+            Cliente cliente = clienteOpt.get();
+            // Verifica se o cliente já possui algum empréstimo em aberto
+            List<EmprestimoRequisicao> emprestimosEmAberto = repository
+                    .findRequisicaoByIdClienteAndStatus(cliente.getIdCliente(), true);
+
+            boolean clienteTemEmprestimoEmAberto = !emprestimosEmAberto.isEmpty();
+            System.out.println("Meu cliente tem empréstimo em aberto? " + clienteTemEmprestimoEmAberto);
+            // if (clienteTemEmprestimoEmAberto) {
+            // throw new IllegalStateException("O cliente já possui um empréstimo em aberto.
+            // Não é possível criar uma nova requisição.");
+            // }
+
             EmprestimoRequisicao emprestimoRequisicao = new EmprestimoRequisicao();
 
             emprestimoRequisicao.setIdRequisicao(emprestimoRequisicaoDto.getIdRequisicao());
             emprestimoRequisicao.setValorRequerido(emprestimoRequisicaoDto.getValorRequerido());
             emprestimoRequisicao.setDataRequisicao(new Date());
-            emprestimoRequisicao.setCliente(clienteOpt.get());
+            emprestimoRequisicao.setCliente(cliente);
             emprestimoRequisicao.setIof(iof);
             emprestimoRequisicao.setPrazoMes(emprestimoRequisicaoDto.getPrazoMes());
             emprestimoRequisicao.setModalidadePagamento(pagamentoOpt.get());
@@ -126,7 +141,6 @@ public class EmprestimoRequisicaoService {
             emprestimoRequisicao.setEmprestimoUrgencia(urgenciaOpt.get());
             emprestimoRequisicao.setDiaPagamento(emprestimoRequisicaoDto.getDiaPagamento());
             emprestimoRequisicao.setJuros(juros);
-            emprestimoRequisicao.setDescricaoResultado(emprestimoRequisicaoDto.getDescricaoResultado());
             emprestimoRequisicao.setDataResultado(new Date());
 
             // Calcula os juros
@@ -150,19 +164,41 @@ public class EmprestimoRequisicaoService {
 
             // Verifica o patrimônio do cliente
             Double valorPatrimonioCliente = patrimonioRepository
-                    .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
+                    .findPatrimonioTotalCliente(cliente.getIdCliente());
 
             Double valorRendaCliente = rendaFonteRepository
-                    .findRendaTotalCliente(clienteOpt.get().getIdCliente());
+                    .findRendaTotalCliente(cliente.getIdCliente());
 
-            Double despesaCliente = despesaRepository.findDespesaTotalCliente(clienteOpt.get().getIdCliente());
+            // Soma o valor das parcelas de todas as requisições anteriores
+            Double despesaCliente = despesaRepository.findDespesaTotalCliente(cliente.getIdCliente());
+
+            // Recupera todas as requisições de empréstimo anteriores do cliente
+            List<EmprestimoRequisicao> requisicoesAprovadas = repository
+                    .findRequisicaoByIdClienteAndAprovado(cliente.getIdCliente());
+
+            // Soma o valor das parcelas de todas as requisições anteriores
+            for (EmprestimoRequisicao requisicao : requisicoesAprovadas) {
+                despesaCliente += requisicao.getValorParcela();
+            }
+
+            // Adiciona a parcela da nova requisição
+            despesaCliente += valorParcela;
+
+            // Arredonda para 2 casas decimais usando BigDecimal
+            BigDecimal despesaClienteRounded = new BigDecimal(despesaCliente).setScale(2, RoundingMode.HALF_UP);
+
+            // Formata o valor como moeda brasileira
+            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            String despesaFormatada = nf.format(despesaClienteRounded.doubleValue());
+
+            System.out.println("Despesa formatada: " + despesaFormatada);
 
             // emprestimoRequisicaoDto.getRendaTotal
             System.out.println("minha renda +++++" + valorRendaCliente);
             System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
-            System.out.println("minha despesa +++++" + despesaCliente);
+            System.out.println("minha despesa HAHAH++++" + despesaCliente);
 
-            var perfilCliente = clienteOpt.get().getPerfilCliente().getNomePerfil();
+            var perfilCliente = cliente.getPerfilCliente().getNomePerfil();
 
             if (valorRendaCliente > despesaCliente) {
                 emprestimoRequisicao.setAprovado(true);
@@ -171,6 +207,9 @@ public class EmprestimoRequisicaoService {
 
             }
             if (valorParcela > (valorRendaCliente * 0.30)) {
+                emprestimoRequisicao.setAprovado(false);
+            }
+            if (valorPatrimonioCliente > emprestimoRequisicao.getValorRequerido()) {
                 emprestimoRequisicao.setAprovado(false);
             }
 
@@ -185,20 +224,18 @@ public class EmprestimoRequisicaoService {
             if (perfilCliente.contains("Perfil de Baixo Risco")) {
                 System.out.println("Arrasou!");
             }
-            System.out.println("perfil do meu cliente ******" + clienteOpt.get().getPerfilCliente().getNomePerfil());
+            System.out.println("perfil do meu cliente ******" + cliente.getPerfilCliente().getNomePerfil());
 
             // Salva o emprestimoRequisicao com valores calculados
             repository.save(emprestimoRequisicao);
 
-            // Verifica o patrimônio do cliente
-            // Double valorPatrimonioCliente = patrimonioRepository
-            // .findPatrimonioTotalCliente(clienteOpt.get().getIdCliente());
+            // Atualiza o perfil do cliente após a nova requisição
+            clienteService.definePerfilCliente(emprestimoRequisicao.getCliente().getIdCliente());
+            System.out.println("meu patrimonio +++++" + emprestimoRequisicao.getModalidadePagamento());
 
-            System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
+            System.out.println("MODALIDADE PAGAMENO*** +++++" + pagamentoOpt.get());
 
             // Decide se o empréstimo é aprovado com base no patrimônio do cliente
-            // emprestimoRequisicaoDto.setAprovado(valorPatrimonioCliente >
-            // emprestimoRequisicaoDto.getValorTotal());
             System.out.println("emprestimo requisicao +++ " + emprestimoRequisicaoDto.getAprovado());
 
         } else {
@@ -240,6 +277,9 @@ public class EmprestimoRequisicaoService {
                 emprestimoRequisicao.setEmprestimoUrgencia(urgenciaOpt.get());
 
                 EmprestimoRequisicao update = repository.save(emprestimoRequisicao);
+
+                // Atualiza o perfil do cliente após a nova requisição
+                clienteService.definePerfilCliente(emprestimoRequisicao.getCliente().getIdCliente());
 
                 return new EmprestimoRequisicaoDto(update);
             } else {

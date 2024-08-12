@@ -31,7 +31,6 @@ public class EmprestimoRequisicaoDto {
 
     // Construtor
     public EmprestimoRequisicaoDto() {
-
     }
 
     public EmprestimoRequisicaoDto(EmprestimoRequisicao emprestimoRequisicao) {
@@ -39,11 +38,19 @@ public class EmprestimoRequisicaoDto {
         this.cliente = emprestimoRequisicao.getCliente().getIdCliente();
         this.emprestimoModalidade = emprestimoRequisicao.getEmprestimoModalidade().getIdModalide();
         this.emprestimoObjetivo = emprestimoRequisicao.getEmprestimoObjetivo().getIdObjetivo();
-        this.emprestimoUrgencia = emprestimoRequisicao.getEmprestimoObjetivo().getIdObjetivo();
+        this.emprestimoUrgencia = emprestimoRequisicao.getEmprestimoUrgencia().getIdUrgencia();
         this.iof = emprestimoRequisicao.getIof().getIdIof();
         this.juros = emprestimoRequisicao.getJuros().getIdJuros();
         this.prazoMes = emprestimoRequisicao.getPrazoMes();
         this.modalidadePagamento = emprestimoRequisicao.getModalidadePagamento().getIdModalidadePagamento();
+        this.diaPagamento = emprestimoRequisicao.getDiaPagamento();
+        this.aprovado = emprestimoRequisicao.getAprovado();
+        this.descricaoResultado = emprestimoRequisicao.getDescricaoResultado();
+        this.dataResultado = emprestimoRequisicao.getDataResultado();
+        this.jurosCalculado = emprestimoRequisicao.getJurosCalculado();
+        this.iofCalculado = emprestimoRequisicao.getIofCalculado();
+        this.valorParcela = emprestimoRequisicao.getValorParcela();
+        this.valorTotal = emprestimoRequisicao.getValorTotal();
     }
 
     // Getters e Setters
