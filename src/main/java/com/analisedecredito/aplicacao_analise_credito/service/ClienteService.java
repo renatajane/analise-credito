@@ -146,19 +146,20 @@ public class ClienteService {
 
     public void definePerfilCliente(Integer idCliente) {
 
-        Double valorDespesa = calculaDespesaTotal(idCliente);
-        Double valorRenda = somaRenda(idCliente);
         Optional<Cliente> clienteOpt = repository.findById(idCliente);
-        Cliente cliente = clienteOpt.get();
-
-        // Score base inicial
-        Integer scoreBase = 700;
-
         if (!clienteOpt.isPresent()) {
             throw new IllegalArgumentException("Cliente não encontrado");
         }
 
-        if (clienteOpt.get().getSpcSerasa()) {
+        Cliente cliente = clienteOpt.get();
+
+        Double valorDespesa = calculaDespesaTotal(idCliente);
+        Double valorRenda = somaRenda(idCliente);
+
+        // Score base inicial
+        Integer scoreBase = 700;
+
+        if (cliente.getSpcSerasa()) {
             scoreBase -= 100;
         }
         if (valorDespesa > 0.50 * valorRenda) {
@@ -169,6 +170,12 @@ public class ClienteService {
         }
 
         PerfilCliente perfilCliente = perfilClienteRepository.findScore(scoreBase);
+
+        // Certifique-se de que um perfil válido foi retornado
+        if (perfilCliente == null) {
+            throw new IllegalArgumentException("Perfil de cliente não encontrado para o score: " + scoreBase);
+        }
+
         cliente.setPerfilCliente(perfilCliente);
         repository.save(cliente);
 
@@ -217,6 +224,13 @@ public class ClienteService {
         if (clienteOptional.isPresent()) {
             Cliente cliente = clienteOptional.get();
             Double rendaTotal = rendaRepository.findRendaTotalCliente(cliente.getIdCliente());
+
+            // Verifica se o cliente é beneficiado
+            BeneficiadoDto beneficiado = processarBeneficiado(cliente.getCpf());
+            if (beneficiado.getValorBeneficio() != null) {
+                rendaTotal += beneficiado.getValorBeneficio(); // Adiciona o valor do benefício à renda total
+            }
+
             ClienteDto clienteDto = new ClienteDto(cliente);
             clienteDto.setRendaTotal(rendaTotal);
 
