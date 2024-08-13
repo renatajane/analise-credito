@@ -200,31 +200,34 @@ public class EmprestimoRequisicaoService {
 
             var perfilCliente = cliente.getPerfilCliente().getNomePerfil();
 
-            if (valorRendaCliente > despesaCliente) {
-                emprestimoRequisicao.setAprovado(true);
-            } else {
-                emprestimoRequisicao.setAprovado(false);
+            // Inicializa a descrição e a aprovação
+            emprestimoRequisicao.setDescricaoResultado("");
+            emprestimoRequisicao.setAprovado(true); // Assume que o empréstimo é aprovado a princípio
 
-            }
-            if (valorParcela > (valorRendaCliente * 0.30)) {
+            // 1. Verifica se o valor requerido é maior que a renda
+            if (emprestimoRequisicao.getValorRequerido() > valorRendaCliente) {
                 emprestimoRequisicao.setAprovado(false);
-            }
-            if (valorPatrimonioCliente > emprestimoRequisicao.getValorRequerido()) {
-                emprestimoRequisicao.setAprovado(false);
+                emprestimoRequisicao.setDescricaoResultado(
+                        "Não é possível solicitar um empréstimo com valor superior à sua renda.");
             }
 
-            if (emprestimoRequisicao.getAprovado() == true) {
+            // 2. Verifica se o valor da parcela ultrapassa 30% da renda
+            else if (valorParcela > (valorRendaCliente * 0.30)) {
+                emprestimoRequisicao.setAprovado(false);
+                emprestimoRequisicao.setDescricaoResultado("O valor da parcela excede 30% da sua renda.");
+            }
+
+            // 3. Verifica se o valor requerido é maior que o patrimônio
+            else if (emprestimoRequisicao.getValorRequerido() > valorPatrimonioCliente) {
+                emprestimoRequisicao.setAprovado(false);
+                emprestimoRequisicao.setDescricaoResultado("O valor requerido excede o seu patrimônio.");
+            }
+
+            // Caso o empréstimo seja aprovado
+            if (emprestimoRequisicao.getAprovado()) {
                 emprestimoRequisicao
                         .setDescricaoResultado("Seu perfil atende aos requisitos, por isso o empréstimo foi aprovado.");
-            } else {
-                emprestimoRequisicao
-                        .setDescricaoResultado("Não autorizado pelo fato do valor de despesar ser maior que a renda.");
             }
-
-            if (perfilCliente.contains("Perfil de Baixo Risco")) {
-                System.out.println("Arrasou!");
-            }
-            System.out.println("perfil do meu cliente ******" + cliente.getPerfilCliente().getNomePerfil());
 
             // Salva o emprestimoRequisicao com valores calculados
             repository.save(emprestimoRequisicao);
@@ -342,7 +345,7 @@ public class EmprestimoRequisicaoService {
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         return currencyFormatter.format(valor);
     }
-    
+
     /* Retorna um pdf com base no id do resultado do empréstimo */
     public ByteArrayOutputStream geraPdfCpf(String cpf, Integer id)
             throws DocumentException, MalformedURLException, IOException {

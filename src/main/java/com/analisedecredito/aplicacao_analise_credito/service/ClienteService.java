@@ -190,10 +190,10 @@ public class ClienteService {
         if (cliente.getSpcSerasa()) {
             scoreBase -= 100;
         }
-        if (valorDespesa > 0.50 * valorRenda) {
+        if (valorDespesa > 0.30 * valorRenda) {
             scoreBase -= 200;
         }
-        if (valorDespesa < 0.30 * valorRenda) {
+        if (valorDespesa < 0.20 * valorRenda) {
             scoreBase += 100;
         }
 
