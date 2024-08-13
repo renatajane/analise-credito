@@ -23,6 +23,7 @@ public class ClienteDto {
     private Double patrimonioTotal;
     private Double despesaTotal;
     private Boolean spcSerasa;
+    private Double valorMaximoPreAprovado;
 
     // Construtor
     public ClienteDto() {
@@ -143,5 +144,13 @@ public class ClienteDto {
 
     public void setSpcSerasa(Boolean spcSerasa) {
         this.spcSerasa = spcSerasa;
+    }
+
+    public Double getValorMaximoPreAprovado() {
+        return valorMaximoPreAprovado;
+    }
+
+    public void setValorMaximoPreAprovado(Double valorMaximoPreAprovado) {
+        this.valorMaximoPreAprovado = valorMaximoPreAprovado;
     }
 }

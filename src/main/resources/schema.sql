@@ -55,20 +55,27 @@ CREATE TABLE IF NOT EXISTS cliente (
     autorizacao_lgpd BOOLEAN NOT NULL, 
     data_autorizacao_lgpd DATE NOT NULL, 
     spc_serasa BOOLEAN NOT NULL, 
-    id_perfil_cliente_fk INTEGER REFERENCES perfil_cliente (id_perfil_cliente) 
+    id_perfil_cliente_fk INTEGER REFERENCES perfil_cliente (id_perfil_cliente), 
+    valor_maximo_aprovado DOUBLE PRECISION
 );
 
 -- Verifica se a tabela cliente está vazia e insere dados se necessário
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa)
-SELECT 'João Silva', 12345655001, '1985-05-12', 'joaos.silva@example.com', '1111122111', 'Rua A, 123', true, '2024-07-12', 1, true
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, 
+data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa, valor_maximo_aprovado)
+SELECT 'João Silva', 12345655001, '1985-05-12', 'joaos.silva@example.com', '1111122111', 'Rua A, 123', 
+true, '2024-07-12', 1, true, 3000.00
 WHERE NOT EXISTS (SELECT 1 FROM cliente LIMIT 1);
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa)
-SELECT 'Maria Oliveira', 23880789012, '1990-06-15', 'marias.oliveira@example.com', '2222200222', 'Rua B, 456', true, '2024-05-12', 2, false
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, 
+data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa, valor_maximo_aprovado)
+SELECT 'Maria Oliveira', 23880789012, '1990-06-15', 'marias.oliveira@example.com', '2222200222', 'Rua B, 456', 
+true, '2024-05-12', 2, false, 5000.00
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Maria Oliveira');
 
-INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd, data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa)
-SELECT 'Pedro Santos', 39967000123, '1988-07-20', 'pedros.santos@example.com', '3333355333', 'Rua C, 789', true, '2024-07-23', 3, true
+INSERT INTO cliente (nome, cpf, data_nascimento, email, telefone, endereco, autorizacao_lgpd,
+ data_autorizacao_lgpd, id_perfil_cliente_fk, spc_serasa, valor_maximo_aprovado)
+SELECT 'Pedro Santos', 39967000123, '1988-07-20', 'pedros.santos@example.com', '3333355333', 'Rua C, 789', 
+true, '2024-07-23', 3, true, 2000.00
 WHERE NOT EXISTS (SELECT 1 FROM cliente WHERE nome = 'Pedro Santos');
 
 -- Criação da tabela de IofAtual

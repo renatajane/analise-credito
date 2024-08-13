@@ -64,6 +64,9 @@ public class Cliente {
     @Column(name = "spc_serasa", nullable = false)
     private boolean spcSerasa;
 
+    @Column(name= "valor_maximo_aprovado")
+    private Double valorMaximoPreAprovado;
+
     // Construtor
     public Cliente() {
 
@@ -163,6 +166,14 @@ public class Cliente {
 
     public void setSpcSerasa(boolean spcSerasa) {
         this.spcSerasa = spcSerasa;
+    }
+
+    public Double getValorMaximoPreAprovado() {
+        return valorMaximoPreAprovado;
+    }
+
+    public void setValorMaximoPreAprovado(Double valorMaximoPreAprovado) {
+        this.valorMaximoPreAprovado = valorMaximoPreAprovado;
     }
 
 }

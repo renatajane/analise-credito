@@ -233,6 +233,9 @@ public class EmprestimoRequisicaoService {
             clienteService.definePerfilCliente(emprestimoRequisicao.getCliente().getIdCliente());
             System.out.println("meu patrimonio +++++" + emprestimoRequisicao.getModalidadePagamento());
 
+            var a = clienteService.calculaValorPreAprovado(emprestimoRequisicao.getCliente().getIdCliente());
+            System.out.println("MEU VALOR PRE APROVADO" + a);
+
             System.out.println("MODALIDADE PAGAMENO*** +++++" + pagamentoOpt.get());
 
             // Decide se o empréstimo é aprovado com base no patrimônio do cliente
@@ -280,6 +283,9 @@ public class EmprestimoRequisicaoService {
 
                 // Atualiza o perfil do cliente após a nova requisição
                 clienteService.definePerfilCliente(emprestimoRequisicao.getCliente().getIdCliente());
+
+                var a = clienteService.calculaValorPreAprovado(emprestimoRequisicao.getCliente().getIdCliente());
+                System.out.println("MEU VALOR PRE APROVADO" + a);
 
                 return new EmprestimoRequisicaoDto(update);
             } else {
@@ -336,7 +342,7 @@ public class EmprestimoRequisicaoService {
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         return currencyFormatter.format(valor);
     }
-
+    
     /* Retorna um pdf com base no id do resultado do empréstimo */
     public ByteArrayOutputStream geraPdfCpf(String cpf, Integer id)
             throws DocumentException, MalformedURLException, IOException {

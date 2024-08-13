@@ -89,14 +89,18 @@ public class ClienteService {
         cliente.setTelefone(clienteDto.getTelefone());
         cliente.setSpcSerasa(clienteDto.getSpcSerasa());
 
+        cliente = repository.save(cliente);
+
         // Processa o beneficiado sem interromper o fluxo
+        definePerfilCliente(cliente.getIdCliente());
+        calculaValorPreAprovado(cliente.getIdCliente());
         BeneficiadoDto info = processarBeneficiado(clienteDto.getCpf());
+        var preAprovado = calculaValorPreAprovado(cliente.getIdCliente());
+        System.out.println("meu valor aprovadoooo +++++" + preAprovado);
         System.out.println("meu beneficiado CPF +++++" + info.getCpf());
         System.out.println("meu beneficiado Valor +++++" + info.getValorBeneficio());
 
         cliente = repository.save(cliente);
-
-        definePerfilCliente(cliente.getIdCliente());
 
         // if (clienteDto.getListaRenda() != null &&
         // !clienteDto.getListaRenda().isEmpty()) {
@@ -133,6 +137,30 @@ public class ClienteService {
 
         // Atualizando o cliente com o perfil
         // cliente = repository.save(cliente);
+    }
+
+    public Double calculaValorPreAprovado(Integer idCliente) {
+
+        Optional<Cliente> clienteOpt = repository.findById(idCliente);
+        if (!clienteOpt.isPresent()) {
+            throw new IllegalArgumentException("Cliente não encontrado");
+        }
+
+        Cliente cliente = clienteOpt.get();
+        Double rendaTotal = somaRenda(idCliente);
+        Double despesa = calculaDespesaTotal(idCliente);
+        Double valorMaximoPreAprovado = 0.0;
+        var perfilCliente = cliente.getPerfilCliente().getNomePerfil();
+
+        if (perfilCliente.contains("Perfil de Baixo Risco")) {
+            valorMaximoPreAprovado = (rendaTotal - despesa) * 3;
+        } else if (perfilCliente.contains("Perfil de Risco Moderado")) {
+            valorMaximoPreAprovado = (rendaTotal - despesa) * 2;
+        } else if (perfilCliente.contains("Perfil de Alto Risco")) {
+            valorMaximoPreAprovado = (rendaTotal - despesa) * 1.5;
+        }
+
+        return valorMaximoPreAprovado;
     }
 
     public BeneficiadoDto processarBeneficiado(String cpf) {
@@ -273,9 +301,9 @@ public class ClienteService {
         // Calcula a soma de todas as despesas do cliente
         Double despesaTotal = despesaRepository.findDespesaTotalCliente(cliente.getIdCliente());
 
-        // Verifica se o cliente tem requisições de empréstimo ativas
+        // Verifica se o cliente tem requisições de empréstimo ativo e aprovado
         List<EmprestimoRequisicao> emprestimosAtivos = requisicaoRepository
-                .findRequisicaoByIdCliente(cliente.getIdCliente());
+                .findRequisicaoByIdClienteAndStatus(cliente.getIdCliente(), true);
 
         // Soma os valores das parcelas das requisições ativas às despesas totais
         if (emprestimosAtivos != null && !emprestimosAtivos.isEmpty()) {
