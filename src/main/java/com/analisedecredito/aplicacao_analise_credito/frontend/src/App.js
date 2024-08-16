@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Footer from './componentes/Footer';
-
+import Header from "./componentes/Header/Header"
+import HomeHeader from "./componentes/Header/HomeHeader";
 
 function App() {
   return (
@@ -9,7 +9,8 @@ function App() {
       <Routes>
         {/* Adicione outras rotas conforme necessário */}
       </Routes>
-      <Footer />
+      <HomeHeader/>
+
     </div>
   );
 }
