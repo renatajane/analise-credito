@@ -1,9 +1,0 @@
-:root {
-    --background-color: #ffffff;
-    --text-color: #212121;
-  }
-  
-  .button_A {
-    background-color: var(--background-color);
-    color: var(--text-color);
-  }
