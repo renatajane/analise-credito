@@ -64,7 +64,7 @@ function Header() {
               <MenuButton />
             </div>
             <div className={styles.header_info}>
-              <div className={styles.header_title}>Gestão de Contribuintes</div>
+              <div className={styles.header_title}>Análise de Crédito</div>
             </div>
           </div>
         </div>
