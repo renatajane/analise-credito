@@ -13,7 +13,7 @@ const Home = () => {
 
             <div className={styles.container}>
                 <h1 className={styles.color}>Serviços</h1>
-                <div>
+                {/* <div>
                     <a href="http://192.168.37.8:8090/login">
                         <h3>Login</h3>
                     </a>
@@ -24,7 +24,7 @@ const Home = () => {
                         <h3>Cadastro</h3>
                     </a>
                     <span className="br-divider my-3"></span>
-                </div>
+                </div> */}
                 <div>
                     <a href="http://192.168.37.8:3000/">
                         <h3>Simular Operações de Crédito</h3>
