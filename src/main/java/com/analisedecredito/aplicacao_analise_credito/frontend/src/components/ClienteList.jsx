@@ -1,45 +1,63 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
-const ClientList = () => {
-  const [clients, setClients] = useState([]);
+const ClienteList = () => {
+    const [cpf, setCpf] = useState('');
+    const [requisicoes, setRequisicoes] = useState([]);
+    const [selectedRequisicao, setSelectedRequisicao] = useState(null);
 
-  useEffect(() => {
-    // Faz a requisição para obter a lista de clientes
-    axios.get("http://localhost:8080/cliente/list")
-      .then(response => {
-        setClients(response.data);
-      })
-      .catch(error => {
-        console.error("Houve um erro ao buscar a lista de clientes!", error);
-      });
-  }, []);
+    const handleCpfChange = (event) => {
+        setCpf(event.target.value);
+    };
 
-  return (
-    <div>
-      <h1>Lista de Clientes</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>CPF</th>
-            {/* Adicione mais colunas conforme necessário */}
-          </tr>
-        </thead>
-        <tbody>
-          {clients.map(client => (
-            <tr key={client.idCliente}>
-              <td>{client.idCliente}</td>
-              <td>{client.nome}</td>
-              <td>{client.cpf}</td>
-              {/* Adicione mais colunas conforme necessário */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    const handleSearch = async () => {
+        try {
+            const data = await fetchRequisicoesByCpf(cpf);
+            setRequisicoes(data);
+        } catch (error) {
+            console.error("Erro ao buscar requisições:", error);
+        }
+    };
+
+    const handleDownloadPdf = async () => {
+        if (selectedRequisicao) {
+            try {
+                await downloadPdfByCpfAndId(cpf, selectedRequisicao.id);
+            } catch (error) {
+                console.error("Erro ao baixar PDF:", error);
+            }
+        } else {
+            alert("Selecione uma requisição primeiro.");
+        }
+    };
+
+    return (
+        <div>
+            <input
+                type="text"
+                value={cpf}
+                onChange={handleCpfChange}
+                placeholder="Digite o CPF"
+            />
+            <button onClick={handleSearch}>Buscar Requisições</button>
+
+            <ul>
+                {requisicoes.map((req) => (
+                    <li key={req.id}>
+                        <input
+                            type="radio"
+                            name="requisicao"
+                            value={req.id}
+                            onChange={() => setSelectedRequisicao(req)}
+                        />
+                        {req.descricao}
+                    </li>
+                ))}
+            </ul>
+
+            <button onClick={handleDownloadPdf}>Gerar PDF</button>
+        </div>
+    );
 };
 
-export default ClientList;
+export default ClienteList;

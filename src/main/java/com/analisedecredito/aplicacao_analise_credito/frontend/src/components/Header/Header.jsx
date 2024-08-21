@@ -57,12 +57,12 @@ function Header() {
               </div>
             </div>
           </div>
-          <div class="header-login">
-            <div class="header-sign-in">
-              <button class="br-sign-in small" type="button" data-trigger="login"><i class="fas fa-user" aria-hidden="true"></i><span class="d-sm-inline">Entrar</span>
+          <div className="header-login">
+            <div className="header-sign-in">
+              <button className="br-sign-in small" type="button" data-trigger="login"><i className="fas fa-user" aria-hidden="true"></i><span className="d-sm-inline">Entrar</span>
               </button>
             </div>
-            <div class="header-avatar"></div>
+            <div className="header-avatar"></div>
           </div>
         </div>
         <div className={styles.header_bottom}>

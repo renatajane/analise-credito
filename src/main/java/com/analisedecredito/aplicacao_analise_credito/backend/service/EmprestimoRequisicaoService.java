@@ -346,6 +346,23 @@ public class EmprestimoRequisicaoService {
         return currencyFormatter.format(valor);
     }
 
+    /* Retorna requisições por cpf */
+    /* Retorna uma lista de requisições de empréstimos por CPF do cliente */
+    public List<EmprestimoRequisicaoReadDto> listPorCpf(String cpf) {
+        // Busca o cliente pelo CPF
+        // Cliente cliente = clienteRepository.findByCpf(cpf)
+        //         .orElseThrow(() -> new ResourceNotFoundException("Cliente com CPF " + cpf + " não encontrado."));
+        
+        // Busca as requisições de empréstimo do cliente
+        List<EmprestimoRequisicao> listaEmprestimo = repository.findByClienteCpf(cpf);
+        
+        // Converte para DTO
+        return listaEmprestimo.stream()
+                .map(EmprestimoRequisicaoReadDto::new)
+                .collect(Collectors.toList());
+    }
+    
+    
     /* Retorna um pdf com base no id do resultado do empréstimo */
     public ByteArrayOutputStream geraPdfCpf(String cpf, Integer id)
             throws DocumentException, MalformedURLException, IOException {

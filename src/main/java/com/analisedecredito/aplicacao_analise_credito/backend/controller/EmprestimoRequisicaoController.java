@@ -93,6 +93,15 @@ public class EmprestimoRequisicaoController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Retorna requisições de empréstimo por CPF", description = "Busca e retorna uma lista de requisições de empréstimo associadas ao CPF fornecido.", parameters = @Parameter(name = "cpf", description = "CPF do cliente", example = "123.456.789-00", required = true), responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de requisições retornada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Nenhuma requisição encontrada para o CPF fornecido")
+    })
+    @GetMapping("/list-by-cpf")
+    public List<EmprestimoRequisicaoReadDto> listByCpf(@RequestParam("cpf") String cpf) {
+        return service.listPorCpf(cpf);
+    }
+
     @Operation(summary = "Retorna um PDF com base no CPF do cliente", description = "Este endpoint gera um PDF contendo os resultados de empréstimos de um cliente específico, baseado no CPF fornecido.", parameters = {
             @Parameter(name = "cpf", description = "CPF do cliente", example = "12345678900", required = true),
             @Parameter(name = "id", description = "ID do resultado de empréstimo", example = "1", required = true)
