@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ButtonMenu.module.css";
+import { Link } from "react-router-dom";
 
 // const { REACT_APP_FRONT_URL } = import.meta.env;
 
@@ -46,25 +47,24 @@ const MenuButton = ({ isOpenProp }) => {
         </button>
       </div>
       <div
-        className={`br-menu push active ${isOpen ? "" : "d-none"} ${
-          styles.menu
-        }`}
+        className={`br-menu push active ${isOpen ? "" : "d-none"} ${styles.menu
+          }`}
         id="main-navigation"
       >
         <div className="menu-panel">
           {isOpen && (
             <nav className="menu-body" role="tree">
               <div className="menu-folder">
-                <a
+                <Link
                   className="menu-item"
                   role="treeitem"
-                  href = "http://192.168.37.8:8090/"
+                  to="/"
                 >
                   <span className="icon">
-                    <i className="fas fa-bell" aria-hidden="true"></i>
+                    <i className="fas fa-home" aria-hidden="true"></i>
                   </span>
                   <span className="content">Home</span>
-                </a>
+                </Link>
                 <a
                   className="menu-item"
                   role="treeitem"
@@ -80,7 +80,7 @@ const MenuButton = ({ isOpenProp }) => {
                   <li>
                     <a
                       className="menu-item"
-                      href = "http://192.168.37.8:8090/cadastroContribuintes"
+                      href="http://192.168.37.8:8090/cadastroContribuintes"
                       role="treeitem"
                     >
                       <span className="icon">
@@ -92,7 +92,7 @@ const MenuButton = ({ isOpenProp }) => {
                   <li>
                     <a
                       className="menu-item"
-                      href = "http://192.168.37.8:8090/cadastro"
+                      href="http://192.168.37.8:8090/cadastro"
                       role="treeitem"
                     >
                       <span className="icon">
@@ -104,7 +104,7 @@ const MenuButton = ({ isOpenProp }) => {
                   <li>
                     <a
                       className="menu-item"
-                      href = "http://192.168.37.8:8090/atualizaCadastro"
+                      href="http://192.168.37.8:8090/atualizaCadastro"
                       role="treeitem"
                     >
                       <span className="icon">
@@ -116,7 +116,7 @@ const MenuButton = ({ isOpenProp }) => {
                   <li>
                     <a
                       className="menu-item"
-                      href = "http://192.168.37.8:8090/infoContribuicao"
+                      href="http://192.168.37.8:8090/infoContribuicao"
                       role="treeitem"
                     >
                       <span className="icon">
