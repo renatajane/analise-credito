@@ -1,34 +1,20 @@
 import React from 'react';
+import Relatorios from './Relatorios'; 
+import ActionButtons from './ActionButtons';
 
-const EmprestimoRequisicaoList = ({ requisicoes, onPrint }) => {
-  if (requisicoes.length === 0) {
-    return <p>Nenhuma requisição encontrada.</p>;
-  }
-
-  if (requisicoes.length === 1) {
-    // Se houver apenas uma requisição, mostre-a diretamente
-    const req = requisicoes[0];
-    return (
-      <div>
-        <h3>Requisição Única</h3>
-        <p>{req.descricao}</p>
-        <button onClick={() => onPrint(req.idRequisicao)}>Imprimir</button>
-      </div>
-    );
-  }
-
-  // Se houver várias requisições, mostre a lista
+const EmprestimoRequisicaoList = () => {
   return (
-    <div>
-      <h3>Lista de Requisições</h3>
-      <ul>
-        {requisicoes.map(req => (
-          <li key={req.idRequisicao}>
-            <span>{req.descricao} </span>
-            <button onClick={() => onPrint(req.idRequisicao)}>Imprimir</button>
-          </li>
-        ))}
-      </ul>
+    <div className="row">
+      <div className="col-sm-12 mb-3 d-flex justify-content-end">
+        <Relatorios
+          id="input-cpf"
+          placeholder="Digite somente números"
+          feedbackMessage="Mensagem de Sucesso"
+          feedbackType="success"
+          label="Nome de CPF:"
+        />
+      </div>
+      <ActionButtons />
     </div>
   );
 };
