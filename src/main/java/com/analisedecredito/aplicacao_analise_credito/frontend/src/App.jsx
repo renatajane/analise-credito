@@ -3,7 +3,8 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home";
 import ClientList from './components/ClienteList';
-import Relatorios from "./pages/Relatorios"
+import BuscarRequisicao from './pages/BuscarRequisicao'
+import ListarRequisicoes from './pages/ListarRequisicoes';
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/clientes" element={<ClientList />} />
-        <Route path="/relatorios" element={<Relatorios />} />
+        <Route path="/listarRequisicoes" element={<ListarRequisicoes/>}/>
+        <Route path="/buscarRequisicao" element={<BuscarRequisicao />} />
       </Routes>
       <Footer />
     </BrowserRouter>

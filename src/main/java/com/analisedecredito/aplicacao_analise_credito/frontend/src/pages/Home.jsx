@@ -38,7 +38,7 @@ const Home = () => {
                     </a>
                 </div>
                 <div>
-                    <Link to="/relatorios">
+                    <Link to="/buscarRequisicao">
                         <h3>Gerar Relatórios</h3>
                         <span className="br-divider my-3"></span>
                     </Link>
