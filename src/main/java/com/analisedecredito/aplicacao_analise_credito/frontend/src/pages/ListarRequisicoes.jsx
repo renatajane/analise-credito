@@ -9,6 +9,8 @@ const ListarRequisicoes = () => {
   const [inicio, setInicio] = useState('');
   const [fim, setFim] = useState('');
   const [expandedItem, setExpandedItem] = useState(null);
+  const [showInput, setShowInput] = useState(false);
+  const [inputId, setInputId] = useState('');
 
   useEffect(() => {
     if (location.state && location.state.requisicoes) {
@@ -20,10 +22,20 @@ const ListarRequisicoes = () => {
   }, [location.state, navigate]);
 
   const handleGeneratePdfById = () => {
-    if (idRequisicao) {
-      window.open(`http://localhost:8080/emprestimo-requisicao/pdf/${idRequisicao}`, '_blank');
+    setShowInput(true);
+  };
+
+  const handleInputChange = (e) => {
+    setInputId(e.target.value);
+  };
+
+  const handleGeneratePdf = () => {
+    if (inputId) {
+      window.open(`http://localhost:8080/emprestimo-requisicao/pdf/${cpf}/${inputId}`, '_blank');
+      setShowInput(false);
+      setInputId('');
     } else {
-      alert('Você precisa selecionar uma requisição.');
+      alert('Você precisa inserir um ID.');
     }
   };
 
@@ -88,6 +100,25 @@ const ListarRequisicoes = () => {
           </React.Fragment>
         ))}
       </div>
+
+      {showInput && (
+        <div className="mb-4">
+          <input
+            type="text"
+            value={inputId}
+            onChange={handleInputChange}
+            placeholder="Digite o ID da requisição"
+            className="form-control mb-2"
+          />
+          <button className="br-button secondary mx-2 mb-2" type="button" onClick={handleGeneratePdf}>
+            Gerar PDF
+          </button>
+          <button className="br-button secondary mx-2 mb-2" type="button" onClick={() => setShowInput(false)}>
+            Cancelar
+          </button>
+        </div>
+      )}
+
       <div className="p-3">
         <button className="br-button secondary mx-2 mb-4" type="button" onClick={handleGeneratePdfById}>
           Gerar PDF por ID
