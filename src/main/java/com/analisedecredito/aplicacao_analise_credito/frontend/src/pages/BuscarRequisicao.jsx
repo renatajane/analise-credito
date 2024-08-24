@@ -19,8 +19,7 @@ const BuscarRequisicao = () => {
         .then(response => {
           const data = Array.isArray(response.data) ? response.data : [];
           if (data.length > 0) {
-            // Navegar para a página ListarRequisicoes com as requisições no estado
-            navigate('/listarRequisicoes', { state: { requisicoes: data } });
+            navigate('/listarRequisicoes', { state: { cpf: cpfNumerico, requisicoes: data } });
           } else {
             setError('Nenhuma requisição encontrada para o CPF informado.');
           }
@@ -42,26 +41,30 @@ const BuscarRequisicao = () => {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="container text-center">
-        <div className="col-sm-8 col-lg-5 mx-auto mt-5">
-          <div className="br-input mb-4">
-            <label htmlFor="cpf">CPF:</label>
-            <input
-              id="cpf"
-              type="text"
-              placeholder="Digite o CPF"
-              value={cpf}
-              onChange={handleCpfChange}
-              maxLength={14}
-              className="form-control"
-            />
+        <div className="col-sm-10 col-lg-7 mb-3 mx-auto mt-5">
+          <div className="br-input input-inline">
+            <div className="input-label">
+              <label className="text-nowrap" htmlFor="cpf">CPF</label>
+            </div>
+            <div className="input-content">
+              <input
+                id="cpf"
+                type="text"
+                placeholder="Digite o CPF"
+                value={cpf}
+                onChange={handleCpfChange}
+                maxLength={14}
+                className="form-control"
+              />
+            </div>
           </div>
-          <button className="br-button secondary mb-4" type="button" onClick={handleSearch}>
+          <button className="br-button secondary mb-4 mt-3" type="button" onClick={handleSearch}>
             Buscar Requisições
           </button>
         </div>
-        
+
         {loading && <p className="mt-4">Carregando...</p>}
-        
+
         {error && (
           <div className="br-message danger mt-4">
             <div className="icon">

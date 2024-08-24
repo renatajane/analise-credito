@@ -11,6 +11,7 @@ const ListarRequisicoes = () => {
   const [expandedItem, setExpandedItem] = useState(null);
   const [showInput, setShowInput] = useState(false);
   const [inputId, setInputId] = useState('');
+  const cpf = location.state?.cpf;  // Extraindo o CPF do estado
 
   useEffect(() => {
     if (location.state && location.state.requisicoes) {
@@ -30,12 +31,12 @@ const ListarRequisicoes = () => {
   };
 
   const handleGeneratePdf = () => {
-    if (inputId) {
+    if (inputId && cpf) {
       window.open(`http://localhost:8080/emprestimo-requisicao/pdf/${cpf}/${inputId}`, '_blank');
       setShowInput(false);
       setInputId('');
     } else {
-      alert('Você precisa inserir um ID.');
+      alert('Você precisa inserir um ID e garantir que o CPF esteja disponível.');
     }
   };
 
@@ -44,15 +45,11 @@ const ListarRequisicoes = () => {
   };
 
   const handleGeneratePdfByPeriod = () => {
-    if (inicio && fim) {
-      window.open(`http://localhost:8080/emprestimo-requisicao/pdf/periodo?inicio=${inicio}&fim=${fim}`, '_blank');
+    if (inicio && fim && cpf) {
+      window.open(`http://localhost:8080/emprestimo-requisicao/pdf/periodo?inicio=${inicio}&fim=${fim}&cpf=${cpf}`, '_blank');
     } else {
-      alert('Datas de início e fim são necessárias.');
+      alert('Datas de início e fim, além do CPF, são necessários.');
     }
-  };
-
-  const handleSelectId = (id) => {
-    setIdRequisicao(id);
   };
 
   const handleToggleExpand = (id) => {
@@ -102,20 +99,31 @@ const ListarRequisicoes = () => {
       </div>
 
       {showInput && (
-        <div className="mb-4">
-          <input
-            type="text"
-            value={inputId}
-            onChange={handleInputChange}
-            placeholder="Digite o ID da requisição"
-            className="form-control mb-2"
-          />
-          <button className="br-button secondary mx-2 mb-2" type="button" onClick={handleGeneratePdf}>
-            Gerar PDF
-          </button>
-          <button className="br-button secondary mx-2 mb-2" type="button" onClick={() => setShowInput(false)}>
-            Cancelar
-          </button>
+        <div className="col-sm-10 col-lg-7 mb-3 mx-auto">
+          <div className="br-input input-inline">
+            <div className="input-label">
+              <label className="text-nowrap" htmlFor="input-id">Digite o ID da Requisição</label>
+            </div>
+            <div className="input-content">
+              <input
+                id="input-id"
+                type="text"
+                value={inputId}
+                onChange={handleInputChange}
+                placeholder="Digite o ID da requisição"
+                className="form-control"
+                maxLength={10} // Ajuste conforme necessário
+              />
+            </div>
+          </div>
+          <div className="mt-3">
+            <button className="br-button secondary mx-2 mb-2" type="button" onClick={handleGeneratePdf}>
+              Gerar PDF
+            </button>
+            <button className="br-button secondary mx-2 mb-2" type="button" onClick={() => setShowInput(false)}>
+              Cancelar
+            </button>
+          </div>
         </div>
       )}
 
@@ -126,8 +134,30 @@ const ListarRequisicoes = () => {
         <button className="br-button secondary mx-2 mb-4" type="button" onClick={handleGeneratePdfByPeriod}>
           Gerar PDF por Período
         </button>
+        <div className="row justify-content-center align-items-center mb-4">
+          <div className="col-auto">
+            <label htmlFor="inicio">Início:</label>
+            <input
+              id="inicio"
+              type="date"
+              value={inicio}
+              onChange={(e) => setInicio(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="col-auto">
+            <label htmlFor="fim">Fim:</label>
+            <input
+              id="fim"
+              type="date"
+              value={fim}
+              onChange={(e) => setFim(e.target.value)}
+              className="form-control"
+            />
+          </div>
+        </div>
         <button className="br-button secondary mx-2 mb-4" type="button" onClick={handleSearchAnotherCpf}>
-          Buscar outro CPF
+          Buscar Outro CPF
         </button>
       </div>
     </div>
