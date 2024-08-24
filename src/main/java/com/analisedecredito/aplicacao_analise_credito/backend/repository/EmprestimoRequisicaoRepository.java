@@ -31,4 +31,12 @@ public interface EmprestimoRequisicaoRepository extends JpaRepository<Emprestimo
     @Query("SELECT a FROM EmprestimoRequisicao a WHERE a.cliente.idCliente = :clienteId AND a.aprovado = true")
     List<EmprestimoRequisicao> findRequisicaoByIdClienteAndAprovado(@Param("clienteId") Integer clienteId);
 
+
+     // Adicionada consulta para CPF e período
+     @Query("SELECT er FROM EmprestimoRequisicao er JOIN er.cliente c WHERE c.cpf = :cpf AND er.dataRequisicao >= :inicio AND er.dataRequisicao <= :fim")
+     List<EmprestimoRequisicao> findByCpfAndDataRequisicao(
+         @Param("cpf") String cpf,
+         @Param("inicio") Date inicio,
+         @Param("fim") Date fim
+     );
 }

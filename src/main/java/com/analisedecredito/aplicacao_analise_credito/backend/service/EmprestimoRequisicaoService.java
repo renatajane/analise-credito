@@ -14,7 +14,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.EmprestimoRequisicaoDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.EmprestimoRequisicaoReadDto;
@@ -386,12 +388,14 @@ public class EmprestimoRequisicaoService {
     }
 
     /* Gera um PDF com base em um período de datas */
-    public ByteArrayOutputStream geraPdfPorPeriodo(Date inicio, Date fim)
-            throws DocumentException, MalformedURLException, IOException {
-        List<EmprestimoRequisicao> resultados = repository.findByDataCriacao(inicio, fim);
+    /* Gera um PDF com base em um CPF e um período de datas */
+    public ByteArrayOutputStream geraPdfPorCpfEPeriodo(String cpf, Date inicio, Date fim)
+            throws DocumentException, IOException {
+        List<EmprestimoRequisicao> resultados = repository.findByCpfAndDataRequisicao(cpf, inicio, fim);
 
         if (resultados.isEmpty()) {
-            throw new ResourceNotFoundException("Nenhum resultado de empréstimo encontrado no período: " +
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum resultado de empréstimo encontrado para o CPF " +
+                    cpf + " no período: " +
                     new SimpleDateFormat("yyyy-MM-dd").format(inicio) + " a " +
                     new SimpleDateFormat("yyyy-MM-dd").format(fim));
         }
@@ -400,7 +404,6 @@ public class EmprestimoRequisicaoService {
                 .map(EmprestimoRequisicaoReadDto::new)
                 .collect(Collectors.toList());
 
-        return utilsGeral.criaPdfPeriodo(dtos);
+        return utilsGeral.criaPdfPorPeriodo(dtos, inicio, fim);
     }
-
 }

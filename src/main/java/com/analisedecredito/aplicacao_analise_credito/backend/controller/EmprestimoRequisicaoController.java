@@ -136,16 +136,18 @@ public class EmprestimoRequisicaoController {
             @ApiResponse(responseCode = "400", description = "Parâmetros inválidos fornecidos")
     })
     @GetMapping("/pdf/periodo")
-    public void getPdfByPeriod(
+    public void getPdfByCpfAndPeriod(
+            @RequestParam("cpf") String cpf,
             @RequestParam("inicio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
             @RequestParam("fim") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fim,
             HttpServletResponse response) throws DocumentException, IOException {
+
         response.setHeader("Expires", "0");
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Pragma", "public");
         response.setContentType("application/pdf");
 
-        ByteArrayOutputStream pdf = service.geraPdfPorPeriodo(inicio, fim);
+        ByteArrayOutputStream pdf = service.geraPdfPorCpfEPeriodo(cpf, inicio, fim);
 
         if (pdf != null) {
             response.setContentLength(pdf.size());
@@ -153,4 +155,5 @@ public class EmprestimoRequisicaoController {
             response.getOutputStream().flush();
         }
     }
+
 }

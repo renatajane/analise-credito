@@ -169,16 +169,7 @@ public class CriaPdf extends PdfPageEventHelper {
             addTableResultado(tabelaResultado, "Valor final a ser pago:",
                     formataValor(valorTotal), BaseColor.BLACK);
         }
-        // PENSAR NOS JUROS********
-        // O que o PDF deve mostrar://
-        // resultado das operações de crédito inclusas (se aprovadas ou não)
-        // com os dados principais dos clientes
-        // ***datas da aprovação****, modalidades do empréstimo, **prazos, taxas de
-        // juros******,
-        // tributos,
-        // valores aprovados para crédito e valores finais a serem pagos
-
-        // Adiciona a tabela ao documento PDF
+ 
         documentoPdf.add(tabelaResultado);
     }
 
