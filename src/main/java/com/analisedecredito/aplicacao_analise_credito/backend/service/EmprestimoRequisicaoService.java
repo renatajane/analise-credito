@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -387,17 +388,18 @@ public class EmprestimoRequisicaoService {
         return utils.criaPdfImprimir(dto);
     }
 
-    /* Gera um PDF com base em um período de datas */
     /* Gera um PDF com base em um CPF e um período de datas */
     public ByteArrayOutputStream geraPdfPorCpfEPeriodo(String cpf, Date inicio, Date fim)
             throws DocumentException, IOException {
+        fim = ajustarFimDoDia(fim);
         List<EmprestimoRequisicao> resultados = repository.findByCpfAndDataRequisicao(cpf, inicio, fim);
 
         if (resultados.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum resultado de empréstimo encontrado para o CPF " +
-                    cpf + " no período: " +
-                    new SimpleDateFormat("yyyy-MM-dd").format(inicio) + " a " +
-                    new SimpleDateFormat("yyyy-MM-dd").format(fim));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Nenhum resultado de empréstimo encontrado para o CPF " +
+                            cpf + " no período: " +
+                            new SimpleDateFormat("yyyy-MM-dd").format(inicio) + " a " +
+                            new SimpleDateFormat("yyyy-MM-dd").format(fim));
         }
 
         List<EmprestimoRequisicaoReadDto> dtos = resultados.stream()
@@ -405,5 +407,15 @@ public class EmprestimoRequisicaoService {
                 .collect(Collectors.toList());
 
         return utilsGeral.criaPdfPorPeriodo(dtos, inicio, fim);
+    }
+
+    private Date ajustarFimDoDia(Date data) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        return cal.getTime();
     }
 }
