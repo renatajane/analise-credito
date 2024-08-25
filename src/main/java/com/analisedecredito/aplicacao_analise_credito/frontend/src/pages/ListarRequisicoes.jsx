@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styles from './ListarRequisicoes.module.css'; 
+import styles from './ListarRequisicoes.module.css';
 import FormatDate from "../utils/formatDate"
+import FormatValor from "../utils/formatCurrency"
 
 const ListarRequisicoes = () => {
   const location = useLocation();
@@ -15,13 +16,13 @@ const ListarRequisicoes = () => {
   const [showPeriodInputs, setShowPeriodInputs] = useState(false);
   const [inputId, setInputId] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const cpf = location.state?.cpf; 
+  const cpf = location.state?.cpf;
 
   useEffect(() => {
     if (location.state && location.state.requisicoes) {
+      console.log('Requisições recebidas:', location.state.requisicoes);
       setRequisicoes(location.state.requisicoes);
     } else {
-      // Redirecionar para a página de busca se não houver estado
       navigate('/buscarRequisicao');
     }
   }, [location.state, navigate]);
@@ -102,14 +103,14 @@ const ListarRequisicoes = () => {
   };
 
   return (
-    <div className={styles.container}> {/* Adicione a classe CSS aqui */}
+    <div className={styles.container}>
       <div className="text-center">
         <div className="br-list" role="list">
           <div className="header">
             <div className="title">Requisições</div>
           </div>
           <span className="br-divider"></span>
-          {requisicoes.map((req) => (            
+          {requisicoes.map((req) => (
             <React.Fragment key={req.idRequisicao}>
               <div className="br-item" role="listitem" data-toggle="collapse" data-target={`l${req.idRequisicao}`}>
                 <div className="content" onClick={() => handleToggleExpand(req.idRequisicao)}>
@@ -128,7 +129,14 @@ const ListarRequisicoes = () => {
                 <div className="br-item" role="listitem">
                   <div className="row align-items-center">
                     <div className="col-auto"><i className="fas fa-calendar-alt" aria-hidden="true"></i></div>
-                    <div className="col">Data da Requisição: {FormatDate(req.dataResultado)}</div>
+                    <div className="col">Data da Requisição: {FormatDate(req.dataRequisicao)}</div>
+                  </div>
+                </div>
+                <span className="br-divider"></span>
+                <div className="br-item" role="listitem">
+                  <div className="row align-items-center">
+                    <div className="col-auto"><i className="fas fa-calendar-check" aria-hidden="true"></i></div>
+                    <div className="col">Data do Resultado: {FormatDate(req.dataResultado)}</div>
                   </div>
                 </div>
                 <span className="br-divider"></span>
@@ -141,29 +149,57 @@ const ListarRequisicoes = () => {
                 <span className="br-divider"></span>
                 <div className="br-item" role="listitem">
                   <div className="row align-items-center">
-                    <div className="col-auto"><i className="fas fa-calendar-alt" aria-hidden="true"></i></div>
-                    <div className="col">Modalidade: {FormatDate(req.emprestimoModalidade)}</div>
+                    <div className="col-auto"><i className="fas fa-user" aria-hidden="true"></i></div>
+                    <div className="col">Cliente: {req.cliente.nome}</div>
                   </div>
                 </div>
                 <span className="br-divider"></span>
                 <div className="br-item" role="listitem">
                   <div className="row align-items-center">
-                    <div className="col-auto"><i className="fas fa-calendar-alt" aria-hidden="true"></i></div>
-                    <div className="col">Objetivo do empréstimo: {}</div>
+                    <div className="col-auto"><i className="fas fa-calendar" aria-hidden="true"></i></div>
+                    <div className="col">Modalidade do Empréstimo: {req.emprestimoModalidade.descricaoModalidade}</div>
                   </div>
                 </div>
                 <span className="br-divider"></span>
                 <div className="br-item" role="listitem">
                   <div className="row align-items-center">
-                    <div className="col-auto"><i className="fas fa-calendar-alt" aria-hidden="true"></i></div>
-                    <div className="col">Data da Requisição: {FormatDate(req.dataResultado)}</div>
+                    <div className="col-auto"><i className="fas fa-bullseye" aria-hidden="true"></i></div>
+                    <div className="col">Objetivo: {req.emprestimoObjetivo.descricaoObjetivo}</div>
                   </div>
                 </div>
                 <span className="br-divider"></span>
                 <div className="br-item" role="listitem">
                   <div className="row align-items-center">
-                    <div className="col-auto"><i className="fas fa-calendar-alt" aria-hidden="true"></i></div>
-                    <div className="col">Data da Requisição: {FormatDate(req.dataResultado)}</div>
+                    <div className="col-auto"><i className="fas fa-clock" aria-hidden="true"></i></div>
+                    <div className="col">Urgência: {req.emprestimoUrgencia.prazoUrgencia}</div>
+                  </div>
+                </div>
+                <span className="br-divider"></span>
+                <div className="br-item" role="listitem">
+                  <div className="row align-items-center">
+                    <div className="col-auto"><i className="fas fa-dollar-sign" aria-hidden="true"></i></div>
+                    <div className="col">Valor Requerido: {FormatValor(req.valorRequerido)}</div>
+                  </div>
+                </div>
+                <span className="br-divider"></span>
+                <div className="br-item" role="listitem">
+                  <div className="row align-items-center">
+                    <div className="col-auto"><i className="fas fa-dollar-sign" aria-hidden="true"></i></div>
+                    <div className="col">Valor Total com Juros: {FormatValor(req.valorTotal)}</div>
+                  </div>
+                </div>
+                <span className="br-divider"></span>
+                <div className="br-item" role="listitem">
+                  <div className="row align-items-center">
+                    <div className="col-auto"><i className="fas fa-calculator" aria-hidden="true"></i></div>
+                    <div className="col">Valor da Parcela: {FormatValor(req.valorParcela)}</div>
+                  </div>
+                </div>
+                <span className="br-divider"></span>
+                <div className="br-item" role="listitem">
+                  <div className="row align-items-center">
+                    <div className="col-auto"><i className="fas fa-calendar-day" aria-hidden="true"></i></div>
+                    <div className="col">Prazo (Meses): {req.prazoMes}</div>
                   </div>
                 </div>
                 <span className="br-divider"></span>
