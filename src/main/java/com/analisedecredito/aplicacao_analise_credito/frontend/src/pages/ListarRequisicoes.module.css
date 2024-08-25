@@ -1,0 +1,11 @@
+.container {
+    max-width: 1200px; /* Largura máxima para o container */
+    margin: 0 auto; /* Centraliza o container horizontalmente */
+    padding: 20px; /* Adiciona algum espaçamento interno */
+    background-color: #f8f9fa; /* Cor de fundo leve */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
+  }
+
+  
+  
