@@ -32,6 +32,8 @@ public class CriaPdf extends PdfPageEventHelper {
     Font boldFontTitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.BLACK);
     Font normalFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.BLACK);
     Font footerFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.GRAY);
+    int hex = 0x071D41; 
+    BaseColor colorBackground = new BaseColor((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
 
     public ByteArrayOutputStream criaPdfImprimir(EmprestimoRequisicaoReadDto emprestimoRequisicao)
             throws DocumentException, FileNotFoundException {
@@ -72,7 +74,7 @@ public class CriaPdf extends PdfPageEventHelper {
                 new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE)));
         cellTitulo.setColspan(2);
         cellTitulo.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellTitulo.setBackgroundColor(new BaseColor(35, 48, 43));
+        cellTitulo.setBackgroundColor(colorBackground);
         cellTitulo.setPadding(10f);
         tabelaRequerente.addCell(cellTitulo);
 
@@ -131,7 +133,7 @@ public class CriaPdf extends PdfPageEventHelper {
                 new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE)));
         cellTitulo.setColspan(2);
         cellTitulo.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellTitulo.setBackgroundColor(new BaseColor(35, 48, 43));
+        cellTitulo.setBackgroundColor(colorBackground);
         cellTitulo.setPadding(10f);
         tabelaResultado.addCell(cellTitulo);
 

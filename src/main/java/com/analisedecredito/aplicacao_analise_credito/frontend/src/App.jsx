@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import ClientList from './components/ClienteList';
 import BuscarRequisicao from './pages/BuscarRequisicao'
 import ListarRequisicoes from './pages/ListarRequisicoes';
+import StatusRequisicao from './pages/StatusRequisicao';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/clientes" element={<ClientList />} />
         <Route path="/listarRequisicoes" element={<ListarRequisicoes/>}/>
         <Route path="/buscarRequisicao" element={<BuscarRequisicao />} />
+        <Route path="/statusRequisicao" element={<StatusRequisicao/>} />
       </Routes>
       <Footer />
     </BrowserRouter>

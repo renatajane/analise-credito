@@ -49,3 +49,64 @@ body {
     }
   }
   
+  .container {
+    max-width: 90%; /* Ajusta a largura máxima para ocupar mais espaço */
+    margin: 30px auto;
+    padding: 5em;
+    text-align: center;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    background-color: #fbfbfb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #0c326f;
+    overflow-x: auto; /* Permite que a tabela se expanda horizontalmente se necessário */
+}
+
+.services {
+    margin: -60px auto;
+    padding: 7em;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #0c326f;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Permite que a tabela se expanda horizontalmente se necessário */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f2f2f2;
+}
+
+@media (max-width: 758px) {
+    .container {
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 2em;
+    }
+
+    .services {
+        margin: -30px auto;
+        padding: 3em;
+    }
+
+    .table-container {
+        padding: 1em;
+    }
+}

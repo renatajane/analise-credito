@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ButtonMenu.module.css";
-import { Link } from "react-router-dom";
-
-// const { REACT_APP_FRONT_URL } = import.meta.env;
+import { Link, useLocation } from "react-router-dom";
 
 const MenuButton = ({ isOpenProp }) => {
   const [isOpen, setIsOpen] = useState(isOpenProp || false);
   const [contribuintesOpen, setContribuintesOpen] = useState(false);
-  const [dependentesOpen, setDependentesOpen] = useState(false);
+  const [statusOpen, setStatusOpen] = useState(false);
   const [arvoreOpen, setArvoreOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -16,12 +15,12 @@ const MenuButton = ({ isOpenProp }) => {
 
   const toggleContribuintes = () => {
     setContribuintesOpen(!contribuintesOpen);
-    setDependentesOpen(false);
+    setStatusOpen(false);
     setArvoreOpen(false);
   };
 
-  const toggleDependentes = () => {
-    setDependentesOpen(!dependentesOpen);
+  const toggleStatus = () => {
+    setStatusOpen(!statusOpen);
     setContribuintesOpen(false);
     setArvoreOpen(false);
   };
@@ -29,8 +28,16 @@ const MenuButton = ({ isOpenProp }) => {
   const toggleArvore = () => {
     setArvoreOpen(!arvoreOpen);
     setContribuintesOpen(false);
-    setDependentesOpen(false);
+    setStatusOpen(false);
   };
+
+  useEffect(() => {
+    // Fechar o menu e submenus ao mudar de rota
+    setIsOpen(false);
+    setContribuintesOpen(false);
+    setStatusOpen(false);
+    setArvoreOpen(false);
+  }, [location]);
 
   return (
     <div className={styles.menuContainer}>
@@ -47,8 +54,7 @@ const MenuButton = ({ isOpenProp }) => {
         </button>
       </div>
       <div
-        className={`br-menu push active ${isOpen ? "" : "d-none"} ${styles.menu
-          }`}
+        className={`br-menu push active ${isOpen ? "" : "d-none"} ${styles.menu}`}
         id="main-navigation"
       >
         <div className="menu-panel">
@@ -136,38 +142,26 @@ const MenuButton = ({ isOpenProp }) => {
                 <a
                   className="menu-item"
                   role="treeitem"
-                  onClick={toggleDependentes}
+                  onClick={toggleStatus}
                   style={{ cursor: "pointer" }}
                 >
                   <span className="icon">
                     <i className="fas fa-bell" aria-hidden="true"></i>
                   </span>
-                  <span className="content">Dependentes</span>
+                  <span className="content">Situação Operação de Crédito</span>
                 </a>
-                <ul className={`${dependentesOpen ? "" : "d-none"}`}>
+                <ul className={`${statusOpen ? "" : "d-none"}`}>
                   <li>
-                    <a
+                    <Link
                       className="menu-item"
-                      href="http://192.168.37.8:8090/cadastroDependentes"
+                      to="/statusRequisicao"
                       role="treeitem"
                     >
                       <span className="icon">
                         <i className="fas fa-heart" aria-hidden="true"></i>
                       </span>
-                      <span className="content">Cadastrar</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="menu-item"
-                      href="http://192.168.37.8:8090/atualizaDependentes"
-                      role="treeitem"
-                    >
-                      <span className="icon">
-                        <i className="fas fa-heart" aria-hidden="true"></i>
-                      </span>
-                      <span className="content">Excluir Dependentes</span>
-                    </a>
+                      <span className="content">Consultar Status</span>
+                    </Link>
                   </li>
                 </ul>
               </div>

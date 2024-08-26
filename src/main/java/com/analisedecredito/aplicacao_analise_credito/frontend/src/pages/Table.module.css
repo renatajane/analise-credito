@@ -5,6 +5,17 @@
     background-color: #f8f9fa; /* Cor de fundo leve */
     border-radius: 8px; /* Bordas arredondadas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
+    margin-bottom: 5%;
+    margin-top: 5%;
+  }
+
+  .color {
+    color: #0c326f;
+    text-align: center;
+  }
+
+  .negritoBold{
+    font-weight: bold;
   }
 
   

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.EmprestimoRequisicaoReadDto;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -34,6 +33,8 @@ public class CriaPdfGeral extends PdfPageEventHelper {
     Font boldFontTitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.BLACK);
     Font normalFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.BLACK);
     Font footerFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.GRAY);
+    int hex = 0x071D41; 
+    BaseColor colorBackground = new BaseColor((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
 
     public ByteArrayOutputStream criaPdfPorPeriodo(List<EmprestimoRequisicaoReadDto> requisicoes, Date dataInicio,
             Date dataFim)
@@ -85,7 +86,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
                 new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE)));
         cellTitulo.setColspan(2);
         cellTitulo.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellTitulo.setBackgroundColor(new BaseColor(35, 48, 43));
+        cellTitulo.setBackgroundColor(colorBackground);
         cellTitulo.setPadding(10f);
         tabelaRequerente.addCell(cellTitulo);
 
@@ -137,7 +138,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
                 new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE)));
         cellTitulo.setColspan(2);
         cellTitulo.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellTitulo.setBackgroundColor(new BaseColor(35, 48, 43));
+        cellTitulo.setBackgroundColor(colorBackground);
         cellTitulo.setPadding(10f);
         tabela.addCell(cellTitulo);
 

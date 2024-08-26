@@ -32,10 +32,10 @@ const Home = () => {
                     </a>
                 </div>
                 <div>
-                    <a href="http://192.168.37.8:8080/">
+                    <Link to="/statusRequisicao">
                         <h3>Consultar Status de Operação de Crédito</h3>
                         <span className="br-divider my-3"></span>
-                    </a>
+                    </Link>
                 </div>
                 <div>
                     <Link to="/buscarRequisicao">
