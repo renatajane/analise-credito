@@ -61,7 +61,7 @@ public class Cliente {
     @JoinColumn(name = "id_perfil_cliente_fk", referencedColumnName = "id_perfil_cliente")
     private PerfilCliente perfilCliente;
 
-    @Column(name = "spc_serasa", nullable = false)
+    @Column(name = "spc_serasa")
     private boolean spcSerasa;
 
     @Column(name= "valor_maximo_aprovado")

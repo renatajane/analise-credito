@@ -3,7 +3,9 @@ package com.analisedecredito.aplicacao_analise_credito.backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("/cliente")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ClienteController {
 
     @Autowired
@@ -51,8 +54,15 @@ public class ClienteController {
             @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso")
     })
     @PostMapping
-    public void create(@RequestBody ClienteDto clienteDto) {
+    public ResponseEntity<String> create(@RequestBody ClienteDto clienteDto) {
+            try {
         service.create(clienteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Cliente criado com sucesso.");
+    } catch (Exception e) {
+        // Log do erro
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro ao criar o cliente.");
+    }
     }
 
     @Operation(summary = "Atualiza um cliente existente", description = "Este endpoint atualiza os dados de um cliente existente com base nos dados fornecidos.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Dados atualizados do cliente", required = true, content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ClienteDto.class))), responses = {
