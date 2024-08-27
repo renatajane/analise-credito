@@ -14,7 +14,7 @@ const Home = () => {
             <div className={styles.container}>
                 <h1 className={styles.color}>Serviços</h1>
                 <div>
-                    <Link to="/clientes">
+                    <Link to="/cadastroCliente">
                         <h3>Cadastro</h3>
                     </Link>
                     <span className="br-divider my-3"></span>

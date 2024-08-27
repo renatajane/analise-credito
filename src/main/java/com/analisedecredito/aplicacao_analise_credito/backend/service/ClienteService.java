@@ -180,7 +180,6 @@ public class ClienteService {
         }
 
         Cliente cliente = clienteOpt.get();
-
         Double valorDespesa = calculaDespesaTotal(idCliente);
         Double valorRenda = somaRenda(idCliente);
 

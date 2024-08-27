@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home";
-import ClientList from './components/ClienteList';
+import CadastroCliente from './pages/CadastroCliente';
 import BuscarRequisicao from './pages/BuscarRequisicao'
 import ListarRequisicoes from './pages/ListarRequisicoes';
 import StatusRequisicao from './pages/StatusRequisicao';
@@ -13,7 +13,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/clientes" element={<ClientList />} />
+        <Route path="/cadastroCliente" element={<CadastroCliente />} />
         <Route path="/listarRequisicoes" element={<ListarRequisicoes/>}/>
         <Route path="/buscarRequisicao" element={<BuscarRequisicao />} />
         <Route path="/statusRequisicao" element={<StatusRequisicao/>} />
