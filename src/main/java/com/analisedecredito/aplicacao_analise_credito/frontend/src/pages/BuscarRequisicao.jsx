@@ -41,6 +41,10 @@ const BuscarRequisicao = () => {
     setError(null);
   };
 
+  const handleCloseError = () => {
+    setError(null);
+  };
+
   return (
     <div>
       <div className={StylesTable.services}>
@@ -85,7 +89,7 @@ const BuscarRequisicao = () => {
                 <span className="message-body"> {error}</span>
               </div>
               <div className="close">
-                <button className="br-button circle small" type="button" aria-label="Fechar a mensagem de alerta">
+                <button className="br-button circle small" type="button" aria-label="Fechar a mensagem de alerta" onClick={handleCloseError}>
                   <i className="fas fa-times" aria-hidden="true"></i>
                 </button>
               </div>
