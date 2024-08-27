@@ -149,7 +149,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
 
             // Cria o texto das informações com espaçamento extra
             StringBuilder infoBuilder = new StringBuilder();
-            infoBuilder.append("Situação: ").append(dto.getAprovado() ? "Aprovado" : "Reprovado")
+            infoBuilder.append("Situação: ").append(dto.getAprovado() ? "Aprovado" : "Negado")
                     .append("\n\n"); // Adiciona um espaçamento extra
             infoBuilder.append("Data da requisição: ").append(formataData(dto.getDataRequisicao()))
                     .append("\n\n"); // Adiciona um espaçamento extra

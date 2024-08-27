@@ -4,39 +4,28 @@ import { Link, useLocation } from "react-router-dom";
 
 const MenuButton = ({ isOpenProp }) => {
   const [isOpen, setIsOpen] = useState(isOpenProp || false);
-  const [contribuintesOpen, setContribuintesOpen] = useState(false);
-  const [statusOpen, setStatusOpen] = useState(false);
-  const [arvoreOpen, setArvoreOpen] = useState(false);
+  const [clienteOpen, setClienteOpen] = useState(false);
+  const [operacoesOpen, setOperacoesOpen] = useState(false);
   const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const toggleContribuintes = () => {
-    setContribuintesOpen(!contribuintesOpen);
-    setStatusOpen(false);
-    setArvoreOpen(false);
+  const toggleCliente = () => {
+    setClienteOpen(!clienteOpen);
+    setOperacoesOpen(false);
   };
 
-  const toggleStatus = () => {
-    setStatusOpen(!statusOpen);
-    setContribuintesOpen(false);
-    setArvoreOpen(false);
-  };
-
-  const toggleArvore = () => {
-    setArvoreOpen(!arvoreOpen);
-    setContribuintesOpen(false);
-    setStatusOpen(false);
+  const toggleOperacoes = () => {
+    setOperacoesOpen(!operacoesOpen);
+    setClienteOpen(false);
   };
 
   useEffect(() => {
-    // Fechar o menu e submenus ao mudar de rota
     setIsOpen(false);
-    setContribuintesOpen(false);
-    setStatusOpen(false);
-    setArvoreOpen(false);
+    setClienteOpen(false);
+    setOperacoesOpen(false);
   }, [location]);
 
   return (
@@ -71,86 +60,61 @@ const MenuButton = ({ isOpenProp }) => {
                   </span>
                   <span className="content">Home</span>
                 </Link>
-                <a
-                  className="menu-item"
-                  role="treeitem"
-                  onClick={toggleContribuintes}
-                  style={{ cursor: "pointer" }}
-                >
-                  <span className="icon">
-                    <i className="fas fa-bell" aria-hidden="true"></i>
-                  </span>
-                  <span className="content">Contribuintes</span>
-                </a>
-                <ul className={`${contribuintesOpen ? "" : "d-none"}`}>
-                  <li>
-                    <a
-                      className="menu-item"
-                      href="http://192.168.37.8:8090/cadastroContribuintes"
-                      role="treeitem"
-                    >
-                      <span className="icon">
-                        <i className="fas fa-heart" aria-hidden="true"></i>
-                      </span>
-                      <span className="content">Cadastrar</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="menu-item"
-                      href="http://192.168.37.8:8090/cadastro"
-                      role="treeitem"
-                    >
-                      <span className="icon">
-                        <i className="fas fa-heart" aria-hidden="true"></i>
-                      </span>
-                      <span className="content">Consultar Contribuinte</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="menu-item"
-                      href="http://192.168.37.8:8090/atualizaCadastro"
-                      role="treeitem"
-                    >
-                      <span className="icon">
-                        <i className="fas fa-archive" aria-hidden="true"></i>
-                      </span>
-                      <span className="content">Atualizar Cadastro</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="menu-item"
-                      href="http://192.168.37.8:8090/infoContribuicao"
-                      role="treeitem"
-                    >
-                      <span className="icon">
-                        <i
-                          className="fas fa-address-book"
-                          aria-hidden="true"
-                        ></i>
-                      </span>
-                      <span className="content">
-                        Informação de Contribuição
-                      </span>
-                    </a>
-                  </li>
-                </ul>
               </div>
+
               <div className="menu-folder">
                 <a
                   className="menu-item"
                   role="treeitem"
-                  onClick={toggleStatus}
+                  onClick={toggleCliente}
                   style={{ cursor: "pointer" }}
                 >
                   <span className="icon">
-                    <i className="fas fa-bell" aria-hidden="true"></i>
+                    <i className="fas fa-user" aria-hidden="true"></i>
                   </span>
-                  <span className="content">Situação Operação de Crédito</span>
+                  <span className="content">Cliente</span>
                 </a>
-                <ul className={`${statusOpen ? "" : "d-none"}`}>
+                <ul className={`${clienteOpen ? "" : "d-none"}`}>
+                  <li>
+                    <Link
+                      className="menu-item"
+                      to="/clientes"
+                      role="treeitem"
+                    >
+                      <span className="icon">
+                        <i className="fas fa-id-card" aria-hidden="true"></i>
+                      </span>
+                      <span className="content">Cadastro</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="menu-folder">
+                <a
+                  className="menu-item"
+                  role="treeitem"
+                  onClick={toggleOperacoes}
+                  style={{ cursor: "pointer" }}
+                >
+                  <span className="icon">
+                    <i className="fas fa-dollar-sign" aria-hidden="true"></i> {/* Ícone de cifrão */}
+                  </span>
+                  <span className="content">Operações de Crédito</span>
+                </a>
+                <ul className={`${operacoesOpen ? "" : "d-none"}`}>
+                  <li>
+                    <a
+                      className="menu-item"
+                      href="http://192.168.37.8:8090/fazerRequisicaoEmprestimo"
+                      role="treeitem"
+                    >
+                      <span className="icon">
+                        <i className="fas fa-hand-holding-usd" aria-hidden="true"></i>
+                      </span>
+                      <span className="content">Fazer Requisição de Empréstimo</span>
+                    </a>
+                  </li>
                   <li>
                     <Link
                       className="menu-item"
@@ -158,37 +122,22 @@ const MenuButton = ({ isOpenProp }) => {
                       role="treeitem"
                     >
                       <span className="icon">
-                        <i className="fas fa-heart" aria-hidden="true"></i>
+                        <i className="fas fa-search" aria-hidden="true"></i>
                       </span>
-                      <span className="content">Consultar Status</span>
+                      <span className="content">Consultar Status de Empréstimo</span>
                     </Link>
                   </li>
-                </ul>
-              </div>
-              <div className="menu-folder">
-                <a
-                  className="menu-item"
-                  role="treeitem"
-                  onClick={toggleArvore}
-                  style={{ cursor: "pointer" }}
-                >
-                  <span className="icon">
-                    <i className="fas fa-bell" aria-hidden="true"></i>
-                  </span>
-                  <span className="content">Arvore Genealógica</span>
-                </a>
-                <ul className={`${arvoreOpen ? "" : "d-none"}`}>
                   <li>
-                    <a
+                    <Link
                       className="menu-item"
-                      href="http://192.168.37.8:8090/arvoregenealogica"
+                      to="/buscarRequisicao"
                       role="treeitem"
                     >
                       <span className="icon">
-                        <i className="fas fa-heart" aria-hidden="true"></i>
+                        <i className="fas fa-chart-bar" aria-hidden="true"></i>
                       </span>
-                      <span className="content">Consultar Familiares</span>
-                    </a>
+                      <span className="content">Gerar Relatórios</span>
+                    </Link>
                   </li>
                 </ul>
               </div>

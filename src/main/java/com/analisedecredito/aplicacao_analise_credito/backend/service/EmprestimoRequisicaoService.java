@@ -208,14 +208,14 @@ public class EmprestimoRequisicaoService {
             emprestimoRequisicao.setAprovado(true); // Assume que o empréstimo é aprovado a princípio
 
             // 1. Verifica se o valor requerido é maior que a renda
-            if (emprestimoRequisicao.getValorRequerido() > valorRendaCliente) {
-                emprestimoRequisicao.setAprovado(false);
-                emprestimoRequisicao.setDescricaoResultado(
-                        "Não é possível solicitar um empréstimo com valor superior à sua renda.");
-            }
+            // if (emprestimoRequisicao.getValorRequerido() > valorRendaCliente) {
+            //     emprestimoRequisicao.setAprovado(false);
+            //     emprestimoRequisicao.setDescricaoResultado(
+            //             "Não é possível solicitar um empréstimo com valor superior à sua renda.");
+            // }
 
             // 2. Verifica se o valor da parcela ultrapassa 30% da renda
-            else if (valorParcela > (valorRendaCliente * 0.30)) {
+            if (valorParcela > (valorRendaCliente * 0.30)) {
                 emprestimoRequisicao.setAprovado(false);
                 emprestimoRequisicao.setDescricaoResultado("O valor da parcela excede 30% da sua renda.");
             }

@@ -142,7 +142,7 @@ public class CriaPdf extends PdfPageEventHelper {
         addTableResultado(tabelaResultado, "Código da requisição:", String.valueOf(dto.getIdRequisicao()),
                 BaseColor.BLACK);
         BaseColor statusColor = aprovado ? new BaseColor(0, 128, 0) : new BaseColor(255, 0, 0);
-        addTableResultado(tabelaResultado, "Situação:", aprovado ? "Aprovado" : "Reprovado", statusColor);
+        addTableResultado(tabelaResultado, "Situação:", aprovado ? "Aprovado" : "Negado", statusColor);
         if (!aprovado) {
             addTableResultado(tabelaResultado, "Motivo da reprovação:",
                     (dto.getDescricaoResultado()), BaseColor.BLACK);
