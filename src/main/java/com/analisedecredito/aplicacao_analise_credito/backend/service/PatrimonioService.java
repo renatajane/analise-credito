@@ -42,6 +42,12 @@ public class PatrimonioService {
         return listPatrimonio.stream().map(PatrimonioReadDto::new).toList();
     }
 
+    /* Retorna um patrimônio de acordo com o id do cliente */
+    public List<PatrimonioReadDto> findByIdCliente(Integer id) {
+        List<Patrimonio> listaPatrimonio = repository.findByIdCliente(id);
+        return listaPatrimonio.stream().map(PatrimonioReadDto::new).toList();
+    }
+
     /* Cria um novo patrimônio com base nos dados fornecidos */
     public void create(PatrimonioDto patrimonioDto) {
 

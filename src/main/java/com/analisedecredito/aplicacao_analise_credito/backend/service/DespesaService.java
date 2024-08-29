@@ -47,6 +47,12 @@ public class DespesaService {
         return listaDespesa.stream().map(DespesaReadDto::new).toList();
     }
 
+    /* Retorna uma despesa de acordo com o id do cliente */
+    public List<DespesaReadDto> findByIdCliente(Integer id) {
+        List<Despesa> listaDespesa = repository.findByIdCliente(id);
+        return listaDespesa.stream().map(DespesaReadDto::new).toList();
+    }
+
     /* Cria uma nova despesa com base nos dados fornecidos */
     public DespesaDto create(DespesaDto despesaDto) {
 

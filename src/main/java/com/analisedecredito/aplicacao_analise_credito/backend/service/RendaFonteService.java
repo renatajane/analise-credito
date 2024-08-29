@@ -31,18 +31,24 @@ public class RendaFonteService {
     ClienteService clienteService;
 
     /* Retorna uma fonte de renda de acordo com o id */
-    public RendaFonteReadDto findById(Integer id){
+    public RendaFonteReadDto findById(Integer id) {
         return new RendaFonteReadDto(repository.findById(id).get());
     }
 
+    /* Retorna uma fonte de renda de acordo com o id do cliente */
+    public List<RendaFonteReadDto> findByIdCliente(Integer id) {
+        List<RendaFonte> listaRendaFonte = repository.findByIdCliente(id);
+        return listaRendaFonte.stream().map(RendaFonteReadDto::new).toList();
+    }
+
     /* Retorna uma lista de todas as fontes de renda cadastradas */
-    public List<RendaFonteReadDto> list(){
+    public List<RendaFonteReadDto> list() {
         List<RendaFonte> listRendaFonte = repository.findAll();
         return listRendaFonte.stream().map(RendaFonteReadDto::new).toList();
     }
-    
+
     /* Cria uma nova fonte de renda com base nos dados fornecidos */
-    public void create(RendaFonteDto rendaFonteDto){
+    public void create(RendaFonteDto rendaFonteDto) {
 
         Optional<Cliente> clienteOpt = clienteRepository.findById(rendaFonteDto.getCliente());
         Optional<RendaTipo> rendaTipoOpt = rendaTipoRepository.findById(rendaFonteDto.getRendaTipo());
@@ -62,7 +68,7 @@ public class RendaFonteService {
     }
 
     /* Atualiza os dados de uma fonte de renda existente */
-    public RendaFonteDto update(Integer id, RendaFonteDto rendaFonteDto){
+    public RendaFonteDto update(Integer id, RendaFonteDto rendaFonteDto) {
         Optional<RendaFonte> rendaFonteOpt = repository.findById(id);
 
         RendaFonte rendaFonte = rendaFonteOpt.get();
@@ -83,7 +89,7 @@ public class RendaFonteService {
     }
 
     /* Remove um dado de fonte de renda pelo id */
-    public void delete(Integer id){
+    public void delete(Integer id) {
         RendaFonte rendaFonte = repository.findById(id).get();
         repository.delete(rendaFonte);
         clienteService.definePerfilCliente(rendaFonte.getCliente().getIdCliente());

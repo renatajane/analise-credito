@@ -47,6 +47,15 @@ public class PatrimonioController {
         return service.list();
     }
 
+    @Operation(summary = "Retorna uma lista de patrimônios por cliente", description = "Este endpoint retorna uma lista de patrimônios associados a um cliente específico com base no ID do cliente.", parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true), responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de patrimônios retornada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+    })
+    @GetMapping("/idCliente/{id}")
+    public List<PatrimonioReadDto> findByIdCliente(@PathVariable("id") Integer id) {
+        return service.findByIdCliente(id);
+    }
+
     @Operation(summary = "Cria um novo patrimônio com base nos dados fornecidos", description = "Este endpoint cria um novo patrimônio com base nos dados fornecidos.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Dados do patrimônio a ser criado", required = true, content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PatrimonioDto.class))), responses = {
             @ApiResponse(responseCode = "201", description = "Patrimônio criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")

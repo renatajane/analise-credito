@@ -1,5 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.backend.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,7 +11,10 @@ import com.analisedecredito.aplicacao_analise_credito.backend.model.Patrimonio;
 
 @Repository
 public interface PatrimonioRepository extends JpaRepository<Patrimonio, Integer> {
-    
+
     @Query("SELECT COALESCE(SUM(p.valorPatrimonio), 0) FROM Patrimonio p WHERE p.cliente.idCliente = :clienteId")
     Double findPatrimonioTotalCliente(@Param("clienteId") Integer clienteId);
+
+    @Query("SELECT p FROM Patrimonio p JOIN p.cliente c WHERE c.idCliente = :id")
+    List<Patrimonio> findByIdCliente(@Param("id") Integer id);
 }
