@@ -3,15 +3,26 @@ import axios from 'axios';
 
 const CadastroPatrimonio = ({id}) => {
 
+    const initialData = {
+        idPatrimonio: 0 ,
+    };
+
+    const [idPatrimonio, setIdPatrimonio] = useState(initialData.idPatrimonio);
+    const [errors, setErrors] = useState({
+        idPatrimonio: 0,
+    });
+
     if(id!= null){
         useEffect(() => {
             const fetchData = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:8080/patrimonio/${id}`)
+                    const response = await axios.get(`http://localhost:8080/patrimonio/idCliente/${id}`)
                     //     {
                     //     // params: { cpf: '77239658007' } // Substitua pelo CPF que você deseja buscar
                     // });
-    
+                    setIdPatrimonio(response.data.idPatrimonio);
+                    console.log("MEU RESPONSE D EPATRIMONIOOOOO ****", response.data);
+
                     // Preencha os estados com os dados recebidos
                     // setIdCliente(response.data.idCliente);
                     // setNome(response.data.nome);
@@ -25,7 +36,7 @@ const CadastroPatrimonio = ({id}) => {
     
                     // alert('Dados carregados com sucesso!');
                 } catch (error) {
-                    console.error('Erro ao buscar os dados do cliente:', error);
+                    console.error('Erro ao buscar os dados DO PATRIMONIO:', error);
                     // alert('Erro ao buscar os dados do cliente.');
                 }
             };

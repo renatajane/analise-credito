@@ -3,6 +3,18 @@ import axios from 'axios';
 
 const CadastroRenda = ({id}) => {
 
+    const initialData = {
+        idRendaFonte: 0 ,
+        descricaoRendaTipo: null,
+    };
+
+    const [idRendaFonte, setIdRendaFonte] = useState(initialData.idRendaFonte);
+    const [descricaoRendaTipo, setDescricaoRendaTipo] = useState(initialData.descricaoRendaTipo);
+    const [errors, setErrors] = useState({
+        idRendaFonte: 0,
+        descricaoRendaTipo: null,
+    });
+
     if(id!= null){
         useEffect(() => {
             const fetchData = async () => {
@@ -12,8 +24,10 @@ const CadastroRenda = ({id}) => {
                     //     // params: { cpf: '77239658007' } // Substitua pelo CPF que você deseja buscar
                     // });
     
-                    // Preencha os estados com os dados recebidos
-                    // setIdCliente(response.data.idCliente);
+                    //Preencha os estados com os dados recebidos
+                    setIdRendaFonte(response.data.rendaFonte);
+                    setDescricaoRendaTipo(response.data.rendaTipo.descricaoRendaTipo);
+                    console.log("ESSES SAOOS MEUS DADOS DE RENDAAA *** ", response.data);
                     // setNome(response.data.nome);
                     // setCpf(response.data.cpf);
                     // setDataNascimento(response.data.dataNascimento);
@@ -25,7 +39,7 @@ const CadastroRenda = ({id}) => {
     
                     // alert('Dados carregados com sucesso!');
                 } catch (error) {
-                    console.error('Erro ao buscar os dados do cliente:', error);
+                    console.error('Erro ao buscar os dados dA RENDA:', error);
                     // alert('Erro ao buscar os dados do cliente.');
                 }
             };
