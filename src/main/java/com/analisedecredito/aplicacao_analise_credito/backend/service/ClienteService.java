@@ -64,6 +64,11 @@ public class ClienteService {
         return new ClienteReadDto(repository.findById(id).get());
     }
 
+    /*  Retorna um cliente de acordo com o cpf */
+    public ClienteReadDto findByCpf(String cpf) {        
+        return new ClienteReadDto(repository.findByCpf(cpf).get());
+    }
+
     /* Retorna uma lista de todos os clientes cadastrados */
     public List<ClienteReadDto> list() {
         List<Cliente> listaClientes = repository.findAll();

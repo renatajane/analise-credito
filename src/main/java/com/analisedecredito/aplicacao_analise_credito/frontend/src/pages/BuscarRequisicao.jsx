@@ -23,7 +23,8 @@ const BuscarRequisicao = () => {
           const data = Array.isArray(response.data) ? response.data : [];
           if (data.length > 0) {
             navigate('/listarRequisicoes', { state: { cpf: cpfNumerico, requisicoes: data } });
-          } else {
+          } 
+          else {
             setError('Nenhuma requisição encontrada para o CPF informado.');
           }
         })

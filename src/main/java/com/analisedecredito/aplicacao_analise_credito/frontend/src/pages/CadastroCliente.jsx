@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Styles from './CadastroCliente.module.css'; // Verifique o caminho correto
 import { cpfMask } from '../components/Mask/CpfMask'; // Verifique o caminho correto
+import CadastroRenda from './CadastroRenda';
+import CadastroDespesa from './CadastroDespesa';
+import CadastroPatrimonio from './CadastroPatrimonio';
 
 const CadastroCliente = () => {
+
     // Dados iniciais fornecidos
     const initialData = {
+        idCliente: 0 ,
         nome: '',
         cpf: '',
         dataNascimento: '',
@@ -21,7 +26,8 @@ const CadastroCliente = () => {
     const [telefone, setTelefone] = useState(initialData.telefone);
     const [endereco, setEndereco] = useState(initialData.endereco);
     const [autorizacaoLGPD, setAutorizacaoLGPD] = useState(false);
-    const [restricaoSerasa, setRestricaoSerasa] = useState(false); // Novo estado para restrição Serasa
+    const [idCliente, setIdCliente] = useState(initialData.idCliente);
+    const [spcSerasa, setSpcSerasa] = useState(false); // Novo estado para restrição Serasa
     const [errors, setErrors] = useState({
         nome: null,
         cpf: null,
@@ -30,6 +36,35 @@ const CadastroCliente = () => {
         telefone: null,
         endereco: null,
     });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/cliente/cpf/12345655001')
+                //     {
+                //     // params: { cpf: '77239658007' } // Substitua pelo CPF que você deseja buscar
+                // });
+
+                // Preencha os estados com os dados recebidos
+                setIdCliente(response.data.idCliente);
+                setNome(response.data.nome);
+                setCpf(response.data.cpf);
+                setDataNascimento(response.data.dataNascimento);
+                setEmail(response.data.email);
+                setTelefone(response.data.telefone);
+                setEndereco(response.data.endereco);
+                setAutorizacaoLGPD(response.data.autorizacaoLGPD);
+                setSpcSerasa(response.data.spcSerasa);
+
+                // alert('Dados carregados com sucesso!');
+            } catch (error) {
+                console.error('Erro ao buscar os dados do cliente:', error);
+                // alert('Erro ao buscar os dados do cliente.');
+            }
+        };
+
+        fetchData();
+    }, []); // O array vazio garante que a requisição seja feita apenas uma vez, quando o componente é montado.
 
     const validateCpf = (input) => {
         const cleanCpf = input.replace(/\D/g, ''); // Remove caracteres não numéricos
@@ -151,7 +186,7 @@ const CadastroCliente = () => {
                 telefone,
                 endereco,
                 autorizacaoLGPD,
-                restricaoSerasa, // Inclua a nova propriedade no objeto de dados
+                spcSerasa, // Inclua a nova propriedade no objeto de dados
             };
 
             axios.post('http://localhost:8080/cliente', clienteData)
@@ -166,7 +201,7 @@ const CadastroCliente = () => {
                     setTelefone('');
                     setEndereco('');
                     setAutorizacaoLGPD(false);
-                    setRestricaoSerasa(false); // Limpar o estado do checkbox
+                    setSpcSerasa(false); // Limpar o estado do checkbox
                 })
                 .catch(error => {
                     alert('Ocorreu um erro ao cadastrar o cliente.');
@@ -263,15 +298,18 @@ const CadastroCliente = () => {
                         <label>
                             <input
                                 type="checkbox"
-                                checked={restricaoSerasa}
-                                onChange={() => setRestricaoSerasa(!restricaoSerasa)}
+                                checked={spcSerasa}
+                                onChange={() => setSpcSerasa(!spcSerasa)}
                             />
-                            Restrição Serasa
+                            Possui restrição no serasa ?
                         </label>
                     </div>
                     <button type="submit" className="br-button">Cadastrar</button>
                 </form>
             </div>
+            {idCliente > 0 && <CadastroRenda id={idCliente}/>}            
+            {idCliente > 0 && <CadastroDespesa id={idCliente}/>}      
+            {idCliente > 0 && <CadastroPatrimonio id={idCliente}/>}      
         </div>
     );
 };
