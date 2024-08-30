@@ -1,10 +1,90 @@
 .container {
-    max-width: 1000px; /* Largura máxima para o container */
-    margin: 0 auto; /* Centraliza o container horizontalmente */
-    padding: 20px; /* Adiciona algum espaçamento interno */
-    background-color: #f8f9fa; /* Cor de fundo leve */
-    border-radius: 8px; /* Bordas arredondadas */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
-    margin-bottom: 5%;
-    margin-top: 5%;
-  }
+  max-width: 800px;
+  /* Largura máxima para o container */
+  margin: 0 auto;
+  /* Centraliza o container horizontalmente */
+  padding: 20px;
+  /* Adiciona algum espaçamento interno */
+  background-color: #f8f9fa;
+  /* Cor de fundo leve */
+  border-radius: 8px;
+  /* Bordas arredondadas */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* Sombra leve para profundidade */
+  margin-bottom: 5%;
+  /* margin-top: 5%; */
+}
+
+/* CadastroCliente.module.css */
+
+.checkboxLgpd {
+  /* Tamanho do checkbox */
+  width: 16px;
+  height: 16px;
+  /* Ajusta o tamanho do checkbox */
+  -webkit-appearance: none;
+  /* Remove estilo padrão do navegador */
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkboxLgpd:checked {
+  background-color: #007bff;
+  /* Cor de fundo quando marcado */
+  border-color: #007bff;
+}
+
+.checkboxLgpd:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+
+/* Styles para o seletor */
+.br-select {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+}
+
+.br-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.br-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  z-index: 1000;
+}
+
+.br-list.show {
+  display: block;
+}
+
+.br-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.br-item:hover {
+  background-color: #f0f0f0;
+}

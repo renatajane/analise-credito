@@ -106,6 +106,7 @@ public class ClienteService {
         System.out.println("meu beneficiado Valor +++++" + info.getValorBeneficio());
 
         cliente = repository.save(cliente);
+        repository.save(cliente);
 
         // if (clienteDto.getListaRenda() != null &&
         // !clienteDto.getListaRenda().isEmpty()) {
@@ -197,9 +198,9 @@ public class ClienteService {
         if (valorDespesa > 0.30 * valorRenda) {
             scoreBase -= 200;
         }
-        if (valorDespesa < 0.20 * valorRenda) {
-            scoreBase += 100;
-        }
+        // if (valorDespesa < 0.20 * valorRenda) {
+        //     scoreBase += 100;
+        // }
 
         PerfilCliente perfilCliente = perfilClienteRepository.findScore(scoreBase);
 

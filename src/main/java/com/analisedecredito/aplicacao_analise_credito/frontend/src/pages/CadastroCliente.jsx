@@ -5,12 +5,13 @@ import { cpfMask } from '../components/Mask/CpfMask'; // Verifique o caminho cor
 import CadastroRenda from './CadastroRenda';
 import CadastroDespesa from './CadastroDespesa';
 import CadastroPatrimonio from './CadastroPatrimonio';
+import StylesTable from './Table.module.css';
 
 const CadastroCliente = () => {
 
     // Dados iniciais fornecidos
     const initialData = {
-        idCliente: 0 ,
+        idCliente: 0,
         nome: '',
         cpf: '',
         dataNascimento: '',
@@ -210,107 +211,122 @@ const CadastroCliente = () => {
     };
 
     return (
-        <div className={Styles.container}>
-            <div className="col-sm-8 col-lg-5">
-                <form onSubmit={handleSubmit}>
-                    <div className="br-input">
-                        <label htmlFor="nome">Nome</label>
-                        <input
-                            id="nome"
-                            type="text"
-                            placeholder="Digite o nome"
-                            value={nome}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.nome && <div className="error-message">{errors.nome}</div>}
-                    </div>
-                    <div className="br-input">
-                        <label htmlFor="cpf">CPF</label>
-                        <input
-                            id="cpf"
-                            type="text"
-                            placeholder="Digite o CPF"
-                            value={cpf}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.cpf && <div className="error-message">{errors.cpf}</div>}
-                    </div>
-                    <div className="br-input">
-                        <label htmlFor="dataNascimento">Data de Nascimento</label>
-                        <input
-                            id="dataNascimento"
-                            type="date"
-                            value={dataNascimento}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.dataNascimento && <div className="error-message">{errors.dataNascimento}</div>}
-                    </div>
-                    <div className="br-input">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="Digite o email"
-                            value={email}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.email && <div className="error-message">{errors.email}</div>}
-                    </div>
-                    <div className="br-input">
-                        <label htmlFor="telefone">Telefone</label>
-                        <input
-                            id="telefone"
-                            type="text"
-                            placeholder="Digite o telefone"
-                            value={telefone}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.telefone && <div className="error-message">{errors.telefone}</div>}
-                    </div>
-                    <div className="br-input">
-                        <label htmlFor="endereco">Endereço</label>
-                        <input
-                            id="endereco"
-                            type="text"
-                            placeholder="Digite o endereço"
-                            value={endereco}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.endereco && <div className="error-message">{errors.endereco}</div>}
-                    </div>
-                    <div className="br-input">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={autorizacaoLGPD}
-                                onChange={() => setAutorizacaoLGPD(!autorizacaoLGPD)}
-                            />
-                            Autorização LGPD
-                        </label>
-                    </div>
-                    <div className="br-input">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={spcSerasa}
-                                onChange={() => setSpcSerasa(!spcSerasa)}
-                            />
-                            Possui restrição no serasa ?
-                        </label>
-                    </div>
-                    <button type="submit" className="br-button">Cadastrar</button>
-                </form>
+        <>
+            <div className={StylesTable.services}>
+                <h3 className={StylesTable.color}>
+                    Cadastro
+                </h3>
             </div>
-            {idCliente > 0 && <CadastroRenda id={idCliente}/>}            
-            {idCliente > 0 && <CadastroDespesa id={idCliente}/>}      
-            {idCliente > 0 && <CadastroPatrimonio id={idCliente}/>}      
-        </div>
+            <div className={Styles.container}>
+                <h3 className="dados-pessoais">
+                    Dados Pessoais
+                </h3>
+                <div className="col-sm-8 col-lg-5">
+                    <form onSubmit={handleSubmit}>
+                        <div className="br-input">
+                            <label htmlFor="nome">Nome</label>
+                            <input
+                                id="nome"
+                                type="text"
+                                placeholder="Digite o nome"
+                                value={nome}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.nome && <div className="error-message">{errors.nome}</div>}
+                        </div>
+                        <div className="br-input">
+                            <label htmlFor="cpf">CPF</label>
+                            <input
+                                id="cpf"
+                                type="text"
+                                placeholder="Digite o CPF"
+                                value={cpf}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.cpf && <div className="error-message">{errors.cpf}</div>}
+                        </div>
+                        <div className="br-input">
+                            <label htmlFor="dataNascimento">Data de Nascimento</label>
+                            <input
+                                id="dataNascimento"
+                                type="date"
+                                value={dataNascimento}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.dataNascimento && <div className="error-message">{errors.dataNascimento}</div>}
+                        </div>
+                        <div className="br-input">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="Digite o email"
+                                value={email}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.email && <div className="error-message">{errors.email}</div>}
+                        </div>
+                        <div className="br-input">
+                            <label htmlFor="telefone">Telefone</label>
+                            <input
+                                id="telefone"
+                                type="text"
+                                placeholder="Digite o telefone"
+                                value={telefone}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.telefone && <div className="error-message">{errors.telefone}</div>}
+                        </div>
+                        <div className="br-input">
+                            <label htmlFor="endereco">Endereço</label>
+                            <input
+                                id="endereco"
+                                type="text"
+                                placeholder="Digite o endereço"
+                                value={endereco}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.endereco && <div className="error-message">{errors.endereco}</div>}
+                        </div>
+                        <div class="br-checkbox hidden-label">
+                            <input id="check-all" name="check-all" type="checkbox"
+                                checked={autorizacaoLGPD}
+                                onChange={() => setAutorizacaoLGPD(!autorizacaoLGPD)} />
+                            <label for="check-all">autorizacaoLgpd</label>
+                            Eu autorizo o tratamento dos meus dados pessoais conforme a LGPD.
+                        </div>
+                        <div className="br-input">
+                            <h3>Dados Financeiros</h3>
+                            <label>
+                                Possui restrição no Serasa?
+                            </label>
+                            <div class="br-select">
+                                <div class="br-input" id="select-container">
+                                    <input id="select-simple" type="text" placeholder="Selecione o item" readonly />
+                                    <button class="br-button" type="button" aria-label="Exibir lista" tabindex="-1">
+                                        <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div class="br-list" id="select-list" tabindex="0">
+                                    <div class="br-item" data-value="sim">Sim</div>
+                                    <div class="br-item" data-value="nao">Não</div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {idCliente > 0 && <CadastroRenda id={idCliente} />}
+                {idCliente > 0 && <CadastroPatrimonio id={idCliente} />}
+                {idCliente > 0 && <CadastroDespesa id={idCliente} />}
+                <button type="submit" className="br-button">Cadastrar</button>
+            </div>
+        </>
     );
 };
 

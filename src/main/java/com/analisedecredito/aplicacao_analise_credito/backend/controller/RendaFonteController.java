@@ -39,6 +39,7 @@ public class RendaFonteController {
         return service.findById(id);
     }
 
+    
     @Operation(summary = "Retorna uma lista de fontes de renda de acordo com o id do cliente", description = "Este endpoint retorna uma lista de fontes de renda com base no ID do cliente fornecido.", parameters = @Parameter(name = "id", description = "ID do cliente", example = "1", required = true), responses = {
             @ApiResponse(responseCode = "200", description = "Lista de fontes de renda encontrada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Nenhuma fonte de renda encontrada para o cliente especificado")
