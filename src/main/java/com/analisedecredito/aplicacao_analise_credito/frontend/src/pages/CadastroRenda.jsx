@@ -15,6 +15,8 @@ const CadastroRenda = ({ id }) => {
             const fetchData = async () => {
                 try {
                     const response = await axios.get(`http://localhost:8080/renda-fonte/${id}`);
+                    console.log("MEUS DADOSOOOSSSS*** ", response.data);
+                    console.log("valor da minha renda", response.data.valorRenda);
                     setRendas([
                         {
                             idRendaFonte: response.data.rendaFonte,
@@ -78,7 +80,7 @@ const CadastroRenda = ({ id }) => {
                         id={`valor-${index}`}
                         type="text"
                         placeholder="Digite o valor"
-                        value={renda.valor}
+                        value={renda.valorRenda}
                         onChange={(event) => handleInputChange(index, event)}
                         name="valor"
                         style={{ width: '100%' }}

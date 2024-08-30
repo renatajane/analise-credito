@@ -26,10 +26,13 @@ const Home = () => {
                     <span className="br-divider my-3"></span>
                 </div>
                 <div>
-                    <a href="http://192.168.37.8:5300/">
+                    <Link to="/cadastroRequisicao">
+                        <h3>Incluir Proposta de Contratação</h3>
+                    </Link>
+                    {/* <a href="http://192.168.37.8:5300/">
                         <h3>Incluir Proposta de Contratação</h3>
                         <span className="br-divider my-3"></span>
-                    </a>
+                    </a> */}
                 </div>
                 <div>
                     <Link to="/statusRequisicao">

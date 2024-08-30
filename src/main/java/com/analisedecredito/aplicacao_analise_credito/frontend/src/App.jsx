@@ -6,6 +6,7 @@ import CadastroCliente from './pages/CadastroCliente';
 import BuscarRequisicao from './pages/BuscarRequisicao'
 import ListarRequisicoes from './pages/ListarRequisicoes';
 import StatusRequisicao from './pages/StatusRequisicao';
+import CadastroRequisicao from './pages/CadastroRequisicao';
 
 function App() {
   return (
@@ -14,9 +15,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cadastroCliente" element={<CadastroCliente />} />
-        <Route path="/listarRequisicoes" element={<ListarRequisicoes/>}/>
+        <Route path="/listarRequisicoes" element={<ListarRequisicoes />} />
         <Route path="/buscarRequisicao" element={<BuscarRequisicao />} />
-        <Route path="/statusRequisicao" element={<StatusRequisicao/>} />
+        <Route path="/statusRequisicao" element={<StatusRequisicao />} />
+        <Route path="/cadastroRequisicao" element={<CadastroRequisicao />} />
       </Routes>
       <Footer />
     </BrowserRouter>

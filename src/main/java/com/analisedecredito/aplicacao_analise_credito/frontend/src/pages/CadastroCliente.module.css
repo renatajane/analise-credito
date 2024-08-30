@@ -16,75 +16,40 @@
 }
 
 /* CadastroCliente.module.css */
+.selectContainer {
+  position: relative;
+}
 
-.checkboxLgpd {
-  /* Tamanho do checkbox */
-  width: 16px;
-  height: 16px;
-  /* Ajusta o tamanho do checkbox */
-  -webkit-appearance: none;
-  /* Remove estilo padrão do navegador */
-  background-color: #fff;
-  border: 2px solid #ddd;
-  border-radius: 3px;
+.selectButton {
+  width: 100%;
+  padding: 10px;
+  text-align: left;
   cursor: pointer;
-  position: relative;
-}
-
-.checkboxLgpd:checked {
-  background-color: #007bff;
-  /* Cor de fundo quando marcado */
-  border-color: #007bff;
-}
-
-.checkboxLgpd:checked::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  background: #fff;
-  transform: translate(-50%, -50%);
-}
-
-/* Styles para o seletor */
-.br-select {
-  position: relative;
-  display: inline-block;
-  width: 200px;
-}
-
-.br-input {
-  display: flex;
-  align-items: center;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 8px;
-  cursor: pointer;
+  background: #fff;
 }
 
-.br-list {
-  display: none;
+.selectMenu {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  right: 0;
+  background: white;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #fff;
-  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 1;
 }
 
-.br-list.show {
-  display: block;
-}
-
-.br-item {
-  padding: 8px;
+.selectMenu li {
+  padding: 10px;
   cursor: pointer;
 }
 
-.br-item:hover {
+.selectMenu li:hover {
   background-color: #f0f0f0;
 }

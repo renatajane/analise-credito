@@ -8,8 +8,6 @@ import CadastroPatrimonio from './CadastroPatrimonio';
 import StylesTable from './Table.module.css';
 
 const CadastroCliente = () => {
-
-    // Dados iniciais fornecidos
     const initialData = {
         idCliente: 0,
         nome: '',
@@ -28,7 +26,7 @@ const CadastroCliente = () => {
     const [endereco, setEndereco] = useState(initialData.endereco);
     const [autorizacaoLGPD, setAutorizacaoLGPD] = useState(false);
     const [idCliente, setIdCliente] = useState(initialData.idCliente);
-    const [spcSerasa, setSpcSerasa] = useState(false); // Novo estado para restrição Serasa
+    const [spcSerasa, setSpcSerasa] = useState(null); // Alterado para null para representar a ausência de seleção
     const [errors, setErrors] = useState({
         nome: null,
         cpf: null,
@@ -37,16 +35,12 @@ const CadastroCliente = () => {
         telefone: null,
         endereco: null,
     });
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/cliente/cpf/12345655001')
-                //     {
-                //     // params: { cpf: '77239658007' } // Substitua pelo CPF que você deseja buscar
-                // });
-
-                // Preencha os estados com os dados recebidos
+                const response = await axios.get('http://localhost:8080/cliente/cpf/12345655001');
                 setIdCliente(response.data.idCliente);
                 setNome(response.data.nome);
                 setCpf(response.data.cpf);
@@ -56,35 +50,32 @@ const CadastroCliente = () => {
                 setEndereco(response.data.endereco);
                 setAutorizacaoLGPD(response.data.autorizacaoLGPD);
                 setSpcSerasa(response.data.spcSerasa);
-
-                // alert('Dados carregados com sucesso!');
             } catch (error) {
                 console.error('Erro ao buscar os dados do cliente:', error);
-                // alert('Erro ao buscar os dados do cliente.');
             }
         };
 
         fetchData();
-    }, []); // O array vazio garante que a requisição seja feita apenas uma vez, quando o componente é montado.
+    }, []);
 
     const validateCpf = (input) => {
-        const cleanCpf = input.replace(/\D/g, ''); // Remove caracteres não numéricos
+        const cleanCpf = input.replace(/\D/g, '');
         const cpfPattern = /^[0-9]{11}$/;
         return cpfPattern.test(cleanCpf);
     };
 
     const validateName = (name) => {
-        const namePattern = /^[A-Za-z\s]+$/; // Permite apenas letras e espaços
+        const namePattern = /^[A-Za-z\s]+$/;
         return name.length >= 3 && name.length <= 50 && namePattern.test(name);
     };
 
     const validatePhone = (phone) => {
-        const phonePattern = /^\d{10,11}$/; // Permite apenas 10 ou 11 dígitos
+        const phonePattern = /^\d{10,11}$/;
         return phonePattern.test(phone);
     };
 
     const validateEmail = (email) => {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Valida o formato do email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailPattern.test(email);
     };
 
@@ -202,12 +193,21 @@ const CadastroCliente = () => {
                     setTelefone('');
                     setEndereco('');
                     setAutorizacaoLGPD(false);
-                    setSpcSerasa(false); // Limpar o estado do checkbox
+                    setSpcSerasa(null); // Limpar o estado do seletor
                 })
                 .catch(error => {
                     alert('Ocorreu um erro ao cadastrar o cliente.');
                 });
         }
+    };
+
+    const toggleSelectMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleSelectOption = (option) => {
+        setSpcSerasa(option);
+        setIsMenuOpen(false);
     };
 
     return (
@@ -252,6 +252,7 @@ const CadastroCliente = () => {
                             <input
                                 id="dataNascimento"
                                 type="date"
+                                placeholder="Digite a data de nascimento"
                                 value={dataNascimento}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
@@ -262,7 +263,7 @@ const CadastroCliente = () => {
                             <label htmlFor="email">Email</label>
                             <input
                                 id="email"
-                                type="email"
+                                type="text"
                                 placeholder="Digite o email"
                                 value={email}
                                 onChange={handleInputChange}
@@ -294,47 +295,41 @@ const CadastroCliente = () => {
                             />
                             {errors.endereco && <div className="error-message">{errors.endereco}</div>}
                         </div>
-                        <div class="br-checkbox hidden-label">
-                            <input id="check-all" name="check-all" type="checkbox"
-                                checked={autorizacaoLGPD}
-                                onChange={() => setAutorizacaoLGPD(!autorizacaoLGPD)} />
-                            <label for="check-all">autorizacaoLgpd</label>
-                            Eu autorizo o tratamento dos meus dados pessoais conforme a LGPD.
+                        <div className="br-input">
+                            <label htmlFor="autorizacaoLGPD">
+                                <input
+                                    id="autorizacaoLGPD"
+                                    type="checkbox"
+                                    checked={autorizacaoLGPD}
+                                    onChange={() => setAutorizacaoLGPD(!autorizacaoLGPD)}
+                                />
+                                Autorização LGPD
+                            </label>
                         </div>
                         <div className="br-input">
-                            <h3>Dados Financeiros</h3>
-                            <label>
-                                Possui restrição no Serasa?
-                            </label>
-                            <div class="br-select">
-                                <div class="br-input" id="select-container">
-                                    <input id="select-simple" type="text" placeholder="Selecione o item" readonly />
-                                    <button class="br-button" type="button" aria-label="Exibir lista" tabindex="-1">
-                                        <i class="fas fa-angle-down" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="br-list" tabindex="0">
-                                    <div class="br-item" tabindex="-1">
-                                        <div class="br-radio">
-                                            <input id="rb0" type="radio" name="estados-simples" value="rb0" />
-                                            <label for="rb0">Sim</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="br-item" tabindex="-1">
-                                    <div class="br-radio">
-                                        <input id="rb1" type="radio" name="estados-simples" value="rb1" />
-                                        <label for="rb1">Não</label>
-                                    </div>
-                                </div>
+                            <label htmlFor="spcSerasa">SPC/Serasa</label>
+                            <div className={Styles.selectContainer}>
+                                <button
+                                    type="button"
+                                    className={Styles.selectButton}
+                                    onClick={toggleSelectMenu}
+                                >
+                                    {spcSerasa !== null ? (spcSerasa ? 'Sim' : 'Não') : 'Selecione'}
+                                </button>
+                                {isMenuOpen && (
+                                    <ul className={Styles.selectMenu}>
+                                        <li onClick={() => handleSelectOption(true)}>Sim</li>
+                                        <li onClick={() => handleSelectOption(false)}>Não</li>
+                                    </ul>
+                                )}
                             </div>
                         </div>
+                        <button type="submit">Salvar</button>
                     </form>
                 </div>
-                {idCliente > 0 && <CadastroRenda id={idCliente} />}
-                {idCliente > 0 && <CadastroPatrimonio id={idCliente} />}
-                {idCliente > 0 && <CadastroDespesa id={idCliente} />}
-                <button type="submit" className="br-button">Salvar</button>
+                <CadastroRenda />
+                <CadastroDespesa />
+                <CadastroPatrimonio />
             </div>
         </>
     );
