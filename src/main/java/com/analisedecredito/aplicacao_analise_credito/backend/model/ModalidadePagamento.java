@@ -1,5 +1,7 @@
 package com.analisedecredito.aplicacao_analise_credito.backend.model;
 
+import com.analisedecredito.aplicacao_analise_credito.backend.dto.ModalidadePagamentoDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +24,11 @@ public class ModalidadePagamento {
 
     // Construtor
     public ModalidadePagamento() {
+    }
+
+    public ModalidadePagamento(ModalidadePagamentoDto modalidadePagamentoDto) {
+        this.idModalidadePagamento = modalidadePagamentoDto.getIdModalidadePagamento();
+        this.descricaoPagamento = modalidadePagamentoDto.getDescricaoPagamento();
     }
 
     // Getters e Setters

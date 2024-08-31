@@ -1,5 +1,9 @@
 package com.analisedecredito.aplicacao_analise_credito.backend.dto;
 
+import org.springframework.beans.BeanUtils;
+
+import com.analisedecredito.aplicacao_analise_credito.backend.model.ModalidadePagamento;
+
 public class ModalidadePagamentoDto {
 
     // Propriedades
@@ -8,6 +12,10 @@ public class ModalidadePagamentoDto {
 
     // Construtor
     public ModalidadePagamentoDto() {
+    }
+
+    public ModalidadePagamentoDto(ModalidadePagamento modalidadePagamento) {
+        BeanUtils.copyProperties(modalidadePagamento, this);
     }
 
     // Getters e Setters
