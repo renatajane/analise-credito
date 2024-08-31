@@ -7,7 +7,7 @@ import com.analisedecredito.aplicacao_analise_credito.backend.model.EmprestimoMo
 public class EmprestimoModalidadeDto {
 
     // Propriedades
-    private Integer idModalide;
+    private Integer idModalidade;
     private String descricaoModalidade;
 
     // Construtor
@@ -20,20 +20,20 @@ public class EmprestimoModalidadeDto {
     }
 
     // Getters e Setters
-    public Integer getIdModalide() {
-        return idModalide;
-    }
-
-    public void setIdModalide(Integer idModalide) {
-        this.idModalide = idModalide;
-    }
-
     public String getDescricaoModalidade() {
         return descricaoModalidade;
     }
 
     public void setDescricaoModalidade(String descricaoModalidade) {
         this.descricaoModalidade = descricaoModalidade;
+    }
+
+    public Integer getIdModalidade() {
+        return idModalidade;
+    }
+
+    public void setIdModalidade(Integer idModalidade) {
+        this.idModalidade = idModalidade;
     }
 
 }

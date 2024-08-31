@@ -36,7 +36,7 @@ public class EmprestimoRequisicaoDto {
     public EmprestimoRequisicaoDto(EmprestimoRequisicao emprestimoRequisicao) {
         BeanUtils.copyProperties(emprestimoRequisicao, this);
         this.cliente = emprestimoRequisicao.getCliente().getIdCliente();
-        this.emprestimoModalidade = emprestimoRequisicao.getEmprestimoModalidade().getIdModalide();
+        this.emprestimoModalidade = emprestimoRequisicao.getEmprestimoModalidade().getIdModalidade();
         this.emprestimoObjetivo = emprestimoRequisicao.getEmprestimoObjetivo().getIdObjetivo();
         this.emprestimoUrgencia = emprestimoRequisicao.getEmprestimoUrgencia().getIdUrgencia();
         this.iof = emprestimoRequisicao.getIof().getIdIof();

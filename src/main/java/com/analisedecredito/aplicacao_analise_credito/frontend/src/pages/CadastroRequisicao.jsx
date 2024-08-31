@@ -13,13 +13,13 @@ const CadastroRequisicao = () => {
     const [urgencias, setUrgencias] = useState([]);
     const [idCliente, setIdCliente] = useState(null); // Inicialize como null
     const [modalidadesPagamento, setModalidadesPagamento] = useState([]);
-    const [modalidadePagamentoSelecionada, setModalidadePagamentoSelecionada] = useState(null);
 
     const [selectedModalidade, setSelectedModalidade] = useState(null);
     const [selectedObjetivo, setSelectedObjetivo] = useState(null);
     const [selectedUrgencia, setSelectedUrgencia] = useState(null);
     const [selectedDiaPagamento, setSelectedDiaPagamento] = useState(null);
     const [selectedPrazoMes, setSelectedPrazoMes] = useState(null);
+    const [selectedModalidadesPagamento, setSelectedModalidadesPagamento] = useState(null);
 
     const [isModalidadeListVisible, setIsModalidadeListVisible] = useState(false);
     const [isObjetivoListVisible, setIsObjetivoListVisible] = useState(false);
@@ -113,7 +113,7 @@ const CadastroRequisicao = () => {
             dataRequisicao,
             emprestimoObjetivo: selectedObjetivo?.idObjetivo,
             emprestimoUrgencia: selectedUrgencia?.idUrgencia,
-            modalidadePagamento: modalidadePagamentoSelecionada?.idModalidadePagamento,
+            modalidadePagamento: selectedModalidadesPagamento?.idModalidadePagamento,
             diaPagamento: selectedDiaPagamento?.valor, // Usando valor numérico selecionado
             prazoMes: selectedPrazoMes?.valor // Usando valor numérico selecionado
         };
@@ -289,7 +289,7 @@ const CadastroRequisicao = () => {
                                         type="text"
                                         className="br-input"
                                         placeholder="Selecione a modalidade de pagamento"
-                                        value={modalidadePagamentoSelecionada?.descricaoPagamento || ''}
+                                        value={selectedModalidadesPagamento?.descricaoPagamento || ''}
                                         onClick={() => toggleListVisibility(setIsModalidadePagamentoListVisible)}
                                         readOnly
                                     />
@@ -307,7 +307,7 @@ const CadastroRequisicao = () => {
                                         {modalidadesPagamento.map(modalidadePagamento => (
                                             <li
                                                 key={modalidadePagamento.idModalidadePagamento}
-                                                onClick={() => handleOptionSelect(modalidadePagamento, setModalidadePagamentoSelecionada, setIsModalidadePagamentoListVisible)}
+                                                onClick={() => handleOptionSelect(modalidadePagamento, setSelectedModalidadesPagamento, setIsModalidadePagamentoListVisible)}
                                                 className={styles.dropdownItem}
                                             >
                                                 {modalidadePagamento.descricaoPagamento}

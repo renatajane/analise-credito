@@ -17,7 +17,7 @@ public class EmprestimoModalidade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_modalidade")
-    private Integer idModalide;
+    private Integer idModalidade;
 
     @Column(name = "descricao_modalidade", nullable = false)
     private String descricaoModalidade;
@@ -28,17 +28,17 @@ public class EmprestimoModalidade {
     }
 
     public EmprestimoModalidade(EmprestimoModalidadeDto emprestimoModalidadeDto) {
-        this.idModalide = emprestimoModalidadeDto.getIdModalide();
+        this.idModalidade = emprestimoModalidadeDto.getIdModalidade();
         this.descricaoModalidade = emprestimoModalidadeDto.getDescricaoModalidade();
     }
 
     // Getters e Setters
-    public Integer getIdModalide() {
-        return idModalide;
+    public Integer getIdModalidade() {
+        return idModalidade;
     }
 
-    public void setIdModalide(Integer idModalide) {
-        this.idModalide = idModalide;
+    public void setIdModalidade(Integer idModalidade) {
+        this.idModalidade = idModalidade;
     }
 
     public String getDescricaoModalidade() {
