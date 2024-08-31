@@ -15,7 +15,7 @@ const CadastroDespesa = ({ id }) => {
         // Fetch tipo de despesa options
         const fetchTipoDespesaOptions = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/tipo-despesa');
+                const response = await axios.get('http://localhost:8080/despesa-tipo/list');
                 setTipoDespesaOptions(response.data);
             } catch (error) {
                 console.error('Erro ao buscar opções de tipo de despesa:', error);

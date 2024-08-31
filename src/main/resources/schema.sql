@@ -1,7 +1,7 @@
 -- Cria schema se não existir
-CREATE SCHEMA IF NOT EXISTS db_analise;
+-- CREATE SCHEMA IF NOT EXISTS db_analise;
 
-SET search_path TO db_analise;
+-- SET search_path TO db_analise;
 
 -- Criação da tabela PerfilCliente
 CREATE TABLE IF NOT EXISTS perfil_cliente (
@@ -193,16 +193,14 @@ SELECT '15 dias' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_urgencia WHERE prazo_
 -- Criação da tabela Juros
 CREATE TABLE IF NOT EXISTS juros (
     id_juros SERIAL PRIMARY KEY,
-    nome_modalidade VARCHAR(255) NOT NULL,
-    taxa_juros_anual NUMERIC(5, 2) NOT NULL,
     taxa_juros_mensal NUMERIC(4, 2) NOT NULL,
     data_vigencia DATE NOT NULL
 );
 
 --Inserir dados na tabela juros apenas se não existirem registros
-INSERT INTO juros (nome_modalidade, taxa_juros_anual, taxa_juros_mensal, data_vigencia)
-SELECT 'Consignado', 0.10, 0.008, '2030-07-25'
-WHERE NOT EXISTS (SELECT 1 FROM juros WHERE nome_modalidade = 'Consignado' AND data_vigencia = '2030-07-25');
+INSERT INTO juros (taxa_juros_mensal, data_vigencia)
+SELECT 0.008, '2030-07-25'
+WHERE NOT EXISTS (SELECT 1 FROM juros WHERE data_vigencia = '2030-07-25');
 
 -- Criação da tabela EmprestimoRequisicao
 CREATE TABLE IF NOT EXISTS emprestimo_requisicao (

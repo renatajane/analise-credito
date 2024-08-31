@@ -15,7 +15,7 @@ const CadastroPatrimonio = ({ id }) => {
         // Fetch tipo de patrimonio options
         const fetchTipoPatrimonioOptions = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/tipo-patrimonio/list');
+                const response = await axios.get('http://localhost:8080/patrimonio-tipo/list');
                 setTipoPatrimonioOptions(response.data);
             } catch (error) {
                 console.error('Erro ao buscar opções de tipo de patrimônio:', error);

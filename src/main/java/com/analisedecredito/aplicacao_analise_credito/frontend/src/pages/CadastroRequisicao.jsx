@@ -82,6 +82,7 @@ const CadastroRequisicao = () => {
                     setObjetivos(objetivosRes.data);
                     setUrgencias(urgenciasRes.data);
                     setModalidadesPagamento(modalidadesPagamentoRes.data);
+                    console.log('meus dadoooss****', modalidadesPagamentoRes.data);
                 } catch (error) {
                     console.error('Erro ao carregar os dados:', error);
                 }
@@ -131,7 +132,7 @@ const CadastroRequisicao = () => {
         <>
             <div className={StylesTable.services}>
                 <h3 className={StylesTable.color}>
-                    Cadastro
+                    Incluir requisicao
                 </h3>
             </div>
             <div className={styles.container}>
@@ -268,7 +269,7 @@ const CadastroRequisicao = () => {
                                                 onClick={() => handleOptionSelect(urgencia, setSelectedUrgencia, setIsUrgenciaListVisible)}
                                                 className={styles.dropdownItem}
                                             >
-                                                {urgencia.descricaoUrgencia}
+                                                {urgencia.prazoUrgencia}
                                             </li>
                                         ))}
                                     </ul>
@@ -288,7 +289,7 @@ const CadastroRequisicao = () => {
                                         type="text"
                                         className="br-input"
                                         placeholder="Selecione a modalidade de pagamento"
-                                        value={modalidadePagamentoSelecionada?.descricao || ''}
+                                        value={modalidadePagamentoSelecionada?.descricaoPagamento || ''}
                                         onClick={() => toggleListVisibility(setIsModalidadePagamentoListVisible)}
                                         readOnly
                                     />
@@ -309,7 +310,7 @@ const CadastroRequisicao = () => {
                                                 onClick={() => handleOptionSelect(modalidadePagamento, setModalidadePagamentoSelecionada, setIsModalidadePagamentoListVisible)}
                                                 className={styles.dropdownItem}
                                             >
-                                                {modalidadePagamento.descricao}
+                                                {modalidadePagamento.descricaoPagamento}
                                             </li>
                                         ))}
                                     </ul>
