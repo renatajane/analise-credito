@@ -1,0 +1,56 @@
+.container {
+    max-width: 800px;
+    /* Largura máxima para o container */
+    margin: 0 auto;
+    /* Centraliza o container horizontalmente */
+    padding: 20px;
+    /* Adiciona algum espaçamento interno */
+    background-color: #f8f9fa;
+    /* Cor de fundo leve */
+    border-radius: 8px;
+    /* Bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Sombra leve para profundidade */
+    margin-bottom: 5%;
+    /* margin-top: 5%; */
+  }
+/* CadastroRequisicao.module.css */
+
+.brselect {
+    position: relative;
+}
+
+.br-input {
+    display: flex;
+    align-items: center;
+}
+
+.br-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.dropdownList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.dropdownItem {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.dropdownItem:hover {
+    background-color: #f0f0f0;
+}
