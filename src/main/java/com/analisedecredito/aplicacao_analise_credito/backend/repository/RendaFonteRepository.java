@@ -17,4 +17,7 @@ public interface RendaFonteRepository extends JpaRepository<RendaFonte, Integer>
 
     @Query("SELECT er FROM RendaFonte er JOIN er.cliente c WHERE c.idCliente = :id")
     List<RendaFonte> findByIdCliente(@Param("id") Integer id);
+
+    @Query("SELECT er FROM RendaFonte er JOIN er.cliente c WHERE c.cpf = :cpf")
+    List<RendaFonte> findByCpfCliente(@Param("cpf") String cpf);
 }

@@ -121,10 +121,8 @@ const CadastroRequisicao = () => {
         try {
             const response = await axios.post('http://localhost:8080/emprestimo-requisicao', data);
             console.log('Resposta da API:', response.data);
-            // Opcional: Mostrar uma mensagem de sucesso ou redirecionar o usuário
         } catch (error) {
             console.error('Erro ao enviar a requisição:', error);
-            // Opcional: Mostrar uma mensagem de erro ao usuário
         }
     };
 

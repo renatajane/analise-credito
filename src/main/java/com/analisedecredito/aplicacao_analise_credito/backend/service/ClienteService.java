@@ -1,5 +1,6 @@
 package com.analisedecredito.aplicacao_analise_credito.backend.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -8,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.BeneficiadoDto;
+import com.analisedecredito.aplicacao_analise_credito.backend.dto.ClienteCompletoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.backend.model.Cliente;
+import com.analisedecredito.aplicacao_analise_credito.backend.model.Despesa;
 import com.analisedecredito.aplicacao_analise_credito.backend.model.EmprestimoRequisicao;
+import com.analisedecredito.aplicacao_analise_credito.backend.model.Patrimonio;
 import com.analisedecredito.aplicacao_analise_credito.backend.model.PerfilCliente;
+import com.analisedecredito.aplicacao_analise_credito.backend.model.RendaFonte;
 import com.analisedecredito.aplicacao_analise_credito.backend.repository.ClienteRepository;
 import com.analisedecredito.aplicacao_analise_credito.backend.repository.DespesaRepository;
 import com.analisedecredito.aplicacao_analise_credito.backend.repository.DespesaTipoRepository;
@@ -64,9 +69,24 @@ public class ClienteService {
         return new ClienteReadDto(repository.findById(id).get());
     }
 
-    /*  Retorna um cliente de acordo com o cpf */
-    public ClienteReadDto findByCpf(String cpf) {        
+    /* Retorna um cliente de acordo com o cpf */
+    public ClienteReadDto findByCpf(String cpf) {
         return new ClienteReadDto(repository.findByCpf(cpf).get());
+    }
+
+    /* Retorna os dados completos de um cliente de acordo com o cpf */
+    public ClienteCompletoReadDto findByCpfCompleto(String cpf) {
+        Cliente cliente = repository.findByCpf(cpf).orElse(null);
+        List<RendaFonte> renda = rendaRepository.findByCpfCliente(cpf);
+        List<Patrimonio> patrimonio = patrimonioRepository.findByCpfCliente(cpf);
+        List<Despesa> despesa = despesaRepository.findByCpfCliente(cpf);
+
+        // Pass empty lists instead of null if needed
+        return new ClienteCompletoReadDto(
+                cliente,
+                renda.isEmpty() ? new ArrayList<>() : renda,
+                patrimonio.isEmpty() ? new ArrayList<>() : patrimonio,
+                despesa.isEmpty() ? new ArrayList<>() : despesa);
     }
 
     /* Retorna uma lista de todos os clientes cadastrados */
@@ -199,7 +219,7 @@ public class ClienteService {
             scoreBase -= 200;
         }
         // if (valorDespesa < 0.20 * valorRenda) {
-        //     scoreBase += 100;
+        // scoreBase += 100;
         // }
 
         PerfilCliente perfilCliente = perfilClienteRepository.findScore(scoreBase);

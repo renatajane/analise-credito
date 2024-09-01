@@ -17,4 +17,7 @@ public interface PatrimonioRepository extends JpaRepository<Patrimonio, Integer>
 
     @Query("SELECT p FROM Patrimonio p JOIN p.cliente c WHERE c.idCliente = :id")
     List<Patrimonio> findByIdCliente(@Param("id") Integer id);
+
+    @Query("SELECT p FROM Patrimonio p JOIN p.cliente c WHERE c.cpf = :cpf")
+    List<Patrimonio> findByCpfCliente(@Param("cpf") String cpf);
 }

@@ -1,90 +1,76 @@
 import React, { useState, useEffect } from 'react';
+import styles from './CadastroRequisicao.module.css';
 import axios from 'axios';
 
-const CadastroDespesa = ({ id }) => {
-    const [despesas, setDespesas] = useState([
-        { idDespesaTipo: '', descricaoDespesaTipo: '', valor: '' }
-    ]);
-    const [tipoDespesaOptions, setTipoDespesaOptions] = useState([]);
+const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDespesa }) => {
+   
     const [errors, setErrors] = useState({
         valor: '',
         descricaoDespesaTipo: ''
     });
-
+    const [tiposDespesa, setTiposDespesa] = useState([]);
+    const [visibleIndex, setVisibleIndex] = useState(null);
+    const handleDropdownToggle = (index) => {
+        setVisibleIndex(visibleIndex === index ? null : index);
+    };
     useEffect(() => {
-        // Fetch tipo de despesa options
-        const fetchTipoDespesaOptions = async () => {
+        const fetchTiposDespesa = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/despesa-tipo/list');
-                setTipoDespesaOptions(response.data);
+                setTiposDespesa(response.data);
+
             } catch (error) {
-                console.error('Erro ao buscar opções de tipo de despesa:', error);
+                console.error('Erro ao buscar tipos de despesa:', error);
             }
         };
 
-        fetchTipoDespesaOptions();
+        fetchTiposDespesa();
     }, []);
-
-    useEffect(() => {
-        if (id != null) {
-            const fetchData = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:8080/despesa/idCliente/${id}`);
-                    setDespesas([
-                        {
-                            idDespesaTipo: response.data.idDespesaTipo,
-                            descricaoDespesaTipo: response.data.descricaoDespesaTipo,
-                            valor: response.data.valor || ''
-                        }
-                    ]);
-                } catch (error) {
-                    console.error('Erro ao buscar os dados da despesa:', error);
-                }
-            };
-
-            fetchData();
-        }
-    }, [id]);
-
-    const addDespesa = () => {
-        setDespesas([...despesas, { idDespesaTipo: '', descricaoDespesaTipo: '', valor: '' }]);
-    };
-
-    const removeDespesa = (index) => {
-        setDespesas(despesas.filter((_, i) => i !== index));
-    };
-
-    const handleInputChange = (index, event) => {
-        const { name, value } = event.target;
-        const newDespesas = [...despesas];
-        newDespesas[index][name] = value;
-        setDespesas(newDespesas);
-    };
+ 
 
     const renderDespesas = () => {
         return despesas.map((despesa, index) => (
             <div key={index} className="despesa-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                <div className="br-select" style={{ flex: '1' }}>
-                    <div className="br-input" style={{ marginBottom: '0' }}>
-                        <label htmlFor={`select-despesa-${index}`} style={{ marginBottom: '5px', display: 'block' }}>Tipo de Despesa</label>
-                        <input
-                            id={`select-despesa-${index}`}
-                            type="text"
-                            placeholder="Selecione o item"
-                            value={despesa.descricaoDespesaTipo}
-                            onChange={(event) => handleInputChange(index, event)}
-                            name="descricaoDespesaTipo"
-                            style={{ width: '100%' }}
-                        />
-                        <button
-                            className="br-button"
-                            type="button"
-                            aria-label="Exibir lista"
-                            tabIndex="-1"
-                            data-trigger="data-trigger"
-                        >
-                            <i className="fas fa-angle-down" aria-hidden="true"></i>
-                        </button>
+                 <div className="col-sm-20 col-lg-30 mb-2">
+                    <label className="text-nowrap" htmlFor={`despesa-${index}`}>
+                        Tipo de Despesa:
+                    </label>
+                    <div className={styles.brselect}>
+                        <div className="br-input">
+                            <input
+                                id={`despesa-${index}`}
+                                type="text"
+                                className="br-input"
+                                placeholder="Selecione um Tipo de Patrimônio"
+                                value={despesa.despesaTipo.descricaoDespesaTipo || ''}
+                                onClick={() => handleDropdownToggle(index)}
+                                readOnly
+                            />
+                            <button
+                                className="br-button"
+                                type="button"
+                                aria-label="Exibir lista"
+                                onClick={() => handleDropdownToggle(index)}
+                            >
+                                <i className="fas fa-angle-down" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        {visibleIndex === index && (
+                            <ul className={styles.dropdownList}>
+                                {tiposDespesa.map(tipoDespesa => (
+                                    <li
+                                        key={tipoDespesa.idDespesaTipo}
+                                        onClick={() => {
+                                            onUpdateDespesa(index, tipoDespesa.idDespesaTipo, 'despesaTipo.idDespesaTipo');
+                                            onUpdateDespesa(index, tipoDespesa.descricaoDespesaTipo, 'despesaTipo.descricaoDespesaTipo');
+                                        }}
+                                        className={styles.dropdownItem}
+                                    >
+                                        {tipoDespesa.descricaoDespesaTipo}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 </div>
                 <div className="br-input" style={{ flex: '0 0 200px', marginLeft: '10px' }}>
@@ -92,17 +78,16 @@ const CadastroDespesa = ({ id }) => {
                     <input
                         id={`valor-${index}`}
                         type="text"
-                        placeholder="Digite o valor"
-                        value={despesa.valor}
-                        onChange={(event) => handleInputChange(index, event)}
-                        name="valor"
+                        placeholder="Digite o valor" 
+                        onChange={(event) => onUpdateDespesa(index, despesa.valorDespesa, "valorDespesa")}
+                        value={despesa.valorDespesa}
                         style={{ width: '100%' }}
                     />
                 </div>
                 <button
                     className="br-button circle secondary small"
                     type="button"
-                    onClick={() => removeDespesa(index)}
+                    onClick={() => onRemoveDespesa(index)}
                     aria-label="Remover despesa"
                     style={{
                         marginLeft: '10px',
@@ -129,7 +114,7 @@ const CadastroDespesa = ({ id }) => {
                 <button
                     className="br-button secondary"
                     type="button"
-                    onClick={addDespesa}
+                    onClick={onAddDespesa}
                     aria-label="Adicionar nova despesa"
                 >
                     Adicionar outra despesa

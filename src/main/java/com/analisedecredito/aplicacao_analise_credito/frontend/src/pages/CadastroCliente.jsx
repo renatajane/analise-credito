@@ -5,7 +5,7 @@ import { cpfMask } from '../components/Mask/CpfMask'; // Verifique o caminho cor
 import CadastroRenda from './CadastroRenda';
 import CadastroDespesa from './CadastroDespesa';
 import CadastroPatrimonio from './CadastroPatrimonio';
-import StylesTable from './Table.module.css';
+import StylesTable from './Table.module.css'; 
 
 const CadastroCliente = () => {
 
@@ -29,6 +29,92 @@ const CadastroCliente = () => {
     const [autorizacaoLGPD, setAutorizacaoLGPD] = useState(false);
     const [idCliente, setIdCliente] = useState(initialData.idCliente);
     const [spcSerasa, setSpcSerasa] = useState(false); // Novo estado para restrição Serasa
+ 
+    const [patrimonios, setPatrimonios] = useState([])
+    //Controle do patrimonio
+    const addPatrimonio = () => {
+        setPatrimonios([...patrimonios,  {
+            patrimonioTipo: {
+                idPatrimonioTipo: 0,
+                descricaoPatrimonioTipo: '',
+            },
+            valorPatrimonio: 0.0,
+        },]);
+      };
+    
+      const removePatrimonio = (index) => {
+        setPatrimonios(patrimonios.filter((_, i) => i !== index));
+      };
+      const onUpdatePatrimonio = (index, value, name) => {
+  
+        const newPatrimonios = [...patrimonios];
+        setNestedValue(newPatrimonios[index], name, value);  
+        setPatrimonios(newPatrimonios);
+    };
+
+
+//Controle da renda
+
+const [rendas, setRendas] = useState([]) 
+const addRenda = () => {
+    setRendas([...rendas,  {   
+        rendaTipo: {
+            idRendaTipo: 0,
+            descricaoRendaTipo: '',
+        },
+        valorRenda: 0.0,
+    },]);
+  };
+
+  const removeRenda = (index) => {
+    setRendas(rendas.filter((_, i) => i !== index));
+  };
+  const onUpdateRenda = (index, value, name) => {  
+    const newRendas = [...rendas]; 
+    setNestedValue(newRendas[index], name, value);        
+    setRendas(newRendas); 
+};
+
+
+//Controle da despesa
+const [despesas, setDespesas] = useState([]) 
+const addDespesa = () => {
+    setDespesas([...despesas,  {   
+        despesaTipo: {
+            idDespesaTipo: 0,
+            descricaoDespesaTipo: '',
+        },
+        valorDespesa: 0.0,
+    },]);
+  };
+
+  const removeDespesa = (index) => {
+    setDespesas(despesas.filter((_, i) => i !== index));
+  };
+  const onUpdateDespesa = (index, value, name) => {  
+    const newDespesas = [...despesas]; 
+    setNestedValue(newDespesas[index], name, value);        
+    setDespesas(newDespesas); 
+};
+
+
+
+
+const setNestedValue = (obj, path, value) => {
+    const keys = path.split('.'); // Divide o caminho em partes
+    keys.reduce((acc, key, i) => {
+        if (i === keys.length - 1) {
+            acc[key] = value; // Atualiza o valor na última parte do caminho
+        } else {
+            if (!acc[key]) acc[key] = {}; // Cria o objeto se não existir
+        }
+        return acc[key];
+    }, obj);
+};
+
+
+
+
     const [errors, setErrors] = useState({
         nome: null,
         cpf: null,
@@ -41,7 +127,7 @@ const CadastroCliente = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/cliente/cpf/12345655001')
+                const response = await axios.get('http://localhost:8080/cliente/completo/12345655001')
                 //     {
                 //     // params: { cpf: '77239658007' } // Substitua pelo CPF que você deseja buscar
                 // });
@@ -56,7 +142,11 @@ const CadastroCliente = () => {
                 setEndereco(response.data.endereco);
                 setAutorizacaoLGPD(response.data.autorizacaoLGPD);
                 setSpcSerasa(response.data.spcSerasa);
+                setPatrimonios(response.data.patrimonio);
+                setRendas(response.data.renda);
+                setDespesas(response.data.despesa);
 
+                console.log(response.data.patrimonio);
                 // alert('Dados carregados com sucesso!');
             } catch (error) {
                 console.error('Erro ao buscar os dados do cliente:', error);
@@ -165,7 +255,10 @@ const CadastroCliente = () => {
     };
 
     const handleSubmit = (event) => {
+       
         event.preventDefault();
+        
+    
         const cleanCpf = cpf.replace(/\D/g, '');
         const formErrors = {
             nome: validateName(nome) ? null : 'O nome deve ter entre 3 e 50 letras e pode conter apenas letras e espaços.',
@@ -177,7 +270,7 @@ const CadastroCliente = () => {
         };
 
         setErrors(formErrors);
-
+debugger;
         if (Object.values(formErrors).every(error => error === null)) {
             const clienteData = {
                 nome,
@@ -188,6 +281,9 @@ const CadastroCliente = () => {
                 endereco,
                 autorizacaoLGPD,
                 spcSerasa, // Inclua a nova propriedade no objeto de dados
+                despesas,
+                patrimonios,
+                rendas
             };
 
             axios.post('http://localhost:8080/cliente', clienteData)
@@ -294,11 +390,11 @@ const CadastroCliente = () => {
                             />
                             {errors.endereco && <div className="error-message">{errors.endereco}</div>}
                         </div>
-                        <div class="br-checkbox hidden-label">
+                        <div className="br-checkbox hidden-label">
                             <input id="check-all" name="check-all" type="checkbox"
                                 checked={autorizacaoLGPD}
                                 onChange={() => setAutorizacaoLGPD(!autorizacaoLGPD)} />
-                            <label for="check-all">autorizacaoLgpd</label>
+                            <label htmlFor="check-all">autorizacaoLgpd</label>
                             Eu autorizo o tratamento dos meus dados pessoais conforme a LGPD.
                         </div>
                         <div className="br-input">
@@ -306,35 +402,36 @@ const CadastroCliente = () => {
                             <label>
                                 Possui restrição no Serasa?
                             </label>
-                            <div class="br-select">
-                                <div class="br-input" id="select-container">
-                                    <input id="select-simple" type="text" placeholder="Selecione o item" readonly />
-                                    <button class="br-button" type="button" aria-label="Exibir lista" tabindex="-1">
-                                        <i class="fas fa-angle-down" aria-hidden="true"></i>
+                            <div className="br-select">
+                                <div className="br-input" id="select-container">
+                                    <input id="select-simple" type="text" placeholder="Selecione o item" readOnly />
+                                    <button className="br-button" type="button" aria-label="Exibir lista" tabIndex="-1">
+                                        <i className="fas fa-angle-down" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                <div class="br-list" tabindex="0">
-                                    <div class="br-item" tabindex="-1">
-                                        <div class="br-radio">
+                                <div className="br-list" tabIndex="0">
+                                    <div className="br-item" tabIndex="-1">
+                                        <div className="br-radio">
                                             <input id="rb0" type="radio" name="estados-simples" value="rb0" />
-                                            <label for="rb0">Sim</label>
+                                            <label htmlFor="rb0">Sim</label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="br-item" tabindex="-1">
-                                    <div class="br-radio">
+                                <div className="br-item" tabIndex="-1">
+                                    <div className="br-radio">
                                         <input id="rb1" type="radio" name="estados-simples" value="rb1" />
-                                        <label for="rb1">Não</label>
+                                        <label htmlFor="rb1">Não</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {idCliente > 0 && <CadastroRenda rendas={rendas} onAddRenda={addRenda} onRemoveRenda={removeRenda} onUpdateRenda={onUpdateRenda} />}
+                        {idCliente > 0 && <CadastroPatrimonio patrimonios={patrimonios} onAddPatrimonio={addPatrimonio} onRemovePatrimonio={removePatrimonio} onUpdatePatrimonio={onUpdatePatrimonio} />}
+                        {idCliente > 0 && <CadastroDespesa  despesas={despesas} onAddDespesa={addDespesa} onRemoveDespesa={removeDespesa} onUpdateDespesa={onUpdateDespesa} />}
+                        <button type="submit" className="br-button">Salvar</button>
                     </form>
                 </div>
-                {idCliente > 0 && <CadastroRenda id={idCliente} />}
-                {idCliente > 0 && <CadastroPatrimonio id={idCliente} />}
-                {idCliente > 0 && <CadastroDespesa id={idCliente} />}
-                <button type="submit" className="br-button">Salvar</button>
+             
             </div>
         </>
     );

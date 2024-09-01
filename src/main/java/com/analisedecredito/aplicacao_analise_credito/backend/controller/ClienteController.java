@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.analisedecredito.aplicacao_analise_credito.backend.dto.ClienteCompletoReadDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.ClienteReadDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.exception.ResourceNotFoundException;
@@ -46,6 +47,11 @@ public class ClienteController {
     @GetMapping("/list")
     public List<ClienteReadDto> list() {
         return service.list();
+    }
+
+    @GetMapping("/completo/{cpf}")
+    public ClienteCompletoReadDto findByCpfCompleto(@PathVariable String cpf){
+        return service.findByCpfCompleto(cpf);
     }
 
     @GetMapping("/cpf/{cpf}") 
