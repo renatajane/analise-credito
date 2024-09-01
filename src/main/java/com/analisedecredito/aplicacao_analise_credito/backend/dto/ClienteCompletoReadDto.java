@@ -26,9 +26,9 @@ public class ClienteCompletoReadDto {
     private boolean spcSerasa;
 
     // Financeiros
-    private List<RendaFonte> renda = new ArrayList<>();
-    private List<Patrimonio> patrimonio = new ArrayList<>();
-    private List<Despesa> despesa = new ArrayList<>();
+    private List<RendaFonte> rendas = new ArrayList<>();
+    private List<Patrimonio> patrimonios = new ArrayList<>();
+    private List<Despesa> despesas = new ArrayList<>();
 
     // Construtor
     public ClienteCompletoReadDto() {
@@ -37,9 +37,9 @@ public class ClienteCompletoReadDto {
     public ClienteCompletoReadDto(Cliente cliente, List<RendaFonte> renda, List<Patrimonio> patrimonio,
             List<Despesa> despesa) {
         BeanUtils.copyProperties(cliente, this);
-        this.renda = renda;
-        this.despesa = despesa;
-        this.patrimonio = patrimonio;
+        this.rendas = renda;
+        this.despesas = despesa;
+        this.patrimonios = patrimonio;
     }
 
     // Getters e Setters
@@ -115,28 +115,28 @@ public class ClienteCompletoReadDto {
         this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
     }
 
-    public List<RendaFonte> getRenda() {
-        return renda;
+    public List<RendaFonte> getRendas() {
+        return rendas;
     }
 
-    public void setRenda(List<RendaFonte> renda) {
-        this.renda = renda;
+    public void setRenda(List<RendaFonte> rendas) {
+        this.rendas = rendas;
     }
 
-    public List<Patrimonio> getPatrimonio() {
-        return patrimonio;
+    public List<Patrimonio> getPatrimonios() {
+        return patrimonios;
     }
 
-    public void setPatrimonio(List<Patrimonio> patrimonio) {
-        this.patrimonio = patrimonio;
+    public void setPatrimonios(List<Patrimonio> patrimonios) {
+        this.patrimonios = patrimonios;
     }
 
-    public List<Despesa> getDespesa() {
-        return despesa;
+    public List<Despesa> getDespesas() {
+        return despesas;
     }
 
-    public void setDespesa(List<Despesa> despesa) {
-        this.despesa = despesa;
+    public void setDespesas(List<Despesa> despesas) {
+        this.despesas = despesas;
     }
 
     public boolean getSpcSerasa() {

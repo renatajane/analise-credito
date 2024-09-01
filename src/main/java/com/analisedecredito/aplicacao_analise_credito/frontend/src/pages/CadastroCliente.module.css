@@ -15,41 +15,41 @@
   /* margin-top: 5%; */
 }
 
-/* CadastroCliente.module.css */
-.selectContainer {
+.brselect {
   position: relative;
 }
 
-.selectButton {
-  width: 100%;
-  padding: 10px;
-  text-align: left;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: #fff;
+.br-input {
+  display: flex;
+  align-items: center;
 }
 
-.selectMenu {
+.br-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.dropdownList {
   position: absolute;
   top: 100%;
   left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #ccc;
+  background-color: white;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   list-style: none;
   padding: 0;
   margin: 0;
-  z-index: 1;
+  width: 100%;
+  z-index: 10;
 }
 
-.selectMenu li {
-  padding: 10px;
+.dropdownItem {
+  padding: 8px;
   cursor: pointer;
 }
 
-.selectMenu li:hover {
+.dropdownItem:hover {
   background-color: #f0f0f0;
 }

@@ -111,19 +111,6 @@ public class ClienteService {
             // Cliente já existe, verifica se os dados são os mesmos
             cliente = clienteExistenteOpt.get();
 
-            boolean dadosIguais = cliente.getNome().equals(clienteCompletoDto.getNome()) &&
-                    cliente.getDataNascimento().equals(clienteCompletoDto.getDataNascimento()) &&
-                    cliente.getEmail().equals(clienteCompletoDto.getEmail()) &&
-                    cliente.getEndereco().equals(clienteCompletoDto.getEndereco()) &&
-                    cliente.getTelefone().equals(clienteCompletoDto.getTelefone()) &&
-                    cliente.getSpcSerasa() == clienteCompletoDto.getSpcSerasa() &&
-                    cliente.getAutorizacaoLGPD() == clienteCompletoDto.getAutorizacaoLGPD();
-
-            if (dadosIguais) {
-                // Se os dados forem iguais, não faça nada
-                return;
-            }
-
             // Se os dados forem diferentes, atualiza o cliente existente
             cliente.setNome(clienteCompletoDto.getNome());
             cliente.setDataNascimento(clienteCompletoDto.getDataNascimento());
@@ -169,8 +156,8 @@ public class ClienteService {
         }
 
         // Adiciona as novas rendas se existirem
-        if (!clienteCompletoDto.getRenda().isEmpty()) {
-            for (RendaFonte item : clienteCompletoDto.getRenda()) {
+        if (!clienteCompletoDto.getRendas().isEmpty()) {
+            for (RendaFonte item : clienteCompletoDto.getRendas()) {
                 Optional<RendaTipo> rendaTipoOpt = rendaTipoRepository.findById(item.getRendaTipo().getIdRendaTipo());
                 if (rendaTipoOpt.isPresent()) {
                     RendaFonte renda = new RendaFonte();
@@ -186,8 +173,8 @@ public class ClienteService {
         }
 
         // Adiciona os novos patrimônios se existirem
-        if (!clienteCompletoDto.getPatrimonio().isEmpty()) {
-            for (Patrimonio item : clienteCompletoDto.getPatrimonio()) {
+        if (!clienteCompletoDto.getPatrimonios().isEmpty()) {
+            for (Patrimonio item : clienteCompletoDto.getPatrimonios()) {
                 Optional<PatrimonioTipo> patrimonioTipoOpt = patrimonioTipoRepository
                         .findById(item.getPatrimonioTipo().getIdPatrimonioTipo());
                 if (patrimonioTipoOpt.isPresent()) {
@@ -204,8 +191,8 @@ public class ClienteService {
         }
 
         // Adiciona as novas despesas se existirem
-        if (!clienteCompletoDto.getDespesa().isEmpty()) {
-            for (Despesa item : clienteCompletoDto.getDespesa()) {
+        if (!clienteCompletoDto.getDespesas().isEmpty()) {
+            for (Despesa item : clienteCompletoDto.getDespesas()) {
                 Optional<DespesaTipo> despesaTipoOpt = despesaTipoRepository
                         .findById(item.getDespesaTipo().getIdDespesaTipo());
                 if (despesaTipoOpt.isPresent()) {
@@ -222,7 +209,10 @@ public class ClienteService {
         }
         // Define o perfil do cliente e calcula o valor pré-aprovado para empréstimo
         definePerfilCliente(cliente.getIdCliente());
-        calculaValorPreAprovado(cliente.getIdCliente());
+        cliente = repository.save(cliente);
+        
+        var valorPreAprovado = calculaValorPreAprovado(cliente.getIdCliente());
+        cliente.setValorMaximoPreAprovado(valorPreAprovado);
         cliente = repository.save(cliente);
     }
 

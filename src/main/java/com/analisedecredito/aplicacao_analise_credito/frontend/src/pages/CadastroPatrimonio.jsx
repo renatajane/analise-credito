@@ -82,8 +82,8 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
                         type="number"
                         placeholder="Digite o valor"
                         value={patrimonio.valorPatrimonio}
-                        onChange={(event) => onUpdatePatrimonio(index, patrimonio.valorPatrimonio, "valorPatrimonio")}
-                        style={{ width: '100%' }}
+                        onChange={(event) => onUpdatePatrimonio(index, event.target.value, "valorPatrimonio")}
+                        style={{ width: '100%', marginBottom: '13px' }}
                     />
                 </div>
 

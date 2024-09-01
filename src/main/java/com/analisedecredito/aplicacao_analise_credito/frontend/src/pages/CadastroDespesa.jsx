@@ -3,7 +3,7 @@ import styles from './CadastroRequisicao.module.css';
 import axios from 'axios';
 
 const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDespesa }) => {
-   
+
     const [errors, setErrors] = useState({
         valor: '',
         descricaoDespesaTipo: ''
@@ -26,12 +26,12 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
 
         fetchTiposDespesa();
     }, []);
- 
+
 
     const renderDespesas = () => {
         return despesas.map((despesa, index) => (
             <div key={index} className="despesa-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                 <div className="col-sm-20 col-lg-30 mb-2">
+                <div className="col-sm-20 col-lg-30 mb-2">
                     <label className="text-nowrap" htmlFor={`despesa-${index}`}>
                         Tipo de Despesa:
                     </label>
@@ -78,10 +78,10 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
                     <input
                         id={`valor-${index}`}
                         type="text"
-                        placeholder="Digite o valor" 
-                        onChange={(event) => onUpdateDespesa(index, despesa.valorDespesa, "valorDespesa")}
+                        placeholder="Digite o valor"
+                        onChange={(event) => onUpdateDespesa(index, event.target.value, "valorDespesa")}
                         value={despesa.valorDespesa}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', marginBottom: '15px' }}
                     />
                 </div>
                 <button

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import Styles from './CadastroCliente.module.css'; // Verifique o caminho correto
-import { cpfMask } from '../components/Mask/CpfMask'; // Verifique o caminho correto
+import Styles from './CadastroCliente.module.css';
+import { cpfMask } from '../components/Mask/CpfMask';
 import CadastroRenda from './CadastroRenda';
 import CadastroDespesa from './CadastroDespesa';
 import CadastroPatrimonio from './CadastroPatrimonio';
-import StylesTable from './Table.module.css'; 
+import StylesTable from './Table.module.css';
 
 const CadastroCliente = () => {
 
@@ -20,6 +20,12 @@ const CadastroCliente = () => {
         endereco: '',
     };
 
+    // Opções fixas para o spcSerasa
+    const simNao = [
+        { valor: true, descricao: 'Sim' },
+        { valor: false, descricao: 'Não' }
+    ];
+
     const [nome, setNome] = useState(initialData.nome);
     const [cpf, setCpf] = useState(initialData.cpf);
     const [dataNascimento, setDataNascimento] = useState(initialData.dataNascimento);
@@ -28,92 +34,104 @@ const CadastroCliente = () => {
     const [endereco, setEndereco] = useState(initialData.endereco);
     const [autorizacaoLGPD, setAutorizacaoLGPD] = useState(false);
     const [idCliente, setIdCliente] = useState(initialData.idCliente);
-    const [spcSerasa, setSpcSerasa] = useState(false); // Novo estado para restrição Serasa
- 
+    const [spcSerasa, setSpcSerasa] = useState(false);
+
+    const spcSerasaRef = useRef(null);
+
+    const [selectedSpcSerasa, setSelectedSpcSerasa] = useState(null);
+
+    const [isSpcSerasaListVisible, setIsSpcSerasaListVisible] = useState(false);
+
     const [patrimonios, setPatrimonios] = useState([])
+
+    const toggleListVisibility = (setter) => setter(prev => !prev);
+
+    const handleOptionSelect = (option, setter, setVisibility) => {
+        setter(option.descricao);
+        setVisibility(false);
+    };
+
     //Controle do patrimonio
     const addPatrimonio = () => {
-        setPatrimonios([...patrimonios,  {
+        setPatrimonios([...patrimonios, {
             patrimonioTipo: {
                 idPatrimonioTipo: 0,
                 descricaoPatrimonioTipo: '',
             },
             valorPatrimonio: 0.0,
         },]);
-      };
-    
-      const removePatrimonio = (index) => {
+    };
+
+    const removePatrimonio = (index) => {
         setPatrimonios(patrimonios.filter((_, i) => i !== index));
-      };
-      const onUpdatePatrimonio = (index, value, name) => {
-  
+    };
+    const onUpdatePatrimonio = (index, value, name) => {
         const newPatrimonios = [...patrimonios];
-        setNestedValue(newPatrimonios[index], name, value);  
+        setNestedValue(newPatrimonios[index], name, value);
         setPatrimonios(newPatrimonios);
     };
 
+    //Controle da renda
+    const [rendas, setRendas] = useState([])
+    const addRenda = () => {
+        setRendas([...rendas, {
+            rendaTipo: {
+                idRendaTipo: 0,
+                descricaoRendaTipo: '',
+            },
+            valorRenda: 0.0,
+        },]);
+    };
 
-//Controle da renda
+    const removeRenda = (index) => {
+        setRendas(rendas.filter((_, i) => i !== index));
+    };
+    const onUpdateRenda = (index, value, name) => {
+        const newRendas = [...rendas];
+        setNestedValue(newRendas[index], name, value);
+        setRendas(newRendas);
+    };
 
-const [rendas, setRendas] = useState([]) 
-const addRenda = () => {
-    setRendas([...rendas,  {   
-        rendaTipo: {
-            idRendaTipo: 0,
-            descricaoRendaTipo: '',
-        },
-        valorRenda: 0.0,
-    },]);
-  };
+    //Controle da despesa
+    const [despesas, setDespesas] = useState([])
+    const addDespesa = () => {
+        setDespesas([...despesas, {
+            despesaTipo: {
+                idDespesaTipo: 0,
+                descricaoDespesaTipo: '',
+            },
+            valorDespesa: 0.0,
+        },]);
+    };
 
-  const removeRenda = (index) => {
-    setRendas(rendas.filter((_, i) => i !== index));
-  };
-  const onUpdateRenda = (index, value, name) => {  
-    const newRendas = [...rendas]; 
-    setNestedValue(newRendas[index], name, value);        
-    setRendas(newRendas); 
-};
+    const removeDespesa = (index) => {
+        setDespesas(despesas.filter((_, i) => i !== index));
+    };
+    const onUpdateDespesa = (index, value, name) => {
+        const newDespesas = [...despesas];
+        setNestedValue(newDespesas[index], name, value);
+        setDespesas(newDespesas);
+    };
 
+    const setNestedValue = (obj, path, value) => {
+        const keys = path.split('.'); // Divide o caminho em partes
+        keys.reduce((acc, key, i) => {
+            if (i === keys.length - 1) {
+                acc[key] = value; // Atualiza o valor na última parte do caminho
+            } else {
+                if (!acc[key]) acc[key] = {}; // Cria o objeto se não existir
+            }
+            return acc[key];
+        }, obj);
+    };
 
-//Controle da despesa
-const [despesas, setDespesas] = useState([]) 
-const addDespesa = () => {
-    setDespesas([...despesas,  {   
-        despesaTipo: {
-            idDespesaTipo: 0,
-            descricaoDespesaTipo: '',
-        },
-        valorDespesa: 0.0,
-    },]);
-  };
-
-  const removeDespesa = (index) => {
-    setDespesas(despesas.filter((_, i) => i !== index));
-  };
-  const onUpdateDespesa = (index, value, name) => {  
-    const newDespesas = [...despesas]; 
-    setNestedValue(newDespesas[index], name, value);        
-    setDespesas(newDespesas); 
-};
-
-
-
-
-const setNestedValue = (obj, path, value) => {
-    const keys = path.split('.'); // Divide o caminho em partes
-    keys.reduce((acc, key, i) => {
-        if (i === keys.length - 1) {
-            acc[key] = value; // Atualiza o valor na última parte do caminho
-        } else {
-            if (!acc[key]) acc[key] = {}; // Cria o objeto se não existir
-        }
-        return acc[key];
-    }, obj);
-};
-
-
-
+    const formatDateToBR = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses são baseados em zero
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
     const [errors, setErrors] = useState({
         nome: null,
@@ -127,35 +145,28 @@ const setNestedValue = (obj, path, value) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/cliente/completo/12345655001')
-                //     {
-                //     // params: { cpf: '77239658007' } // Substitua pelo CPF que você deseja buscar
-                // });
-
-                // Preencha os estados com os dados recebidos
+                const response = await axios.get('http://localhost:8080/cliente/completo/12345655001');
+                // Formatar data para o formato 'yyyy-MM-dd'
+                const formattedDataNascimento = new Date(response.data.dataNascimento).toISOString().split('T')[0];
                 setIdCliente(response.data.idCliente);
                 setNome(response.data.nome);
                 setCpf(response.data.cpf);
-                setDataNascimento(response.data.dataNascimento);
+                setDataNascimento(formattedDataNascimento);
                 setEmail(response.data.email);
                 setTelefone(response.data.telefone);
                 setEndereco(response.data.endereco);
                 setAutorizacaoLGPD(response.data.autorizacaoLGPD);
                 setSpcSerasa(response.data.spcSerasa);
-                setPatrimonios(response.data.patrimonio);
-                setRendas(response.data.renda);
-                setDespesas(response.data.despesa);
-
-                console.log(response.data.patrimonio);
-                // alert('Dados carregados com sucesso!');
+                setPatrimonios(response.data.patrimonios);
+                setRendas(response.data.rendas);
+                setDespesas(response.data.despesas);
             } catch (error) {
                 console.error('Erro ao buscar os dados do cliente:', error);
-                // alert('Erro ao buscar os dados do cliente.');
             }
         };
 
         fetchData();
-    }, []); // O array vazio garante que a requisição seja feita apenas uma vez, quando o componente é montado.
+    }, []);
 
     const validateCpf = (input) => {
         const cleanCpf = input.replace(/\D/g, ''); // Remove caracteres não numéricos
@@ -164,8 +175,9 @@ const setNestedValue = (obj, path, value) => {
     };
 
     const validateName = (name) => {
-        const namePattern = /^[A-Za-z\s]+$/; // Permite apenas letras e espaços
-        return name.length >= 3 && name.length <= 50 && namePattern.test(name);
+        // const namePattern = /^[A-Za-z\s]+$/; // Permite apenas letras e espaços
+        // return name.length >= 3 && name.length <= 50 && namePattern.test(name);
+        return name.length >= 3;
     };
 
     const validatePhone = (phone) => {
@@ -255,11 +267,13 @@ const setNestedValue = (obj, path, value) => {
     };
 
     const handleSubmit = (event) => {
-       
         event.preventDefault();
-        
-    
+
         const cleanCpf = cpf.replace(/\D/g, '');
+        const formattedDataNascimento = dataNascimento; // Já está no formato 'yyyy-MM-dd'
+
+        debugger;
+
         const formErrors = {
             nome: validateName(nome) ? null : 'O nome deve ter entre 3 e 50 letras e pode conter apenas letras e espaços.',
             cpf: validateCpf(cleanCpf) ? null : 'O CPF deve conter exatamente 11 dígitos numéricos.',
@@ -270,41 +284,44 @@ const setNestedValue = (obj, path, value) => {
         };
 
         setErrors(formErrors);
-debugger;
+
         if (Object.values(formErrors).every(error => error === null)) {
             const clienteData = {
                 nome,
                 cpf: cleanCpf,
-                dataNascimento,
+                dataNascimento: formattedDataNascimento, // Enviando no formato 'yyyy-MM-dd'
                 email,
                 telefone,
                 endereco,
                 autorizacaoLGPD,
-                spcSerasa, // Inclua a nova propriedade no objeto de dados
+                spcSerasa: selectedSpcSerasa?.valor,
                 despesas,
                 patrimonios,
                 rendas
             };
 
-            axios.post('http://localhost:8080/cliente', clienteData)
+            axios.post('http://localhost:8080/cliente/completo-com-financeiro', clienteData)
                 .then(response => {
                     setErrors({ nome: null, cpf: null, dataNascimento: null, email: null, telefone: null, endereco: null });
                     alert('Cliente cadastrado com sucesso.');
-                    // Limpar o formulário ou redirecionar conforme necessário
-                    setNome('');
-                    setCpf('');
-                    setDataNascimento('');
-                    setEmail('');
-                    setTelefone('');
-                    setEndereco('');
-                    setAutorizacaoLGPD(false);
-                    setSpcSerasa(false); // Limpar o estado do checkbox
+                    // setNome('');
+                    // setCpf('');
+                    // setDataNascimento('');
+                    // setEmail('');
+                    // setTelefone('');
+                    // setEndereco('');
+                    // setAutorizacaoLGPD(false);
+                    // setSpcSerasa(false);
+                    // setRendas([]);
+                    // setPatrimonios([]);
+                    // setDespesas([]);
                 })
                 .catch(error => {
                     alert('Ocorreu um erro ao cadastrar o cliente.');
                 });
         }
     };
+
 
     return (
         <>
@@ -399,39 +416,55 @@ debugger;
                         </div>
                         <div className="br-input">
                             <h3>Dados Financeiros</h3>
-                            <label>
-                                Possui restrição no Serasa?
-                            </label>
-                            <div className="br-select">
-                                <div className="br-input" id="select-container">
-                                    <input id="select-simple" type="text" placeholder="Selecione o item" readOnly />
-                                    <button className="br-button" type="button" aria-label="Exibir lista" tabIndex="-1">
-                                        <i className="fas fa-angle-down" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div className="br-list" tabIndex="0">
-                                    <div className="br-item" tabIndex="-1">
-                                        <div className="br-radio">
-                                            <input id="rb0" type="radio" name="estados-simples" value="rb0" />
-                                            <label htmlFor="rb0">Sim</label>
-                                        </div>
+
+                            {/* Restricao no Serasa */}
+                            <div className="col-sm-20 col-lg-30 mb-2">
+                                <label className="text-nowrap" htmlFor="spcSerasa">
+                                    Possui restrição no spc ?
+                                </label>
+                                <div className={Styles.brselect} ref={spcSerasaRef}>
+                                    <div className="br-input">
+                                        <input
+                                            id="spcSerasa"
+                                            type="text"
+                                            className="br-input"
+                                            placeholder="Selecione uma opção"
+                                            value={selectedSpcSerasa || ''}
+                                            onClick={() => toggleListVisibility(setIsSpcSerasaListVisible)}
+                                            readOnly
+                                        />
+                                        <button
+                                            className="br-button"
+                                            type="button"
+                                            aria-label="Exibir lista"
+                                            onClick={() => toggleListVisibility(setIsSpcSerasaListVisible)}
+                                        >
+                                            <i className="fas fa-angle-down" aria-hidden="true"></i>
+                                        </button>
                                     </div>
-                                </div>
-                                <div className="br-item" tabIndex="-1">
-                                    <div className="br-radio">
-                                        <input id="rb1" type="radio" name="estados-simples" value="rb1" />
-                                        <label htmlFor="rb1">Não</label>
-                                    </div>
+                                    {isSpcSerasaListVisible && (
+                                        <ul className={Styles.dropdownList}>
+                                            {simNao.map(opcao => (
+                                                <li
+                                                    key={opcao.valor}
+                                                    onClick={() => handleOptionSelect(opcao, setSelectedSpcSerasa, setIsSpcSerasaListVisible)}
+                                                    className={Styles.dropdownItem}
+                                                >
+                                                    {opcao.descricao}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             </div>
                         </div>
                         {idCliente > 0 && <CadastroRenda rendas={rendas} onAddRenda={addRenda} onRemoveRenda={removeRenda} onUpdateRenda={onUpdateRenda} />}
                         {idCliente > 0 && <CadastroPatrimonio patrimonios={patrimonios} onAddPatrimonio={addPatrimonio} onRemovePatrimonio={removePatrimonio} onUpdatePatrimonio={onUpdatePatrimonio} />}
-                        {idCliente > 0 && <CadastroDespesa  despesas={despesas} onAddDespesa={addDespesa} onRemoveDespesa={removeDespesa} onUpdateDespesa={onUpdateDespesa} />}
+                        {idCliente > 0 && <CadastroDespesa despesas={despesas} onAddDespesa={addDespesa} onRemoveDespesa={removeDespesa} onUpdateDespesa={onUpdateDespesa} />}
                         <button type="submit" className="br-button">Salvar</button>
                     </form>
                 </div>
-             
+
             </div>
         </>
     );

@@ -7,7 +7,7 @@ const CadastroRenda = ({ rendas, onAddRenda, onRemoveRenda, onUpdateRenda }) => 
         valorRenda: '',
         descricaoRendaTipo: ''
     });
-    
+
     const [tiposRenda, setTiposRenda] = useState([]); // Estado para armazenar tipos de renda
     const [visibleIndex, setVisibleIndex] = useState(null);
     const handleDropdownToggle = (index) => {
@@ -18,7 +18,7 @@ const CadastroRenda = ({ rendas, onAddRenda, onRemoveRenda, onUpdateRenda }) => 
     useEffect(() => {
         const fetchTiposRenda = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/renda-tipo/list'); 
+                const response = await axios.get('http://localhost:8080/renda-tipo/list');
                 setTiposRenda(response.data);
             } catch (error) {
                 console.error('Erro ao buscar tipos de renda:', error);
@@ -59,11 +59,11 @@ const CadastroRenda = ({ rendas, onAddRenda, onRemoveRenda, onUpdateRenda }) => 
                             <ul className={styles.dropdownList}>
                                 {tiposRenda.map(tipoRenda => (
                                     <li
-                                        key={tipoRenda.idRendaTipo} 
-                                        onClick={() => { 
+                                        key={tipoRenda.idRendaTipo}
+                                        onClick={() => {
                                             onUpdateRenda(index, tipoRenda.idRendaTipo, 'rendaTipo.idRendaTipo');
-                                            onUpdateRenda(index, tipoRenda.descricaoRendaTipo, 'rendaTipo.descricaoRendaTipo'); 
-                                         }}
+                                            onUpdateRenda(index, tipoRenda.descricaoRendaTipo, 'rendaTipo.descricaoRendaTipo');
+                                        }}
                                         className={styles.dropdownItem}
                                     >
                                         {tipoRenda.descricaoRendaTipo}
@@ -80,9 +80,9 @@ const CadastroRenda = ({ rendas, onAddRenda, onRemoveRenda, onUpdateRenda }) => 
                         type="text"
                         placeholder="Digite o valorRenda"
                         value={renda.valorRenda}
-                        onChange={(event) => onUpdateRenda(index, event)}
+                        onChange={(event) => onUpdateRenda(index, event.target.value, 'valorRenda')}
                         name="valorRenda"
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', marginBottom: '13px' }}
                     />
                 </div>
                 <button
