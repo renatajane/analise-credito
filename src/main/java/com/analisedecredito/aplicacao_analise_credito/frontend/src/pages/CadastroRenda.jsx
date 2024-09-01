@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './CadastroRequisicao.module.css';
-import axios from 'axios';
+import { ApiService } from '../services/appService';
 
 const CadastroRenda = ({ rendas, onAddRenda, onRemoveRenda, onUpdateRenda }) => {
     const [errors, setErrors] = useState({
@@ -18,7 +18,7 @@ const CadastroRenda = ({ rendas, onAddRenda, onRemoveRenda, onUpdateRenda }) => 
     useEffect(() => {
         const fetchTiposRenda = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/renda-tipo/list');
+                const response = await ApiService.Get('renda-tipo/list');
                 setTiposRenda(response.data);
             } catch (error) {
                 console.error('Erro ao buscar tipos de renda:', error);
@@ -118,7 +118,7 @@ const CadastroRenda = ({ rendas, onAddRenda, onRemoveRenda, onUpdateRenda }) => 
                     onClick={onAddRenda}
                     aria-label="Adicionar nova renda"
                 >
-                    Adicionar outra renda
+                    Adicionar renda
                 </button>
             </div>
         </div>

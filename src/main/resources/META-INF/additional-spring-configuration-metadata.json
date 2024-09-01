@@ -18,5 +18,10 @@
     "name": "wiremock.url",
     "type": "java.lang.String",
     "description": "A description for 'wiremock.url'"
+  },
+  {
+    "name": "security",
+    "type": "java.lang.String",
+    "description": "A description for 'security'"
   }
 ]}

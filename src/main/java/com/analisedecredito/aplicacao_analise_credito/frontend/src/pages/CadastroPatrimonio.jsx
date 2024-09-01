@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './CadastroRequisicao.module.css';
-import axios from 'axios';
+import { ApiService } from '../services/appService';
 
 const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, onUpdatePatrimonio }) => {
     const [errors, setErrors] = useState({
@@ -18,7 +18,7 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
     useEffect(() => {
         const fetchTiposPatrimonio = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/patrimonio-tipo/list');
+                const response = await ApiService.Get('patrimonio-tipo/list');
                 setTiposPatrimonio(response.data);
 
             } catch (error) {
@@ -120,7 +120,7 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
                     onClick={onAddPatrimonio}
                     aria-label="Adicionar novo patrimônio"
                 >
-                    Adicionar outro patrimônio
+                    Adicionar patrimônio
                 </button>
             </div>
         </div>

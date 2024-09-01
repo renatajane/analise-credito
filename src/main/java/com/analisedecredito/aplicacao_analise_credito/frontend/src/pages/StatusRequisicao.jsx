@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { cpfMask } from '../components/Mask/CpfMask';
-import { useNavigate } from 'react-router-dom';
 import FormatDate from "../utils/formatDate";
 import FormatValor from "../utils/formatCurrency";
 import StylesTable from './Table.module.css';
 import StylesCpf from './Cpf.module.css';
+import { ApiService } from '../services/appService';
+import { useAuth } from '../contexto/AuthProvider';
 
 const StatusRequisicao = () => {
     const [cpf, setCpf] = useState('');
     const [requisicoes, setRequisicoes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+
+    const { cpfLogado } = useAuth();
 
     const handleSearch = () => {
         const cpfNumerico = cpf.replace(/\D/g, '');
@@ -20,19 +21,13 @@ const StatusRequisicao = () => {
             setLoading(true);
             setError(null);
 
-            axios.get(`http://localhost:8080/emprestimo-requisicao/list-by-cpf?cpf=${cpfNumerico}`)
-                .then(response => {
-                    const data = Array.isArray(response.data) ? response.data : [];
-                    if (data.length > 0) {
-                        setRequisicoes(data);
-                    } else {
-                        setError('Nenhuma requisição encontrada para o CPF informado.');
-                    }
-                })
-                .catch(() => {
-                    setError('Erro ao buscar requisições.');
-                })
-                .finally(() => setLoading(false));
+            const response = ApiService.Get(`emprestimo-requisicao/list-by-cpf?cpf=${cpfLogado}`)
+            const data = Array.isArray(response.data) ? response.data : [];
+            if (data.length > 0) {
+                setRequisicoes(data);
+            } else {
+                setError('Nenhuma requisição encontrada para o CPF informado.');
+            }
         } else {
             setError('CPF inválido. Verifique o formato e tente novamente.');
         }

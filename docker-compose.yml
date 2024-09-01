@@ -36,11 +36,25 @@ services:
       - ./stubs:/home/wiremock
     command: --port 8081 
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.2
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    command: start-dev
+    ports:
+      - "8088:8080"
+    networks:
+      - pg-network
+    volumes:
+      - keycloak_data:/opt/keycloak/data 
+
 networks:
   pg-network:
 
 volumes:
   db-data:
+  keycloak_data:
 
   # backend:
   #   build:

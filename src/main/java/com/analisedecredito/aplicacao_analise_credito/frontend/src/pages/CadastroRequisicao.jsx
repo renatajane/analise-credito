@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import styles from './CadastroRequisicao.module.css';
 import StylesTable from './Table.module.css';
+import { ApiService } from '../services/appService';
+import { useAuth } from '../contexto/AuthProvider';
 
 const CadastroRequisicao = () => {
     const [valorRequerido, setValorRequerido] = useState('');
@@ -34,6 +35,8 @@ const CadastroRequisicao = () => {
     const diaPagamentoRef = useRef(null);
     const prazoMesRef = useRef(null);
 
+    const { cpfLogado } = useAuth();
+
     // Opções fixas para o dia de pagamento
     const diasPagamento = [
         { valor: 5, descricao: '5' },
@@ -56,7 +59,7 @@ const CadastroRequisicao = () => {
         // Fetch ID do Cliente
         const fetchClientId = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/cliente/cpf/12345655001');
+                const response = await ApiService.Get(`cliente/cpf/${cpfLogado}`);
                 setIdCliente(response.data.idCliente);
                 console.log("meus dados do cliente ", response.data);
             } catch (error) {
@@ -73,10 +76,10 @@ const CadastroRequisicao = () => {
             const fetchData = async () => {
                 try {
                     const [modalidadesRes, objetivosRes, urgenciasRes, modalidadesPagamentoRes] = await Promise.all([
-                        axios.get('http://localhost:8080/emprestimo-modalidade/list'),
-                        axios.get('http://localhost:8080/emprestimo-objetivo/list'),
-                        axios.get('http://localhost:8080/emprestimo-urgencia/list'),
-                        axios.get('http://localhost:8080/modalidade-pagamento/list'),
+                        ApiService.Get('emprestimo-modalidade/list'),
+                        ApiService.Get('emprestimo-objetivo/list'),
+                        ApiService.Get('emprestimo-urgencia/list'),
+                        ApiService.Get('modalidade-pagamento/list'),
                     ]);
                     setModalidades(modalidadesRes.data);
                     setObjetivos(objetivosRes.data);
@@ -119,7 +122,7 @@ const CadastroRequisicao = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8080/emprestimo-requisicao', data);
+            const response = await ApiService.Post('emprestimo-requisicao', data);
             console.log('Resposta da API:', response.data);
         } catch (error) {
             console.error('Erro ao enviar a requisição:', error);

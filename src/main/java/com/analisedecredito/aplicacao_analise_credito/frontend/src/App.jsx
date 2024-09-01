@@ -7,19 +7,27 @@ import BuscarRequisicao from './pages/BuscarRequisicao'
 import ListarRequisicoes from './pages/ListarRequisicoes';
 import StatusRequisicao from './pages/StatusRequisicao';
 import CadastroRequisicao from './pages/CadastroRequisicao';
+import Login from './pages/Login';
+import AuthProvider from './contexto/AuthProvider';
+import PrivateRoute from './contexto/PrivateRoute';
 
 function App() {
   return (
     <BrowserRouter>
       <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/cadastroCliente" element={<CadastroCliente />} />
-        <Route path="/listarRequisicoes" element={<ListarRequisicoes />} />
-        <Route path="/buscarRequisicao" element={<BuscarRequisicao />} />
-        <Route path="/statusRequisicao" element={<StatusRequisicao />} />
-        <Route path="/cadastroRequisicao" element={<CadastroRequisicao />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/cadastroCliente" element={<CadastroCliente />} />
+            <Route path="/listarRequisicoes" element={<ListarRequisicoes />} />
+            <Route path="/buscarRequisicao" element={<BuscarRequisicao />} />
+            <Route path="/statusRequisicao" element={<StatusRequisicao />} />
+            <Route path="/cadastroRequisicao" element={<CadastroRequisicao />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
       <Footer />
     </BrowserRouter>
   );

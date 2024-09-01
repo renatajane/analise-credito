@@ -15,7 +15,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
-    "react-select": "^5.8.0"
+    "react-select": "^5.8.0",
+    "oidc-client": "^1.11.5",
+    "jwt-decode": "^3.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

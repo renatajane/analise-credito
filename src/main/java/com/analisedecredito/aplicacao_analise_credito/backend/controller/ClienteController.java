@@ -50,7 +50,7 @@ public class ClienteController {
     }
 
     @GetMapping("/completo/{cpf}")
-    public ClienteCompletoReadDto findByCpfCompleto(@PathVariable String cpf){
+    public ClienteCompletoReadDto findByCpfCompleto(@PathVariable String cpf){        
         return service.findByCpfCompleto(cpf);
     }
 

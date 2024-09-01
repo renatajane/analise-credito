@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './CadastroRequisicao.module.css';
-import axios from 'axios';
+import { ApiService } from '../services/appService';
 
 const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDespesa }) => {
 
@@ -16,7 +16,7 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
     useEffect(() => {
         const fetchTiposDespesa = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/despesa-tipo/list');
+                const response = await ApiService.Get('despesa-tipo/list');
                 setTiposDespesa(response.data);
 
             } catch (error) {
@@ -117,7 +117,7 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
                     onClick={onAddDespesa}
                     aria-label="Adicionar nova despesa"
                 >
-                    Adicionar outra despesa
+                    Adicionar despesa
                 </button>
             </div>
         </div>

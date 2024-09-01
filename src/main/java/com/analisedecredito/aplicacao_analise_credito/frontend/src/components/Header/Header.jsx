@@ -2,6 +2,7 @@ import React from "react";
 import govbr from "../../Img/govbr.svg";
 import MenuButton from "../Botoes/ButtonMenu";
 import styles from "./Header.module.css";
+import { Link } from "react-router-dom";
 
 function Header() {
   return (
@@ -59,8 +60,12 @@ function Header() {
           </div>
           <div className="header-login">
             <div className="header-sign-in">
-              <button className="br-sign-in small" type="button" data-trigger="login"><i className="fas fa-user" aria-hidden="true"></i><span className="d-sm-inline">Entrar</span>
-              </button>
+              <Link to="/login">
+                <button className="br-sign-in small" type="button"
+                  data-trigger="login"><i className="fas fa-user"
+                    aria-hidden="true"></i><span className="d-sm-inline">Entrar</span>
+                </button>
+              </Link>
             </div>
             <div className="header-avatar"></div>
           </div>

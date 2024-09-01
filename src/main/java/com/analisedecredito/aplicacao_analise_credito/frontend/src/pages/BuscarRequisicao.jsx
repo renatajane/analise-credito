@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { cpfMask } from '../components/Mask/CpfMask';
 import { useNavigate } from 'react-router-dom';
 import styles from "./Home.module.css";
 import StylesCpf from './Cpf.module.css';
 import StylesTable from './Table.module.css';
+import { ApiService } from '../services/appService';
+import { useAuth } from '../contexto/AuthProvider';
 
 const BuscarRequisicao = () => {
   const [cpf, setCpf] = useState('');
@@ -12,26 +13,23 @@ const BuscarRequisicao = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const { cpfLogado } = useAuth();
+
   const handleSearch = () => {
     const cpfNumerico = cpf.replace(/\D/g, '');
     if (cpfNumerico.length === 11) {
       setLoading(true);
       setError(null);
 
-      axios.get(`http://localhost:8080/emprestimo-requisicao/list-by-cpf?cpf=${cpfNumerico}`)
-        .then(response => {
+      const response = ApiService.Get(`emprestimo-requisicao/list-by-cpf?cpf=${cpfLogado}`);
+
           const data = Array.isArray(response.data) ? response.data : [];
           if (data.length > 0) {
             navigate('/listarRequisicoes', { state: { cpf: cpfNumerico, requisicoes: data } });
           } 
           else {
             setError('Nenhuma requisição encontrada para o CPF informado.');
-          }
-        })
-        .catch(() => {
-          setError('Erro ao buscar requisições.');
-        })
-        .finally(() => setLoading(false));
+          }        
     } else {
       setError('CPF inválido. Verifique o formato e tente novamente.');
     }

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import Styles from './CadastroCliente.module.css';
 import { cpfMask } from '../components/Mask/CpfMask';
 import CadastroRenda from './CadastroRenda';
 import CadastroDespesa from './CadastroDespesa';
 import CadastroPatrimonio from './CadastroPatrimonio';
 import StylesTable from './Table.module.css';
+import { ApiService } from '../services/appService';
+import { useAuth } from '../contexto/AuthProvider';
 
 const CadastroCliente = () => {
 
@@ -42,7 +43,8 @@ const CadastroCliente = () => {
 
     const [isSpcSerasaListVisible, setIsSpcSerasaListVisible] = useState(false);
 
-    const [patrimonios, setPatrimonios] = useState([])
+    const [patrimonios, setPatrimonios] = useState([]);
+    const { cpfLogado } = useAuth();
 
     const toggleListVisibility = (setter) => setter(prev => !prev);
 
@@ -145,21 +147,24 @@ const CadastroCliente = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/cliente/completo/12345655001');
+                const response = await ApiService.Get(`cliente/completo/${cpfLogado}`);
                 // Formatar data para o formato 'yyyy-MM-dd'
-                const formattedDataNascimento = new Date(response.data.dataNascimento).toISOString().split('T')[0];
-                setIdCliente(response.data.idCliente);
-                setNome(response.data.nome);
-                setCpf(response.data.cpf);
-                setDataNascimento(formattedDataNascimento);
-                setEmail(response.data.email);
-                setTelefone(response.data.telefone);
-                setEndereco(response.data.endereco);
-                setAutorizacaoLGPD(response.data.autorizacaoLGPD);
-                setSpcSerasa(response.data.spcSerasa);
-                setPatrimonios(response.data.patrimonios);
-                setRendas(response.data.rendas);
-                setDespesas(response.data.despesas);
+                if (response && response.data) {
+                    console.log("minha response", response );
+                    const formattedDataNascimento = new Date(response.data.dataNascimento).toISOString().split('T')[0];
+                    setIdCliente(response.data.idCliente);
+                    setNome(response.data.nome);
+                    setCpf(response.data.cpf);
+                    setDataNascimento(formattedDataNascimento);
+                    setEmail(response.data.email);
+                    setTelefone(response.data.telefone);
+                    setEndereco(response.data.endereco);
+                    setAutorizacaoLGPD(response.data.autorizacaoLGPD);
+                    setSpcSerasa(response.data.spcSerasa);
+                    setPatrimonios(response.data.patrimonios);
+                    setRendas(response.data.rendas);
+                    setDespesas(response.data.despesas);
+                }
             } catch (error) {
                 console.error('Erro ao buscar os dados do cliente:', error);
             }
@@ -300,25 +305,19 @@ const CadastroCliente = () => {
                 rendas
             };
 
-            axios.post('http://localhost:8080/cliente/completo-com-financeiro', clienteData)
-                .then(response => {
-                    setErrors({ nome: null, cpf: null, dataNascimento: null, email: null, telefone: null, endereco: null });
-                    alert('Cliente cadastrado com sucesso.');
-                    // setNome('');
-                    // setCpf('');
-                    // setDataNascimento('');
-                    // setEmail('');
-                    // setTelefone('');
-                    // setEndereco('');
-                    // setAutorizacaoLGPD(false);
-                    // setSpcSerasa(false);
-                    // setRendas([]);
-                    // setPatrimonios([]);
-                    // setDespesas([]);
-                })
-                .catch(error => {
-                    alert('Ocorreu um erro ao cadastrar o cliente.');
-                });
+            const response = ApiService.Post(`cliente/completo-com-financeiro`, clienteData)
+            setErrors({ nome: null, cpf: null, dataNascimento: null, email: null, telefone: null, endereco: null });
+            // setNome('');
+            // setCpf('');
+            // setDataNascimento('');
+            // setEmail('');
+            // setTelefone('');
+            // setEndereco('');
+            // setAutorizacaoLGPD(false);
+            // setSpcSerasa(false);
+            // setRendas([]);
+            // setPatrimonios([]);
+            // setDespesas([]);               
         }
     };
 
@@ -458,9 +457,9 @@ const CadastroCliente = () => {
                                 </div>
                             </div>
                         </div>
-                        {idCliente > 0 && <CadastroRenda rendas={rendas} onAddRenda={addRenda} onRemoveRenda={removeRenda} onUpdateRenda={onUpdateRenda} />}
-                        {idCliente > 0 && <CadastroPatrimonio patrimonios={patrimonios} onAddPatrimonio={addPatrimonio} onRemovePatrimonio={removePatrimonio} onUpdatePatrimonio={onUpdatePatrimonio} />}
-                        {idCliente > 0 && <CadastroDespesa despesas={despesas} onAddDespesa={addDespesa} onRemoveDespesa={removeDespesa} onUpdateDespesa={onUpdateDespesa} />}
+                        {<CadastroRenda rendas={rendas} onAddRenda={addRenda} onRemoveRenda={removeRenda} onUpdateRenda={onUpdateRenda} />}
+                        {<CadastroPatrimonio patrimonios={patrimonios} onAddPatrimonio={addPatrimonio} onRemovePatrimonio={removePatrimonio} onUpdatePatrimonio={onUpdatePatrimonio} />}
+                        {<CadastroDespesa despesas={despesas} onAddDespesa={addDespesa} onRemoveDespesa={removeDespesa} onUpdateDespesa={onUpdateDespesa} />}
                         <button type="submit" className="br-button">Salvar</button>
                     </form>
                 </div>

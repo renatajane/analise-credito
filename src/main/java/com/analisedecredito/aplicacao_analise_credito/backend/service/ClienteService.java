@@ -80,7 +80,12 @@ public class ClienteService {
 
     /* Retorna os dados completos de um cliente de acordo com o cpf */
     public ClienteCompletoReadDto findByCpfCompleto(String cpf) {
+        
         Cliente cliente = repository.findByCpf(cpf).orElse(null);
+
+        if(cliente == null){
+            return null;
+        }
         List<RendaFonte> renda = rendaRepository.findByCpfCliente(cpf);
         List<Patrimonio> patrimonio = patrimonioRepository.findByCpfCliente(cpf);
         List<Despesa> despesa = despesaRepository.findByCpfCliente(cpf);
