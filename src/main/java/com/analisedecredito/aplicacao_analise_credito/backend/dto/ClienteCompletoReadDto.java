@@ -23,6 +23,7 @@ public class ClienteCompletoReadDto {
     private String endereco;
     private boolean autorizacaoLGPD;
     private Date dataAutorizacaoLGPD;
+    private boolean spcSerasa;
 
     // Financeiros
     private List<RendaFonte> renda = new ArrayList<>();
@@ -32,66 +33,84 @@ public class ClienteCompletoReadDto {
     // Construtor
     public ClienteCompletoReadDto() {
     }
-    
-    public ClienteCompletoReadDto(Cliente cliente, List<RendaFonte> renda, List<Patrimonio> patrimonio, List<Despesa> despesa) {
+
+    public ClienteCompletoReadDto(Cliente cliente, List<RendaFonte> renda, List<Patrimonio> patrimonio,
+            List<Despesa> despesa) {
         BeanUtils.copyProperties(cliente, this);
         this.renda = renda;
         this.despesa = despesa;
-        this.patrimonio = patrimonio;        
+        this.patrimonio = patrimonio;
     }
 
     // Getters e Setters
     public Integer getIdCliente() {
         return idCliente;
     }
+
     public void setIdCliente(Integer idCliente) {
         this.idCliente = idCliente;
     }
+
     public String getNome() {
         return nome;
     }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
+
     public String getCpf() {
         return cpf;
     }
+
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
     public Date getDataNascimento() {
         return dataNascimento;
     }
+
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
+
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getTelefone() {
         return telefone;
     }
+
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
     public String getEndereco() {
         return endereco;
     }
+
     public void setEndereco(String endereco) {
         this.endereco = endereco;
     }
-    public boolean isAutorizacaoLGPD() {
+
+    public boolean getAutorizacaoLGPD() {
         return autorizacaoLGPD;
     }
+
     public void setAutorizacaoLGPD(boolean autorizacaoLGPD) {
         this.autorizacaoLGPD = autorizacaoLGPD;
     }
+
     public Date getDataAutorizacaoLGPD() {
         return dataAutorizacaoLGPD;
     }
+
     public void setDataAutorizacaoLGPD(Date dataAutorizacaoLGPD) {
         this.dataAutorizacaoLGPD = dataAutorizacaoLGPD;
     }
@@ -120,5 +139,12 @@ public class ClienteCompletoReadDto {
         this.despesa = despesa;
     }
 
+    public boolean getSpcSerasa() {
+        return spcSerasa;
+    }
+
+    public void setSpcSerasa(boolean spcSerasa) {
+        this.spcSerasa = spcSerasa;
+    }
 
 }

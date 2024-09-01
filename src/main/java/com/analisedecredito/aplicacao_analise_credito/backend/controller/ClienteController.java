@@ -60,6 +60,11 @@ public class ClienteController {
         return service.findByCpf(cpf);
     }
 
+    @PostMapping("/completo-com-financeiro")
+    public ResponseEntity<Void> createCompleto(@RequestBody ClienteCompletoReadDto clienteCompleto){
+        service.createOrUpdateClienteCompleto(clienteCompleto);
+        return ResponseEntity.ok().build();
+    }
 
     @Operation(summary = "Cria um novo cliente", description = "Este endpoint cria um novo cliente com base nos dados fornecidos.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Dados do cliente a ser criado", required = true, content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ClienteDto.class))), responses = {
             @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso")

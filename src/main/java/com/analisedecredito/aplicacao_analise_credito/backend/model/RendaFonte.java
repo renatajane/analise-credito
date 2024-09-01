@@ -1,7 +1,5 @@
 package com.analisedecredito.aplicacao_analise_credito.backend.model;
 
-import com.analisedecredito.aplicacao_analise_credito.backend.dto.RendaFonteDto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,11 +35,11 @@ public class RendaFonte {
        
     }
     
-    public RendaFonte(RendaFonteDto rendaFonteDto, Cliente cliente, RendaTipo rendaTipo) {
-        this.idRendaFonte = rendaFonteDto.getIdRendaFonte();
+    public RendaFonte(RendaFonte rendaFonte, Cliente cliente, RendaTipo rendaTipo) {
+        this.idRendaFonte = rendaFonte.getIdRendaFonte();
         this.cliente = cliente;
         this.rendaTipo = rendaTipo;
-        this.valorRenda = rendaFonteDto.getValorRenda();
+        this.valorRenda = rendaFonte.getValorRenda();
     }
 
     // Getters e Setters

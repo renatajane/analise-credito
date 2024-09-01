@@ -20,4 +20,6 @@ public interface DespesaRepository extends JpaRepository<Despesa, Integer> {
 
     @Query("SELECT d FROM Despesa d JOIN d.cliente c WHERE c.cpf = :cpf")
     List<Despesa> findByCpfCliente(@Param("cpf") String cpf);
+
+    void deleteByClienteIdCliente(Integer idCliente);
 }
