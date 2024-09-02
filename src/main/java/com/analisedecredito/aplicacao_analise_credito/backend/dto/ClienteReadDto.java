@@ -20,6 +20,7 @@ public class ClienteReadDto {
     private boolean autorizacaoLGPD;
     private Date dataAutorizacaoLGPD;
     private PerfilCliente perfilCliente;
+    private Double valorMaximoPreAprovado;
 
     // Construtor
     public ClienteReadDto() {
@@ -108,5 +109,13 @@ public class ClienteReadDto {
 
     public void setPerfilCliente(PerfilCliente perfilCliente) {
         this.perfilCliente = perfilCliente;
+    }
+
+    public Double getValorMaximoPreAprovado() {
+        return valorMaximoPreAprovado;
+    }
+
+    public void setValorMaximoPreAprovado(Double valorMaximoPreAprovado) {
+        this.valorMaximoPreAprovado = valorMaximoPreAprovado;
     }
 }

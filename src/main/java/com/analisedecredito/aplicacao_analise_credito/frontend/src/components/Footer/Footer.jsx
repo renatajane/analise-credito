@@ -26,17 +26,14 @@ function Footer() {
             </div>
             <div className="br-list">
               <span className="br-divider d-md-none"></span>
-              <a className="br-item" href="http://192.168.37.8:8090/login">
+              <a className="br-item" href="/">
                 <div className="content">Home</div>
               </a>
-              <a className="br-item" href="http://192.168.37.8:8090/login">
-                <div className="content">Cadastro de Contribuintes</div>
+              <a className="br-item" href="/cadastroCliente">
+                <div className="content">Cadastro de Cliente</div>
               </a>
-              <a className="br-item" href="http://192.168.37.8:8090/login">
-                <div className="content">Cadastro de Dependentes</div>
-              </a>
-              <a className="br-item" href="http://192.168.37.8:8090/login">
-                <div className="content">Árvore Genealógica</div>
+              <a className="br-item" href="/cadastroRequisicao">
+                <div className="content">Incluir Proposta de Contratação</div>
               </a>
               <span className="br-divider d-md-none"></span>
             </div>
@@ -49,14 +46,11 @@ function Footer() {
             </div>
             <div className="br-list">
               <span className="br-divider d-md-none"></span>
-              <a className="br-item" href="http://192.168.37.8:3000/">
-                <div className="content">Gestão de Contribuição</div>
+              <a className="br-item" href="/statusRequisicao">
+                <div className="content">Consultar Status de Operação de Crédito</div>
               </a>
-              <a className="br-item" href="http://192.168.37.8:5300/">
-                <div className="content">Gestão de Benefícios</div>
-              </a>
-              <a className="br-item" href="http://192.168.37.8:8080/">
-                <div className="content">Gestão de Empréstimos</div>
+              <a className="br-item" href="/listarRequisicoes">
+                <div className="content">Gerar Relatórios</div>
               </a>
               <span className="br-divider d-md-none"></span>
             </div>

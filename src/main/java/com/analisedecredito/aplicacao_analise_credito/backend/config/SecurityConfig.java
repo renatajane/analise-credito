@@ -20,6 +20,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/public/**").permitAll() // Rotas públicas
+                        .requestMatchers("/emprestimo-requisicao/pdf/**").permitAll()
+
                         .anyRequest().authenticated() // Todas as outras rotas requerem autenticação
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 

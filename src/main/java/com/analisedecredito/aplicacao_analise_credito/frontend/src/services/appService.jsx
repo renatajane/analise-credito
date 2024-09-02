@@ -13,6 +13,8 @@ export const ApiService = {
         const response = await fetch(`${BASE_URL_LOCAL}/${endpoint}`, {
             method: 'POST',
             headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
                 ...options.headers,
             },
@@ -24,16 +26,20 @@ export const ApiService = {
             throw new Error('Failed to post data to the API');
         }
 
-        // return await response.json();
-        return response;
+         return await response.json();
     },
-    async Get(endpoint){        
+    async Get(endpoint, options = {}){        
          const token = localStorage.getItem('__token');   
         // if (!token) throw new Error('Token não encontrado');
         const response = await axios.get(`${BASE_URL_LOCAL}/${endpoint}`, 
-            { headers: { 'Authorization': `Bearer ${token}`, } } 
+            { 
+                headers: {
+                     'Authorization': `Bearer ${token}`,
+                     ...options.headers
+                     }
+             } 
         )           
-                return response;
+        return response;
     }
 };
 

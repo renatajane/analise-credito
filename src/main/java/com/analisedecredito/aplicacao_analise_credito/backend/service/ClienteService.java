@@ -75,15 +75,19 @@ public class ClienteService {
 
     /* Retorna um cliente de acordo com o cpf */
     public ClienteReadDto findByCpf(String cpf) {
-        return new ClienteReadDto(repository.findByCpf(cpf).get());
+        Cliente cliente = repository.findByCpf(cpf).orElse(null);
+        if (cliente == null) {
+            return null;
+        }
+        return new ClienteReadDto(cliente);
     }
 
     /* Retorna os dados completos de um cliente de acordo com o cpf */
     public ClienteCompletoReadDto findByCpfCompleto(String cpf) {
-        
+
         Cliente cliente = repository.findByCpf(cpf).orElse(null);
 
-        if(cliente == null){
+        if (cliente == null) {
             return null;
         }
         List<RendaFonte> renda = rendaRepository.findByCpfCliente(cpf);
@@ -215,7 +219,7 @@ public class ClienteService {
         // Define o perfil do cliente e calcula o valor pré-aprovado para empréstimo
         definePerfilCliente(cliente.getIdCliente());
         cliente = repository.save(cliente);
-        
+
         var valorPreAprovado = calculaValorPreAprovado(cliente.getIdCliente());
         cliente.setValorMaximoPreAprovado(valorPreAprovado);
         cliente = repository.save(cliente);

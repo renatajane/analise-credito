@@ -148,13 +148,14 @@ const CadastroCliente = () => {
         const fetchData = async () => {
             try {
                 const response = await ApiService.Get(`cliente/completo/${cpfLogado}`);
+                setCpf(cpfLogado);
                 // Formatar data para o formato 'yyyy-MM-dd'
                 if (response && response.data) {
                     console.log("minha response", response );
                     const formattedDataNascimento = new Date(response.data.dataNascimento).toISOString().split('T')[0];
                     setIdCliente(response.data.idCliente);
                     setNome(response.data.nome);
-                    setCpf(response.data.cpf);
+                    // setCpf(response.data.cpf);
                     setDataNascimento(formattedDataNascimento);
                     setEmail(response.data.email);
                     setTelefone(response.data.telefone);
@@ -353,6 +354,7 @@ const CadastroCliente = () => {
                                 id="cpf"
                                 type="text"
                                 placeholder="Digite o CPF"
+                                readOnly="true"
                                 value={cpf}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}

@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -125,6 +127,21 @@ public class EmprestimoRequisicaoController {
             response.getOutputStream().flush();
         }
     }
+
+
+    @GetMapping("/pdf-novo/{cpf}/{id}")
+public ResponseEntity<byte[]> getPdfNovoByCpf(@PathVariable("cpf") String cpf, @PathVariable("id") Integer id) 
+        throws DocumentException, IOException {
+    
+    ByteArrayOutputStream pdfBytes = service.geraPdfCpf(cpf, id);
+
+    byte[] byteArray = pdfBytes.toByteArray();
+    
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=requisicao_" + id + ".pdf")
+        .contentType(MediaType.APPLICATION_PDF)
+        .body(byteArray);
+}
 
     @Operation(summary = "Retorna um PDF com base no período fornecido", description = "Este endpoint gera um PDF contendo os resultados de empréstimos dentro de um período especificado.", parameters = {
             @Parameter(name = "inicio", description = "Data de início no formato yyyy-MM-dd", example = "2023-01-01", required = true),

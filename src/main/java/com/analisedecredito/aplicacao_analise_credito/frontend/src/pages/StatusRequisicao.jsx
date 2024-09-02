@@ -1,19 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cpfMask } from '../components/Mask/CpfMask';
 import FormatDate from "../utils/formatDate";
 import FormatValor from "../utils/formatCurrency";
 import StylesTable from './Table.module.css';
-import StylesCpf from './Cpf.module.css';
 import { ApiService } from '../services/appService';
 import { useAuth } from '../contexto/AuthProvider';
+import ClienteNaoCadastrado from '../pages/ClienteNaoCadastrado';
 
 const StatusRequisicao = () => {
     const [cpf, setCpf] = useState('');
     const [requisicoes, setRequisicoes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [idCliente, setIdCliente] = useState(null);
 
     const { cpfLogado } = useAuth();
+
+    useEffect(() => {
+        // Fetch ID do Cliente
+        const fetchClientId = async () => {
+            try {
+                const response = await ApiService.Get(`cliente/cpf/${cpfLogado}`);
+                if (response && response.data) {
+                    setIdCliente(response.data.idCliente);
+                    handleSearch();
+                }
+            } catch (error) {
+                console.error('Erro ao buscar ID do cliente:', error);
+            }
+        };
+
+        fetchClientId();
+    }, []);
 
     const handleSearch = () => {
         const cpfNumerico = cpf.replace(/\D/g, '');
@@ -22,11 +40,13 @@ const StatusRequisicao = () => {
             setError(null);
 
             const response = ApiService.Get(`emprestimo-requisicao/list-by-cpf?cpf=${cpfLogado}`)
-            const data = Array.isArray(response.data) ? response.data : [];
-            if (data.length > 0) {
-                setRequisicoes(data);
-            } else {
-                setError('Nenhuma requisição encontrada para o CPF informado.');
+            if (response) {
+                const data = Array.isArray(response.data) ? response.data : [];
+                if (data.length > 0) {
+                    setRequisicoes(data);
+                } else {
+                    setError('Nenhuma requisição encontrada para o CPF informado.');
+                }
             }
         } else {
             setError('CPF inválido. Verifique o formato e tente novamente.');
@@ -65,69 +85,46 @@ const StatusRequisicao = () => {
 
     return (
         <div>
-            <div className={StylesTable.services}>
-                <h3 className={StylesTable.color}>
-                    Consultar Status de Operação de Crédito
-                </h3>
-            </div>
-
-            <div className="d-flex justify-content-center align-items-center vh-100">
-                <div className={`container text-center ${StylesCpf.container}`}>
-                    {requisicoes.length === 0 ? (
-                        <div className="col-sm-10 col-lg-7 mb-3 mx-auto mt-5">
-                            <div className="br-input input-inline">
-                                <div className="input-label">
-                                    <label className="text-nowrap" htmlFor="cpf">CPF</label>
-                                </div>
-                                <div className="input-content">
-                                    <input
-                                        id="cpf"
-                                        type="text"
-                                        placeholder="Digite o CPF"
-                                        value={cpf}
-                                        onChange={handleCpfChange}
-                                        maxLength={14}
-                                        className="form-control"
-                                    />
-                                </div>
-                            </div>
-                            <button className="br-button secondary mb-4 mt-3" type="button" onClick={handleSearch}>
-                                Buscar Requisições
+            {idCliente == null && <ClienteNaoCadastrado />}
+            {idCliente != null && requisicoes.length == 0 && <div>Você não tem requisições. Fazer requisicao. </div>} 
+            {requisicoes.length > 0 && (
+                <>
+                    <div className={StylesTable.services}>
+                        <h3 className={StylesTable.color}>
+                            Consultar Status de Operação de Crédito
+                        </h3>
+                    </div>
+                    <div>
+                        <div className={StylesTable.tableContainer}>
+                            <table className={StylesTable.table}>
+                                <thead>
+                                    <tr>
+                                        <th scope="col" className={StylesTable.negritoBold}>Nome do Requerente</th>
+                                        <th scope="col" className={StylesTable.negritoBold}>Valor Requerido</th>
+                                        <th scope="col" className={StylesTable.negritoBold}>Data Requisição</th>
+                                        <th scope="col" className={StylesTable.negritoBold}>Situação</th>
+                                        <th scope="col" className={StylesTable.negritoBold}>Descrição do Situação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {requisicoes.map((requisicao, index) => (
+                                        <tr key={index}>
+                                            <td>{requisicao.cliente.nome}</td>
+                                            <td>{FormatValor(requisicao.valorRequerido)}</td>
+                                            <td>{FormatDate(requisicao.dataRequisicao)}</td>
+                                            <td>{renderStatusBadge(requisicao.aprovado)}</td>
+                                            <td>{requisicao.descricaoResultado}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="d-flex justify-content-center mt-5">
+                            <button className="br-button secondary" type="button" onClick={handleBack}>
+                                Buscar Outro CPF
                             </button>
                         </div>
-                    ) : (
-                        <div>
-                            <div className={StylesTable.tableContainer}>
-                                <table className={StylesTable.table}>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" className={StylesTable.negritoBold}>Nome do Requerente</th>
-                                            <th scope="col" className={StylesTable.negritoBold}>Valor Requerido</th>
-                                            <th scope="col" className={StylesTable.negritoBold}>Data Requisição</th>
-                                            <th scope="col" className={StylesTable.negritoBold}>Situação</th>
-                                            <th scope="col" className={StylesTable.negritoBold}>Descrição do Situação</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {requisicoes.map((requisicao, index) => (
-                                            <tr key={index}>
-                                                <td>{requisicao.cliente.nome}</td>
-                                                <td>{FormatValor(requisicao.valorRequerido)}</td>
-                                                <td>{FormatDate(requisicao.dataRequisicao)}</td>
-                                                <td>{renderStatusBadge(requisicao.aprovado)}</td>
-                                                <td>{requisicao.descricaoResultado}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="d-flex justify-content-center mt-5">
-                                <button className="br-button secondary" type="button" onClick={handleBack}>
-                                    Buscar Outro CPF
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    </div>
 
                     {loading && <p className="mt-4">Carregando...</p>}
 
@@ -147,8 +144,8 @@ const StatusRequisicao = () => {
                             </div>
                         </div>
                     )}
-                </div>
-            </div>
+                </>
+            )}
         </div>
     );
 };

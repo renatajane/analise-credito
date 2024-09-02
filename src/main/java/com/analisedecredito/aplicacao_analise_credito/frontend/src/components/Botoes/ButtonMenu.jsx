@@ -130,7 +130,7 @@ const MenuButton = ({ isOpenProp }) => {
                   <li>
                     <Link
                       className="menu-item"
-                      to="/buscarRequisicao"
+                      to="/listarRequisicoes"
                       role="treeitem"
                     >
                       <span className="icon">

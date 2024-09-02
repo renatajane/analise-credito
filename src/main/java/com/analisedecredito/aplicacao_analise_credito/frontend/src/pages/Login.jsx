@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexto/AuthProvider';
+import Styles from './Cpf.module.css';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -17,12 +18,12 @@ function Login() {
     }
 
     try {
-        const token = await authenticateUser(username, password); 
-        setToken(token);      
-    //   localStorage.setItem('JwtToken', token); // Armazena o token no localStorage
-       window.location.href = '/'; // Redireciona para a página inicial
+      const token = await authenticateUser(username, password);
+      setToken(token);
+      //   localStorage.setItem('JwtToken', token); // Armazena o token no localStorage
+      window.location.href = '/'; // Redireciona para a página inicial
     } catch (error) {
-        setErrorMessage('Login failed. Please try again.');
+      setErrorMessage('Login failed. Please try again.');
     }
   };
 
@@ -50,7 +51,32 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className={Styles.container}>
+      <div class="col-sm-6 col-lg-4 mb-3">
+        <div class="br-input">
+          <label for="input-icon">Login</label>
+          <div class="input-group">
+            <div class="input-icon"><i class="fas fa-user-tie" aria-hidden="true"></i>
+            </div>
+            <input id="input-icon" type="text" placeholder="Placeholder" />
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-5 col-lg-3 mb-3">
+        <div class="br-input input-button">
+          <label for="input-password">Senha</label>
+          <input id="input-password" type="password" placeholder="Digite sua senha" />
+          <button class="br-button" type="button" aria-label="Exibir senha" role="switch" aria-checked="false"><i class="fas fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="p-3">
+        <button class="br-button primary mr-3" type="button">Entrar
+        </button>
+        <button class="br-button secondary mr-3" type="button">Secundário
+        </button>
+      </div>
+
       <h2>Login</h2>
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <form onSubmit={handleLogin}>

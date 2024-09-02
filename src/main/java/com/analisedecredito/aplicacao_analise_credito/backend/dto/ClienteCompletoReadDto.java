@@ -24,6 +24,7 @@ public class ClienteCompletoReadDto {
     private boolean autorizacaoLGPD;
     private Date dataAutorizacaoLGPD;
     private boolean spcSerasa;
+    private Double valorMaximoPreAprovado;
 
     // Financeiros
     private List<RendaFonte> rendas = new ArrayList<>();
@@ -145,6 +146,18 @@ public class ClienteCompletoReadDto {
 
     public void setSpcSerasa(boolean spcSerasa) {
         this.spcSerasa = spcSerasa;
+    }
+
+    public Double getValorMaximoPreAprovado() {
+        return valorMaximoPreAprovado;
+    }
+
+    public void setValorMaximoPreAprovado(Double valorMaximoPreAprovado) {
+        this.valorMaximoPreAprovado = valorMaximoPreAprovado;
+    }
+
+    public void setRendas(List<RendaFonte> rendas) {
+        this.rendas = rendas;
     }
 
 }
