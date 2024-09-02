@@ -38,7 +38,7 @@ function Login() {
         grant_type: 'password',
         username: username,
         password: password,
-        client_secret: 'gr0iusw37ZTXvFXgC4Rik1vU88zelmeJ',
+        client_secret: 'ycixApu6M2H5rU0vPYuSthEEVo2WAMRb',
       }),
     });
 

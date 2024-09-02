@@ -47,9 +47,15 @@
 
 .dropdownItem {
   padding: 8px;
-  cursor: pointer;
+  cursor: pointer
 }
 
 .dropdownItem:hover {
   background-color: #f0f0f0;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.875rem; /* Ajuste o tamanho conforme necessário */
+  margin-top: 0.25rem; /* Espaço acima da mensagem de erro */
 }

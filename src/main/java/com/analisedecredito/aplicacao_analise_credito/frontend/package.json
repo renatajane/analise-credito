@@ -12,12 +12,14 @@
   "dependencies": {
     "@govbr-ds/core": "^3.5.2",
     "axios": "^1.7.4",
+    "jwt-decode": "^3.1.2",
+    "oidc-client": "^1.11.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.26.1",
     "react-select": "^5.8.0",
-    "oidc-client": "^1.11.5",
-    "jwt-decode": "^3.1.2"
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

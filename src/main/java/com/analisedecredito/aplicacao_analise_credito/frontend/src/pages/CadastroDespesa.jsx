@@ -3,22 +3,18 @@ import styles from './CadastroRequisicao.module.css';
 import { ApiService } from '../services/appService';
 
 const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDespesa }) => {
-
     const [errors, setErrors] = useState({
         valor: '',
         descricaoDespesaTipo: ''
     });
     const [tiposDespesa, setTiposDespesa] = useState([]);
     const [visibleIndex, setVisibleIndex] = useState(null);
-    const handleDropdownToggle = (index) => {
-        setVisibleIndex(visibleIndex === index ? null : index);
-    };
+
     useEffect(() => {
         const fetchTiposDespesa = async () => {
             try {
                 const response = await ApiService.Get('despesa-tipo/list');
                 setTiposDespesa(response.data);
-
             } catch (error) {
                 console.error('Erro ao buscar tipos de despesa:', error);
             }
@@ -27,6 +23,15 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
         fetchTiposDespesa();
     }, []);
 
+    const handleDropdownToggle = (index) => {
+        setVisibleIndex(visibleIndex === index ? null : index);
+    };
+
+    const handleTipoDespesaSelect = (index, tipoDespesa) => {
+        onUpdateDespesa(index, tipoDespesa.idDespesaTipo, 'despesaTipo.idDespesaTipo');
+        onUpdateDespesa(index, tipoDespesa.descricaoDespesaTipo, 'despesaTipo.descricaoDespesaTipo');
+        setVisibleIndex(null); // Fecha o dropdown após a seleção
+    };
 
     const renderDespesas = () => {
         return despesas.map((despesa, index) => (
@@ -41,7 +46,7 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
                                 id={`despesa-${index}`}
                                 type="text"
                                 className="br-input"
-                                placeholder="Selecione um Tipo de Patrimônio"
+                                placeholder="Selecione um Tipo de Despesa"
                                 value={despesa.despesaTipo.descricaoDespesaTipo || ''}
                                 onClick={() => handleDropdownToggle(index)}
                                 readOnly
@@ -50,6 +55,7 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
                                 className="br-button"
                                 type="button"
                                 aria-label="Exibir lista"
+                                style={{ marginLeft: '220px' }}
                                 onClick={() => handleDropdownToggle(index)}
                             >
                                 <i className="fas fa-angle-down" aria-hidden="true"></i>
@@ -60,10 +66,7 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
                                 {tiposDespesa.map(tipoDespesa => (
                                     <li
                                         key={tipoDespesa.idDespesaTipo}
-                                        onClick={() => {
-                                            onUpdateDespesa(index, tipoDespesa.idDespesaTipo, 'despesaTipo.idDespesaTipo');
-                                            onUpdateDespesa(index, tipoDespesa.descricaoDespesaTipo, 'despesaTipo.descricaoDespesaTipo');
-                                        }}
+                                        onClick={() => handleTipoDespesaSelect(index, tipoDespesa)}
                                         className={styles.dropdownItem}
                                     >
                                         {tipoDespesa.descricaoDespesaTipo}
@@ -73,7 +76,7 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
                         )}
                     </div>
                 </div>
-                <div className="br-input" style={{ flex: '0 0 200px', marginLeft: '10px' }}>
+                <div className="br-input" style={{ flex: '0 0 200px', marginLeft: '20px' }}>
                     <label htmlFor={`valor-${index}`} style={{ marginBottom: '5px', display: 'block' }}>Valor da Despesa</label>
                     <input
                         id={`valor-${index}`}
@@ -84,23 +87,17 @@ const CadastroDespesa = ({ despesas, onAddDespesa, onRemoveDespesa, onUpdateDesp
                         style={{ width: '100%', marginBottom: '15px' }}
                     />
                 </div>
-                <button
-                    className="br-button circle secondary small"
-                    type="button"
-                    onClick={() => onRemoveDespesa(index)}
-                    aria-label="Remover despesa"
-                    style={{
-                        marginLeft: '10px',
-                        marginTop: '25px',
-                        padding: '6px',
-                        fontSize: '14px',
-                        lineHeight: '1.5',
-                        display: 'flex',
-                        alignItems: 'center'
-                    }}
-                >
-                    <i className="fas fa-minus" aria-hidden="true"></i>
-                </button>
+                <div className="p-3">
+                    <button
+                        className="br-button"
+                        type="button"
+                        onClick={() => onRemoveDespesa(index)}
+                        aria-label="Remover despesa"
+                        style={{ marginTop: '15px' }}
+                    >
+                        Remover
+                    </button>
+                </div>
                 {errors.valor && <div className="error-message">{errors.valor}</div>}
                 {errors.descricaoDespesaTipo && <div className="error-message">{errors.descricaoDespesaTipo}</div>}
             </div>

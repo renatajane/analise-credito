@@ -7,6 +7,8 @@ import CadastroPatrimonio from './CadastroPatrimonio';
 import StylesTable from './Table.module.css';
 import { ApiService } from '../services/appService';
 import { useAuth } from '../contexto/AuthProvider';
+import InputMask from 'react-input-mask';
+
 
 const CadastroCliente = () => {
 
@@ -73,6 +75,38 @@ const CadastroCliente = () => {
         setPatrimonios(newPatrimonios);
     };
 
+    const validateEndereco = (endereco) => {
+        if (!endereco || endereco.trim === '') {
+            return 'O endereço é obrigatório.';
+        }
+        if (endereco.length < 3) {
+            return 'O endereço deve conter no mínimo 3 letras.';
+        }
+    }
+
+    const validateBirthDate = (birthDate) => {
+        if (!birthDate || birthDate.trim === '') {
+            return 'A data de nascimento é obrigatória.';
+        }
+
+        const today = new Date();
+        const birth = new Date(birthDate);
+
+        if (birth > today) {
+            return 'A data de nascimento não pode ser maior do que a data atual.';
+        }
+
+        const ageDiffMs = today - birth;
+        const ageDate = new Date(ageDiffMs);
+        const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+        if (age < 18) {
+            return 'Você precisa ter pelo menos 18 anos para se cadastrar.';
+        }
+
+        return null;
+    };
+
     //Controle da renda
     const [rendas, setRendas] = useState([])
     const addRenda = () => {
@@ -88,6 +122,7 @@ const CadastroCliente = () => {
     const removeRenda = (index) => {
         setRendas(rendas.filter((_, i) => i !== index));
     };
+
     const onUpdateRenda = (index, value, name) => {
         const newRendas = [...rendas];
         setNestedValue(newRendas[index], name, value);
@@ -151,7 +186,7 @@ const CadastroCliente = () => {
                 setCpf(cpfLogado);
                 // Formatar data para o formato 'yyyy-MM-dd'
                 if (response && response.data) {
-                    console.log("minha response", response );
+                    console.log("minha response", response);
                     const formattedDataNascimento = new Date(response.data.dataNascimento).toISOString().split('T')[0];
                     setIdCliente(response.data.idCliente);
                     setNome(response.data.nome);
@@ -181,13 +216,14 @@ const CadastroCliente = () => {
     };
 
     const validateName = (name) => {
-        // const namePattern = /^[A-Za-z\s]+$/; // Permite apenas letras e espaços
-        // return name.length >= 3 && name.length <= 50 && namePattern.test(name);
-        return name.length >= 3;
-    };
+        // Expressão regular que permite letras com e sem acentos e espaços
+        const namePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ\s']+$/;
 
+        // Verifica se o nome tem entre 3 e 50 caracteres e se contém apenas letras e espaços
+        return name.length >= 3 && name.length <= 50 && namePattern.test(name);
+    };
     const validatePhone = (phone) => {
-        const phonePattern = /^\d{10,11}$/; // Permite apenas 10 ou 11 dígitos
+        const phonePattern = /^\d{11}$/; // Permite apenas 10 ou 11 dígitos
         return phonePattern.test(phone);
     };
 
@@ -209,13 +245,16 @@ const CadastroCliente = () => {
                 }
                 break;
             case 'nome':
+                if (value.trim() === '') {
+                    errorMessage = 'Este campo é obrigatório.';
+                }
                 if (!validateName(value)) {
                     errorMessage = 'O nome deve ter entre 3 e 50 letras e pode conter apenas letras e espaços.';
                 }
                 break;
             case 'telefone':
                 if (!validatePhone(value.replace(/\D/g, ''))) {
-                    errorMessage = 'O telefone deve conter 10 ou 11 dígitos numéricos.';
+                    errorMessage = 'O telefone deve conter 11 dígitos numéricos.';
                 }
                 break;
             case 'email':
@@ -223,11 +262,12 @@ const CadastroCliente = () => {
                     errorMessage = 'O email deve ser um endereço válido.';
                 }
                 break;
+
             case 'dataNascimento':
+                errorMessage = validateBirthDate(value);
+                break;
             case 'endereco':
-                if (value.trim() === '') {
-                    errorMessage = 'Este campo é obrigatório.';
-                }
+                errorMessage = validateEndereco(value);
                 break;
             default:
                 break;
@@ -238,6 +278,7 @@ const CadastroCliente = () => {
 
     const handleInputChange = (event) => {
         const { id, value } = event.target;
+
         if (id === 'cpf') {
             setCpf(cpfMask(value));
         } else {
@@ -285,12 +326,10 @@ const CadastroCliente = () => {
             cpf: validateCpf(cleanCpf) ? null : 'O CPF deve conter exatamente 11 dígitos numéricos.',
             dataNascimento: dataNascimento.trim() === '' ? 'Este campo é obrigatório.' : null,
             email: validateEmail(email) ? null : 'O email deve ser um endereço válido.',
-            telefone: validatePhone(telefone.replace(/\D/g, '')) ? null : 'O telefone deve conter 10 ou 11 dígitos numéricos.',
+            telefone: validatePhone(telefone.replace(/\D/g, '')) ? null : 'O telefone deve conter 11 dígitos numéricos.',
             endereco: endereco.trim() === '' ? 'Este campo é obrigatório.' : null,
         };
-
         setErrors(formErrors);
-
         if (Object.values(formErrors).every(error => error === null)) {
             const clienteData = {
                 nome,
@@ -300,13 +339,16 @@ const CadastroCliente = () => {
                 telefone,
                 endereco,
                 autorizacaoLGPD,
-                spcSerasa: selectedSpcSerasa?.valor,
+                spcSerasa: selectedSpcSerasa,
                 despesas,
                 patrimonios,
                 rendas
             };
 
             const response = ApiService.Post(`cliente/completo-com-financeiro`, clienteData)
+            if(clienteData != null){
+                alert("AQUI");
+            }
             setErrors({ nome: null, cpf: null, dataNascimento: null, email: null, telefone: null, endereco: null });
             // setNome('');
             // setCpf('');
@@ -346,7 +388,7 @@ const CadastroCliente = () => {
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
                             />
-                            {errors.nome && <div className="error-message">{errors.nome}</div>}
+                            <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.nome}</div>
                         </div>
                         <div className="br-input">
                             <label htmlFor="cpf">CPF</label>
@@ -359,7 +401,7 @@ const CadastroCliente = () => {
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
                             />
-                            {errors.cpf && <div className="error-message">{errors.cpf}</div>}
+                            <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.cpf}</div>
                         </div>
                         <div className="br-input">
                             <label htmlFor="dataNascimento">Data de Nascimento</label>
@@ -370,7 +412,7 @@ const CadastroCliente = () => {
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
                             />
-                            {errors.dataNascimento && <div className="error-message">{errors.dataNascimento}</div>}
+                            <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.dataNascimento}</div>
                         </div>
                         <div className="br-input">
                             <label htmlFor="email">Email</label>
@@ -382,19 +424,20 @@ const CadastroCliente = () => {
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
                             />
-                            {errors.email && <div className="error-message">{errors.email}</div>}
+                            <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.email}</div>
                         </div>
                         <div className="br-input">
                             <label htmlFor="telefone">Telefone</label>
-                            <input
+                            <InputMask
                                 id="telefone"
-                                type="text"
-                                placeholder="Digite o telefone"
+                                mask="(99) 99999-9999"
                                 value={telefone}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                            />
-                            {errors.telefone && <div className="error-message">{errors.telefone}</div>}
+                            >
+                                {(inputProps) => <input {...inputProps} placeholder="Digite o telefone" />}
+                            </InputMask>
+                            <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.telefone}</div>
                         </div>
                         <div className="br-input">
                             <label htmlFor="endereco">Endereço</label>
@@ -406,7 +449,7 @@ const CadastroCliente = () => {
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
                             />
-                            {errors.endereco && <div className="error-message">{errors.endereco}</div>}
+                            <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.endereco}</div>
                         </div>
                         <div className="br-checkbox hidden-label">
                             <input id="check-all" name="check-all" type="checkbox"
@@ -415,13 +458,15 @@ const CadastroCliente = () => {
                             <label htmlFor="check-all">autorizacaoLgpd</label>
                             Eu autorizo o tratamento dos meus dados pessoais conforme a LGPD.
                         </div>
+
+                        {/*INICIA OS DADOS FINANCEIROS*/}
                         <div className="br-input">
                             <h3>Dados Financeiros</h3>
 
                             {/* Restricao no Serasa */}
                             <div className="col-sm-20 col-lg-30 mb-2">
                                 <label className="text-nowrap" htmlFor="spcSerasa">
-                                    Possui restrição no spc ?
+                                    Possui restrição no SPC ou SERASA ? *
                                 </label>
                                 <div className={Styles.brselect} ref={spcSerasaRef}>
                                     <div className="br-input">
@@ -462,7 +507,10 @@ const CadastroCliente = () => {
                         {<CadastroRenda rendas={rendas} onAddRenda={addRenda} onRemoveRenda={removeRenda} onUpdateRenda={onUpdateRenda} />}
                         {<CadastroPatrimonio patrimonios={patrimonios} onAddPatrimonio={addPatrimonio} onRemovePatrimonio={removePatrimonio} onUpdatePatrimonio={onUpdatePatrimonio} />}
                         {<CadastroDespesa despesas={despesas} onAddDespesa={addDespesa} onRemoveDespesa={removeDespesa} onUpdateDespesa={onUpdateDespesa} />}
-                        <button type="submit" className="br-button">Salvar</button>
+                        <div className="p-3">
+                            <button className="br-button primary mr-3" type="submit">Salvar</button>
+                        </div>
+                        {/* <button type="submit" className="br-button">Salvar</button> */}
                     </form>
                 </div>
 

@@ -18,11 +18,17 @@
 
 .brselect {
     position: relative;
+    width: 100%;
 }
 
 .br-input {
     display: flex;
     align-items: center;
+    width: 100%;
+}
+.br-input input {
+    flex: 1;
+    width: 100%; /* Garante que o input ocupe toda a largura disponível */
 }
 
 .br-button {
@@ -30,6 +36,7 @@
     border: none;
     cursor: pointer;
     margin-left: 8px;
+    width: 100%;
 }
 
 .dropdownList {
@@ -49,8 +56,10 @@
 .dropdownItem {
     padding: 8px;
     cursor: pointer;
+    width: 100%;
 }
 
 .dropdownItem:hover {
     background-color: #f0f0f0;
+    width: 100%;
 }

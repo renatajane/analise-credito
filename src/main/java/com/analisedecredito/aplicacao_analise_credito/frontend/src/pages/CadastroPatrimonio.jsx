@@ -10,25 +10,30 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
 
     const [tiposPatrimonio, setTiposPatrimonio] = useState([]);
     const [visibleIndex, setVisibleIndex] = useState(null);
-    const handleDropdownToggle = (index) => {
-        setVisibleIndex(visibleIndex === index ? null : index);
-    };
 
-    // Buscar tipos de patrimonio ao montar o componente
+    // Buscar tipos de patrimônio ao montar o componente
     useEffect(() => {
         const fetchTiposPatrimonio = async () => {
             try {
                 const response = await ApiService.Get('patrimonio-tipo/list');
                 setTiposPatrimonio(response.data);
-
             } catch (error) {
-                console.error('Erro ao buscar tipos de patrimonio:', error);
+                console.error('Erro ao buscar tipos de patrimônio:', error);
             }
         };
 
         fetchTiposPatrimonio();
     }, []);
 
+    const handleDropdownToggle = (index) => {
+        setVisibleIndex(visibleIndex === index ? null : index);
+    };
+
+    const handleTipoPatrimonioSelect = (index, tipoPatrimonio) => {
+        onUpdatePatrimonio(index, tipoPatrimonio.idPatrimonioTipo, 'patrimonioTipo.idPatrimonioTipo');
+        onUpdatePatrimonio(index, tipoPatrimonio.descricaoPatrimonioTipo, 'patrimonioTipo.descricaoPatrimonioTipo');
+        setVisibleIndex(null); // Fecha o dropdown após a seleção
+    };
 
     const renderPatrimonios = () => {
         return patrimonios.map((patrimonio, index) => (
@@ -52,6 +57,7 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
                                 className="br-button"
                                 type="button"
                                 aria-label="Exibir lista"
+                                style={{ marginLeft: '220px' }}
                                 onClick={() => handleDropdownToggle(index)}
                             >
                                 <i className="fas fa-angle-down" aria-hidden="true"></i>
@@ -62,10 +68,7 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
                                 {tiposPatrimonio.map(tipoPatrimonio => (
                                     <li
                                         key={tipoPatrimonio.idPatrimonioTipo}
-                                        onClick={() => {
-                                            onUpdatePatrimonio(index, tipoPatrimonio.idPatrimonioTipo, 'patrimonioTipo.idPatrimonioTipo');
-                                            onUpdatePatrimonio(index, tipoPatrimonio.descricaoPatrimonioTipo, 'patrimonioTipo.descricaoPatrimonioTipo');
-                                        }}
+                                        onClick={() => handleTipoPatrimonioSelect(index, tipoPatrimonio)}
                                         className={styles.dropdownItem}
                                     >
                                         {tipoPatrimonio.descricaoPatrimonioTipo}
@@ -75,7 +78,7 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
                         )}
                     </div>
                 </div>
-                <div className="br-input" style={{ flex: '0 0 200px', marginLeft: '10px' }}>
+                <div className="br-input" style={{ flex: '0 0 200px', marginLeft: '20px' }}>
                     <label htmlFor={`valor-${index}`} style={{ marginBottom: '5px', display: 'block' }}>Valor do Patrimônio</label>
                     <input
                         id={`valor-${index}`}
@@ -87,23 +90,18 @@ const CadastroPatrimonio = ({ patrimonios, onAddPatrimonio, onRemovePatrimonio, 
                     />
                 </div>
 
-                <button
-                    className="br-button circle secondary small"
-                    type="button"
-                    onClick={() => onRemovePatrimonio(index)}
-                    aria-label="Remover patrimônio"
-                    style={{
-                        marginLeft: '10px',
-                        marginTop: '25px',
-                        padding: '6px',
-                        fontSize: '14px',
-                        lineHeight: '1.5',
-                        display: 'flex',
-                        alignItems: 'center'
-                    }}
-                >
-                    <i className="fas fa-minus" aria-hidden="true"></i>
-                </button>
+                <div className="p-3">
+                    <button
+                        className="br-button"
+                        type="button"
+                        onClick={() => onRemovePatrimonio(index)}
+                        aria-label="Remover patrimônio"
+                        style={{ marginTop: '15px' }}
+                    >
+                        Remover
+                    </button>
+                </div>
+
                 {errors.valor && <div className="error-message">{errors.valor}</div>}
                 {errors.descricaoPatrimonioTipo && <div className="error-message">{errors.descricaoPatrimonioTipo}</div>}
             </div>
