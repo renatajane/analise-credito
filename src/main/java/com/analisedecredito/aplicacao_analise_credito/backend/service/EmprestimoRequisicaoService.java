@@ -90,6 +90,9 @@ public class EmprestimoRequisicaoService {
     @Autowired
     ClienteService clienteService;
 
+    @Autowired
+    CalcularValorAprovadoService calculaValorAprovadoService;
+
     /* Retorna uma requisição de empréstimo de acordo com o id */
     public EmprestimoRequisicaoReadDto findById(Integer id) {
         return new EmprestimoRequisicaoReadDto(repository.findById(id).get());
@@ -120,11 +123,11 @@ public class EmprestimoRequisicaoService {
 
             Cliente cliente = clienteOpt.get();
             // Verifica se o cliente já possui algum empréstimo em aberto
-            List<EmprestimoRequisicao> emprestimosEmAberto = repository
-                    .findRequisicaoByIdClienteAndStatus(cliente.getIdCliente(), true);
+            // List<EmprestimoRequisicao> emprestimosEmAberto = repository
+            //         .findRequisicaoByIdClienteAndStatus(cliente.getIdCliente(), true);
 
-            boolean clienteTemEmprestimoEmAberto = !emprestimosEmAberto.isEmpty();
-            System.out.println("Meu cliente tem empréstimo em aberto? " + clienteTemEmprestimoEmAberto);
+            //boolean clienteTemEmprestimoEmAberto = !emprestimosEmAberto.isEmpty();
+    
             // if (clienteTemEmprestimoEmAberto) {
             // throw new IllegalStateException("O cliente já possui um empréstimo em aberto.
             // Não é possível criar uma nova requisição.");
@@ -188,20 +191,11 @@ public class EmprestimoRequisicaoService {
             despesaCliente += valorParcela;
 
             // Arredonda para 2 casas decimais usando BigDecimal
-            BigDecimal despesaClienteRounded = new BigDecimal(despesaCliente).setScale(2, RoundingMode.HALF_UP);
+            //BigDecimal despesaClienteRounded = new BigDecimal(despesaCliente).setScale(2, RoundingMode.HALF_UP);
 
             // Formata o valor como moeda brasileira
-            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-            String despesaFormatada = nf.format(despesaClienteRounded.doubleValue());
-
-            System.out.println("Despesa formatada: " + despesaFormatada);
-
-            // emprestimoRequisicaoDto.getRendaTotal
-            System.out.println("minha renda +++++" + valorRendaCliente);
-            System.out.println("meu patrimonio +++++" + valorPatrimonioCliente);
-            System.out.println("minha despesa HAHAH++++" + despesaCliente);
-
-            // var perfilCliente = cliente.getPerfilCliente().getNomePerfil();
+            //NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+           //String despesaFormatada = nf.format(despesaClienteRounded.doubleValue());
 
             // Inicializa a descrição e a aprovação
             emprestimoRequisicao.setDescricaoResultado("");
@@ -237,15 +231,8 @@ public class EmprestimoRequisicaoService {
 
             // Atualiza o perfil do cliente após a nova requisição
             clienteService.definePerfilCliente(emprestimoRequisicao.getCliente().getIdCliente());
-            System.out.println("meu patrimonio +++++" + emprestimoRequisicao.getModalidadePagamento());
 
-            var a = clienteService.calculaValorPreAprovado(emprestimoRequisicao.getCliente().getIdCliente());
-            System.out.println("MEU VALOR PRE APROVADO" + a);
-
-            System.out.println("MODALIDADE PAGAMENO*** +++++" + pagamentoOpt.get());
-
-            // Decide se o empréstimo é aprovado com base no patrimônio do cliente
-            System.out.println("emprestimo requisicao +++ " + emprestimoRequisicaoDto.getAprovado());
+            calculaValorAprovadoService.calculaValorPreAprovado(emprestimoRequisicao.getCliente().getIdCliente());
 
         } else {
             throw new ResourceNotFoundException("Dados necessários não encontrados.");

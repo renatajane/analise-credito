@@ -48,11 +48,14 @@ const CadastroCliente = () => {
     const [patrimonios, setPatrimonios] = useState([]);
     const { cpfLogado } = useAuth();
 
+    const [feedbackMessage, setFeedbackMessage] = useState('');
+
     const toggleListVisibility = (setter) => setter(prev => !prev);
 
     const handleOptionSelect = (option, setter, setVisibility) => {
         setter(option.descricao);
         setVisibility(false);
+        setSpcSerasa(option.valor);
     };
 
     //Controle do patrimonio
@@ -84,24 +87,56 @@ const CadastroCliente = () => {
         }
     }
 
+    const validateAutorizacaoLGPD = (autorizacaoLGPD) => {
+        if (!autorizacaoLGPD) {
+            return 'Você precisa autorizar o tratamento dos dados.';
+        }
+    }
+
     const validateBirthDate = (birthDate) => {
-        if (!birthDate || birthDate.trim === '') {
-            return 'A data de nascimento é obrigatória.';
+
+        if (!birthDate || birthDate.trim() === '') {
+            return 'Erro: A data de nascimento é obrigatória.';
         }
 
         const today = new Date();
         const birth = new Date(birthDate);
 
         if (birth > today) {
-            return 'A data de nascimento não pode ser maior do que a data atual.';
+            return 'Erro: A data de nascimento não pode ser maior do que a data atual.';
         }
 
-        const ageDiffMs = today - birth;
-        const ageDate = new Date(ageDiffMs);
-        const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+        // Captura o ano da data de nascimento
+        const birthYear = birth.getFullYear();
+
+        // Captura o ano atual
+        const currentYear = today.getFullYear();
+
+        // Calcula a idade
+        let age = currentYear - birthYear;
+
+        // Ajusta a idade caso a data de nascimento ainda não tenha ocorrido neste ano
+        const birthMonth = birth.getMonth();
+        const birthDay = birth.getDate();
+
+
+        if (birthYear < 1900) {
+            return 'Erro: Insira um ano válido.';
+        }
+
+        if (
+            today.getMonth() < birthMonth ||
+            (today.getMonth() === birthMonth && today.getDate() < birthDay)
+        ) {
+            age--;
+        }
 
         if (age < 18) {
-            return 'Você precisa ter pelo menos 18 anos para se cadastrar.';
+            return 'Erro: Você precisa ter pelo menos 18 anos para se cadastrar.';
+        }
+
+        if (age > 60) {
+            return 'Erro: Você não pode ter mais de 60 anos para se cadastrar.';
         }
 
         return null;
@@ -127,6 +162,10 @@ const CadastroCliente = () => {
         const newRendas = [...rendas];
         setNestedValue(newRendas[index], name, value);
         setRendas(newRendas);
+    };
+
+    const handleCloseError = () => {
+        setError(null);
     };
 
     //Controle da despesa
@@ -269,6 +308,9 @@ const CadastroCliente = () => {
             case 'endereco':
                 errorMessage = validateEndereco(value);
                 break;
+            case 'autorizacaoLGPD':
+                errorMessage = validateAutorizacaoLGPD(value);
+                break;
             default:
                 break;
         }
@@ -313,13 +355,11 @@ const CadastroCliente = () => {
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const cleanCpf = cpf.replace(/\D/g, '');
         const formattedDataNascimento = dataNascimento; // Já está no formato 'yyyy-MM-dd'
-
-        debugger;
 
         const formErrors = {
             nome: validateName(nome) ? null : 'O nome deve ter entre 3 e 50 letras e pode conter apenas letras e espaços.',
@@ -328,8 +368,68 @@ const CadastroCliente = () => {
             email: validateEmail(email) ? null : 'O email deve ser um endereço válido.',
             telefone: validatePhone(telefone.replace(/\D/g, '')) ? null : 'O telefone deve conter 11 dígitos numéricos.',
             endereco: endereco.trim() === '' ? 'Este campo é obrigatório.' : null,
+            autorizacaoLGPD: autorizacaoLGPD == false ? 'Você precisa autorizar o uso de dados.' : null,
         };
         setErrors(formErrors);
+        if (!validateName(nome)) {
+            setFeedbackMessage('Erro: O nome deve ter entre 3 e 50 letras e pode conter apenas letras e espaços.');
+            return;
+        }
+        var validaNascimento = validateBirthDate(dataNascimento);
+        if (validaNascimento != null) {
+            setFeedbackMessage(validaNascimento);
+            return;
+        }
+        if (!validateEmail(email)) {
+            setFeedbackMessage('Erro: Você precisa inserir um endereço de e-mail válido.');
+            return;
+        }
+        if (!validatePhone(telefone.replace(/\D/g, ''))) {
+            setFeedbackMessage('Erro: O telefone deve conter 11 dígitos numéricos.');
+            return;
+        }
+        if (endereco.trim() === '') {
+            setFeedbackMessage('Erro: Este campo endereço é obrigatório.');
+            return;
+        }
+        if (!autorizacaoLGPD) {
+            setFeedbackMessage('Erro: Você precisa autorizar o uso de dados.');
+            return;
+        }        
+        if (despesas && despesas.length > 0) {            
+            for (let i = 0; i < despesas.length; i++) {
+                const despesa = despesas[i];
+                // Verifica se despesaTipo está preenchido e se valorDespesa é maior que zero
+                if (!despesa.despesaTipo.idDespesaTipo || !despesa.valorDespesa || despesa.valorDespesa <= 0) {
+                    setFeedbackMessage('Erro: Os valores de despesa estão incorretos.');
+                    return;
+                }
+            }
+        }
+        if (rendas && rendas.length > 0) {
+            for (let i = 0; i < rendas.length; i++) {
+                const renda = rendas[i];
+
+                // Verifica se rendaTipo está preenchido e se valorRenda é maior que zero
+                if (!renda.rendaTipo.idRendaTipo || !renda.valorRenda || renda.valorRenda <= 0) {
+                    setFeedbackMessage('Erro: Os valores de renda estão incorretos.');
+                    return;
+                }
+            }
+        }
+        if (patrimonios && patrimonios.length > 0) {
+            for (let i = 0; i < patrimonios.length; i++) {
+                const patrimonio = patrimonios[i];
+
+                // Verifica se patrimonioTipo está preenchido e se valorPatrimonio é maior que zero
+                if (!patrimonio.patrimonioTipo.idPatrimonioTipo || !patrimonio.valorPatrimonio || patrimonio.valorPatrimonio <= 0) {
+                    setFeedbackMessage('Erro: Os valores de patrimônio estão incorretos.');
+                    return;
+                }
+            }
+        }
+
+       
         if (Object.values(formErrors).every(error => error === null)) {
             const clienteData = {
                 nome,
@@ -339,28 +439,30 @@ const CadastroCliente = () => {
                 telefone,
                 endereco,
                 autorizacaoLGPD,
-                spcSerasa: selectedSpcSerasa,
+                spcSerasa,
                 despesas,
                 patrimonios,
                 rendas
             };
-
-            const response = ApiService.Post(`cliente/completo-com-financeiro`, clienteData)
-            if(clienteData != null){
-                alert("AQUI");
+            try {
+                const response = await ApiService.Post(`cliente/completo-com-financeiro`, clienteData)
+                setFeedbackMessage('Requisição enviada com sucesso!');
+                setErrors({ nome: null, cpf: null, dataNascimento: null, email: null, telefone: null, endereco: null });
+                // setNome('');
+                // setCpf('');
+                // setDataNascimento('');
+                // setEmail('');
+                // setTelefone('');
+                // setEndereco('');
+                // setAutorizacaoLGPD(false);
+                // setSpcSerasa(false);
+                // setRendas([]);
+                // setPatrimonios([]);
+                // setDespesas([]);     
+            } catch (error) {
+                console.error('Erro ao enviar a requisição:', error);
+                setFeedbackMessage('Erro ao enviar a requisição. Tente novamente.');
             }
-            setErrors({ nome: null, cpf: null, dataNascimento: null, email: null, telefone: null, endereco: null });
-            // setNome('');
-            // setCpf('');
-            // setDataNascimento('');
-            // setEmail('');
-            // setTelefone('');
-            // setEndereco('');
-            // setAutorizacaoLGPD(false);
-            // setSpcSerasa(false);
-            // setRendas([]);
-            // setPatrimonios([]);
-            // setDespesas([]);               
         }
     };
 
@@ -475,7 +577,7 @@ const CadastroCliente = () => {
                                             type="text"
                                             className="br-input"
                                             placeholder="Selecione uma opção"
-                                            value={selectedSpcSerasa || ''}
+                                            value={(spcSerasa ? 'Sim' : 'Não')}
                                             onClick={() => toggleListVisibility(setIsSpcSerasaListVisible)}
                                             readOnly
                                         />
@@ -512,6 +614,31 @@ const CadastroCliente = () => {
                         </div>
                         {/* <button type="submit" className="br-button">Salvar</button> */}
                     </form>
+                    {feedbackMessage && (
+                        <div className={`br-message ${feedbackMessage.includes('Erro') ? 'danger' : 'success'} mt-4`}>
+                            <div className="icon">
+                                <i className={`fas ${feedbackMessage.includes('Erro') ? 'fa-times-circle' : 'fa-check-circle'} fa-lg`} aria-hidden="true"></i>
+                            </div>
+                            <div className="content" role="alert">
+                                {feedbackMessage.includes('Erro') ? (
+                                    <>
+                                        {/* <span className="message-title">Erro:</span> */}
+                                        <span className="message-body"> {feedbackMessage}</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="message-title">Sucesso:</span>
+                                        <span className="message-body"> {feedbackMessage}</span>
+                                    </>
+                                )}
+                            </div>
+                            <div className="close">
+                                <button className="br-button circle small" type="button" aria-label="Fechar a mensagem de alerta" onClick={handleCloseError}>
+                                    <i className="fas fa-times" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
             </div>

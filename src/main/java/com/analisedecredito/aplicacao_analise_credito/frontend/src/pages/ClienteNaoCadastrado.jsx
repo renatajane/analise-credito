@@ -1,14 +1,21 @@
+import Styles from './Cpf.module.css';
+import { Link, useLocation } from "react-router-dom";
+
 const ClienteNaoCadastrado = () => {
     return (
-        <>
-            <div> Você precisa fazer o cadastro primeiro.</div>
-            <div> Clique no botão para fazer o cadastro.</div>
-            <button className="br-button primary" >
-                Cadastro
-            </button>
-        </>
-
-
+        <div className={Styles.container}>
+            <div className={Styles['text-large']}>Você precisa fazer o cadastro primeiro.</div>
+            <div className={Styles['text-large']}>Clique no botão abaixo para fazer o cadastro.</div>
+            <Link
+                className="menu-item"
+                role="treeitem"
+                to="/cadastroCliente"
+            >
+                <button className="br-button primary">
+                    Cadastro
+                </button>
+            </Link>
+        </div>
     );
 };
 

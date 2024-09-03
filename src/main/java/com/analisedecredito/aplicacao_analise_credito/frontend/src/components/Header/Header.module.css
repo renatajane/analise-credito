@@ -31,5 +31,11 @@
   .img_logo {
     margin-left: 14px;
   }
+
+  .container {
+    text-align: center; /* Alinha o texto ao centro */
+    font-family: 'IBM Plex Sans', sans-serif; /* Aplica a fonte padrão do governo */
+    padding: 20px; /* Adiciona um pouco de espaçamento interno */
+}
   
   

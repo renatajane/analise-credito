@@ -6,6 +6,7 @@ import FormatValor from "../utils/formatCurrency"
 import { ApiService } from '../services/appService';
 import { useAuth } from '../contexto/AuthProvider';
 import ClienteNaoCadastrado from '../pages/ClienteNaoCadastrado';
+import ClienteNaoTemRequisicao from '../pages/ClienteNaoTemRequisicao'
 
 const ListarRequisicoes = () => {
   const location = useLocation();
@@ -18,7 +19,7 @@ const ListarRequisicoes = () => {
   const [showInput, setShowInput] = useState(false);
   const [showPeriodInputs, setShowPeriodInputs] = useState(false);
   const [inputId, setInputId] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState('');
   const [idCliente, setIdCliente] = useState(null);
 
   const { cpfLogado } = useAuth();
@@ -26,22 +27,22 @@ const ListarRequisicoes = () => {
   useEffect(() => {
     // Fetch ID do Cliente
     const fetchClientId = async () => {
-        try { 
-            const response = await ApiService.Get(`cliente/cpf/${cpfLogado}`);
-            if (response && response.data) {
-                setIdCliente(response.data.idCliente);
-                const responseRequisicoes = await ApiService.Get(`emprestimo-requisicao/list-by-cpf?cpf=${cpfLogado}`);
+      try {
+        const response = await ApiService.Get(`cliente/cpf/${cpfLogado}`);
+        if (response && response.data) {
+          setIdCliente(response.data.idCliente);
+          const responseRequisicoes = await ApiService.Get(`emprestimo-requisicao/list-by-cpf?cpf=${cpfLogado}`);
 
-                const data = Array.isArray(responseRequisicoes.data) ? responseRequisicoes.data : [];
-                setRequisicoes(data);
-            }
-        } catch (error) {
-            console.error('Erro ao buscar ID do cliente:', error);
+          const data = Array.isArray(responseRequisicoes.data) ? responseRequisicoes.data : [];
+          setRequisicoes(data);
         }
+      } catch (error) {
+        console.error('Erro ao buscar ID do cliente:', error);
+      }
     };
 
     fetchClientId();
-}, []);
+  }, []);
 
   // useEffect(() => {
   //   if (location.state && location.state.requisicoes) {
@@ -64,7 +65,7 @@ const ListarRequisicoes = () => {
   const handleGeneratePdf = () => {
     const requisicao = requisicoes.find(req => req.idRequisicao === parseInt(inputId, 10));
 
-    if (requisicao && cpfLogado) {      
+    if (requisicao && cpfLogado) {
       window.open(`http://localhost:8080/emprestimo-requisicao/pdf/${cpfLogado}/${inputId}`, '_blank');
       setShowInput(false);
       setInputId('');
@@ -124,12 +125,14 @@ const ListarRequisicoes = () => {
   };
 
   return (
-    <div> 
-      {requisicoes.length}
+    <div>
       {idCliente == null && <ClienteNaoCadastrado />}
-      {idCliente != null && requisicoes.length == 0 && <div>Você não tem requisições. Fazer requisicao. </div>}
+      {idCliente != null && requisicoes.length == 0 && <ClienteNaoTemRequisicao />}
       {requisicoes.length > 0 && (
         <>
+          <h3 className={StylesTable.color}>
+            Gerar PDF de Requisições
+          </h3>
           <div className={StylesTable.container}>
             <div className="text-center">
               <div className="br-list" role="list">
@@ -343,7 +346,7 @@ const ListarRequisicoes = () => {
                     )}
                     <div className="mt-3 d-flex justify-content-center">
                       <button
-                        className="br-button secondary btn-blue"
+                        className="br-button primary"
                         type="button"
                         onClick={handleGeneratePdfByPeriodSubmit}
                         style={{ marginRight: '10px' }}

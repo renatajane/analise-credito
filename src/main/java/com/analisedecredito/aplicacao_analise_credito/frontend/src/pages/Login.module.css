@@ -1,0 +1,58 @@
+.container {
+    max-width: 400px; /* Largura máxima para o container */
+    margin: 0 auto; /* Centraliza o container horizontalmente */
+    padding: 20px; /* Adiciona algum espaçamento interno */
+    background-color: #f8f9fa; /* Cor de fundo leve */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
+    margin-bottom: 5%;
+    margin-top: 5%;
+}
+.input-button{
+    width: 280px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column; /* Alinha os inputs verticalmente */
+    align-items: center; /* Centraliza horizontalmente */
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.input-group input {
+    width: 100%; /* Faz os inputs ocuparem toda a largura disponível */
+    max-width: 300px; /* Largura máxima dos inputs */
+    padding: 0.75rem; /* Espaçamento interno dos inputs */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.input-group button {
+    width: 100%; /* Faz o botão ocupar toda a largura disponível */
+    max-width: 300px; /* Largura máxima dos botões */
+    padding: 0.75rem; /* Espaçamento interno do botão */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.br-button.primary {
+    background-color: #007bff;
+    color: #fff;
+    margin-bottom: 1rem; /* Espaçamento entre os botões */
+}
+
+.br-button.secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.alert {
+    color: red;
+    margin-bottom: 1rem;
+}

@@ -6,7 +6,7 @@
     border-radius: 8px; /* Bordas arredondadas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
     margin-bottom: 5%;
-    margin-top: 5%;
+    /* margin-top: 5%; */
   }
 
   .color {

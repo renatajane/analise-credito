@@ -5,7 +5,7 @@ const PrivateRoute = () => {
     const { token } = useAuth();
     if (!token) {
       console.log("Usuário não autenticado, redirecionando para login.");
-      // return <Navigate to="/login" replace />;
+      return <Navigate to="/login" replace />;
     }
   
     return <Outlet />;

@@ -1,0 +1,28 @@
+.container {
+    max-width: 445px;
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .text-large {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.buttonContainer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.br-button.primary {
+    padding: 10px 20px;
+} */

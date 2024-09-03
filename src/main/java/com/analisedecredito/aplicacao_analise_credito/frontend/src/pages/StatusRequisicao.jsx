@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { cpfMask } from '../components/Mask/CpfMask';
+import { useLocation, useNavigate } from 'react-router-dom';
 import FormatDate from "../utils/formatDate";
 import FormatValor from "../utils/formatCurrency";
 import StylesTable from './Table.module.css';
 import { ApiService } from '../services/appService';
 import { useAuth } from '../contexto/AuthProvider';
 import ClienteNaoCadastrado from '../pages/ClienteNaoCadastrado';
+import ClienteNaoTemRequisicao from '../pages/ClienteNaoTemRequisicao';
 
 const StatusRequisicao = () => {
     const [cpf, setCpf] = useState('');
@@ -13,63 +14,53 @@ const StatusRequisicao = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [idCliente, setIdCliente] = useState(null);
+    const navigate = useNavigate();
 
     const { cpfLogado } = useAuth();
 
-    useEffect(() => {
-        // Fetch ID do Cliente
-        const fetchClientId = async () => {
-            try {
-                const response = await ApiService.Get(`cliente/cpf/${cpfLogado}`);
-                if (response && response.data) {
-                    setIdCliente(response.data.idCliente);
-                    handleSearch();
-                }
-            } catch (error) {
-                console.error('Erro ao buscar ID do cliente:', error);
-            }
-        };
-
-        fetchClientId();
-    }, []);
-
-    const handleSearch = () => {
-        const cpfNumerico = cpf.replace(/\D/g, '');
-        if (cpfNumerico.length === 11) {
+    // Função para buscar requisições
+    const fetchRequisicoes = async () => {
+        try {
             setLoading(true);
             setError(null);
 
-            const response = ApiService.Get(`emprestimo-requisicao/list-by-cpf?cpf=${cpfLogado}`)
-            if (response) {
-                const data = Array.isArray(response.data) ? response.data : [];
-                if (data.length > 0) {
-                    setRequisicoes(data);
-                } else {
-                    setError('Nenhuma requisição encontrada para o CPF informado.');
+            // Buscar ID do Cliente
+            const clienteResponse = await ApiService.Get(`cliente/cpf/${cpfLogado}`);
+            if (clienteResponse && clienteResponse.data) {
+                setIdCliente(clienteResponse.data.idCliente);
+
+                // Buscar requisições usando o CPF
+                const requisicoesResponse = await ApiService.Get(`emprestimo-requisicao/list-by-cpf?cpf=${cpfLogado}`);
+                if (requisicoesResponse && requisicoesResponse.data) {
+                    const data = Array.isArray(requisicoesResponse.data) ? requisicoesResponse.data : [];
+                    if (data.length > 0) {
+                        setRequisicoes(data);
+                    } else {
+                        setError('Nenhuma requisição encontrada para o CPF informado.');
+                    }
                 }
+            } else {
+                setError('Cliente não encontrado.');
             }
-        } else {
-            setError('CPF inválido. Verifique o formato e tente novamente.');
+        } catch (err) {
+            setError('Erro ao buscar requisições. Tente novamente.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleCpfChange = (e) => {
-        setCpf(cpfMask(e.target.value));
-        setError(null);
-    };
-
-    const handleBack = () => {
-        setRequisicoes([]);
-        setCpf('');
-        setError(null);
-    };
+    useEffect(() => {
+        if (cpfLogado) {
+            fetchRequisicoes();
+        }
+    }, [cpfLogado]);
 
     const handleCloseError = () => {
         setError(null);
     };
 
     const renderStatusBadge = (status) => {
-        const color = status === true ? 'green' : 'red';
+        const color = status ? 'green' : 'red';
         return (
             <span style={{
                 display: 'inline-block',
@@ -86,7 +77,7 @@ const StatusRequisicao = () => {
     return (
         <div>
             {idCliente == null && <ClienteNaoCadastrado />}
-            {idCliente != null && requisicoes.length == 0 && <div>Você não tem requisições. Fazer requisicao. </div>} 
+            {idCliente != null && requisicoes.length === 0 && <ClienteNaoTemRequisicao />}
             {requisicoes.length > 0 && (
                 <>
                     <div className={StylesTable.services}>
@@ -95,7 +86,7 @@ const StatusRequisicao = () => {
                         </h3>
                     </div>
                     <div>
-                        <div className={StylesTable.tableContainer}>
+                    <div className={StylesTable.container}>
                             <table className={StylesTable.table}>
                                 <thead>
                                     <tr>
@@ -118,11 +109,12 @@ const StatusRequisicao = () => {
                                     ))}
                                 </tbody>
                             </table>
-                        </div>
+                        
                         <div className="d-flex justify-content-center mt-5">
-                            <button className="br-button secondary" type="button" onClick={handleBack}>
-                                Buscar Outro CPF
+                            <button className="br-button secondary" type="button" onClick={() => navigate("/")}>
+                                Voltar
                             </button>
+                        </div>
                         </div>
                     </div>
 

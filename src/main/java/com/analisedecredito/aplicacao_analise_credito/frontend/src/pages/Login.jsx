@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexto/AuthProvider';
-import Styles from './Cpf.module.css';
+import Styles from './Login.module.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { setToken } = useAuth();
   const { logOut } = useAuth();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!username || !password) {
-      setErrorMessage('Please enter both username and password.');
+      setErrorMessage('Verifique os dados de login e senha e tente novamente.');
       return;
     }
 
     try {
       const token = await authenticateUser(username, password);
       setToken(token);
-      //   localStorage.setItem('JwtToken', token); // Armazena o token no localStorage
-      window.location.href = '/'; // Redireciona para a página inicial
+      window.location.href = '/';
     } catch (error) {
-      setErrorMessage('Login failed. Please try again.');
+      setErrorMessage('Login falhou. Por favor, tente novamente.');
     }
   };
 
@@ -50,58 +54,78 @@ function Login() {
     return data;
   };
 
+  const handleCloseError = () => {
+    setErrorMessage('');
+  };
+
   return (
-    <div className={Styles.container}>
-      <div class="col-sm-6 col-lg-4 mb-3">
-        <div class="br-input">
-          <label for="input-icon">Login</label>
-          <div class="input-group">
-            <div class="input-icon"><i class="fas fa-user-tie" aria-hidden="true"></i>
+    <form onSubmit={handleLogin}>
+      <div className={Styles.container}>
+        {errorMessage && (
+          <div className="br-message danger mt-4">
+            <div className="icon">
+              <i className="fas fa-times-circle fa-lg" aria-hidden="true"></i>
             </div>
-            <input id="input-icon" type="text" placeholder="Placeholder" />
+            <div className="content" role="alert">
+              <span className="message-title">Erro:</span>
+              <span className="message-body"> {errorMessage}</span>
+            </div>
+            <div className="close">
+              <button className="br-button circle small" type="button" aria-label="Fechar a mensagem de alerta" onClick={handleCloseError}>
+                <i className="fas fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        )}
+        <div className="col-sm-6 col-lg-4 mb-3">
+          <div className={`${Styles['input-button']} br-input`}>
+            <label htmlFor="input-icon">Login</label>
+            <div className="input-group">
+              <div className="input-icon">
+                <i className="fas fa-user-tie" aria-hidden="true"></i>
+              </div>
+              <input
+                id="input-icon"
+                type="text"
+                placeholder="Digite o login de acesso"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="form-control"
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-sm-5 col-lg-3 mb-3">
-        <div class="br-input input-button">
-          <label for="input-password">Senha</label>
-          <input id="input-password" type="password" placeholder="Digite sua senha" />
-          <button class="br-button" type="button" aria-label="Exibir senha" role="switch" aria-checked="false"><i class="fas fa-eye" aria-hidden="true"></i>
-          </button>
+        <div className="col-sm-5 col-lg-3 mb-3">
+          <div className={`${Styles['input-button']} br-input`}>
+            <label htmlFor="input-password">Senha</label>
+            <div className="input-group">
+              <input
+                id="input-password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="form-control"
+                placeholder="Digite sua senha"
+              />
+              <button
+                type="button"
+                className="br-button"
+                aria-label="Exibir senha"
+                role="switch"
+                aria-checked={showPassword}
+                onClick={togglePasswordVisibility}
+              >
+                <i className={`fas fa-eye${showPassword ? '-slash' : ''}`} aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="p-3">
+          <button type="submit" className="br-button primary mr-3">Entrar</button>
+          <button type="button" className="br-button secondary mr-3" onClick={logOut}>Sair</button>
         </div>
       </div>
-      <div class="p-3">
-        <button class="br-button primary mr-3" type="button">Entrar
-        </button>
-        <button class="br-button secondary mr-3" type="button">Secundário
-        </button>
-      </div>
-
-      <h2>Login</h2>
-      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-      <form onSubmit={handleLogin}>
-        <div className="form-group">
-          <label>Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="form-control"
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="form-control"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Login</button>
-        <button color="inherit" onClick={logOut}>LogOut</button>
-      </form>
-    </div>
+    </form>
   );
 }
 

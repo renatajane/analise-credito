@@ -1,5 +1,5 @@
 .container {
-    max-width: 500px;
+    max-width: 445px;
     /* Largura máxima para o container */
     margin: 0 auto;
     /* Centraliza o container horizontalmente */
@@ -13,6 +13,8 @@
     /* Sombra leve para profundidade */
     margin-bottom: 5%;
     margin-top: 5%;
+
+   
 }
 
 .button-container {
@@ -27,3 +29,5 @@
     color: #0c326f;
     text-align: center;
   }
+
+  

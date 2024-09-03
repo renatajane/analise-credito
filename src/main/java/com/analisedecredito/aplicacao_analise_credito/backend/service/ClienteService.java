@@ -111,6 +111,33 @@ public class ClienteService {
                     "O cliente deve autorizar o tratamento de seus dados de acordo com a LGPD.");
         }
 
+        if (!clienteCompletoDto.getRendas().isEmpty()) {
+            for (RendaFonte item : clienteCompletoDto.getRendas()) {
+                if (item.getValorRenda() <= 0) {
+                    throw new IllegalArgumentException(
+                            "O valor da renda não pode ser menor ou igual a 0.");
+                }
+            }
+        }
+
+        if (!clienteCompletoDto.getPatrimonios().isEmpty()) {
+            for (Patrimonio item : clienteCompletoDto.getPatrimonios()) {
+                if (item.getValorPatrimonio() <= 0) {
+                    throw new IllegalArgumentException(
+                            "O valor do patrimônio não pode ser menor ou igual a 0.");
+                }
+            }
+        }
+
+        if (!clienteCompletoDto.getDespesas().isEmpty()) {
+            for (Despesa item : clienteCompletoDto.getDespesas()) {
+                if (item.getValorDespesa() <= 0) {
+                    throw new IllegalArgumentException(
+                            "O valor da despesa não pode ser menor ou igual a 0.");
+                }
+            }
+        }
+
         // Tenta encontrar o cliente existente pelo CPF
         Optional<Cliente> clienteExistenteOpt = repository.findByCpf(clienteCompletoDto.getCpf());
 

@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './CadastroRequisicao.module.css';
 import StylesTable from './Table.module.css';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ApiService } from '../services/appService';
 import { useAuth } from '../contexto/AuthProvider';
 import ClienteNaoCadastrado from './ClienteNaoCadastrado';
 
 const CadastroRequisicao = () => {
     const [valorRequerido, setValorRequerido] = useState('');
-    const [dataRequisicao, setDataRequisicao] = useState('');
     const [diaPagamento, setDiaPagamento] = useState('');
     const [prazoMes, setPrazoMes] = useState('');
+    const navigate = useNavigate();
     const [modalidades, setModalidades] = useState([]);
     const [objetivos, setObjetivos] = useState([]);
     const [valorMaximoPreAprovado, setValorMaximoPreAprovado] = useState('');
@@ -38,6 +39,10 @@ const CadastroRequisicao = () => {
     const prazoMesRef = useRef(null);
 
     const { cpfLogado } = useAuth();
+
+    const [error, setError] = useState(null);
+
+    const [feedbackMessage, setFeedbackMessage] = useState('');
 
     // Opções fixas para o dia de pagamento
     const diasPagamento = [
@@ -100,6 +105,17 @@ const CadastroRequisicao = () => {
 
     const toggleListVisibility = (setter) => setter(prev => !prev);
 
+    // Função para formatar números como moeda brasileira
+    const formatCurrency = (value) => {
+        if (value === null || value === undefined) return 'R$ 0,00';
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    };
+
+    const handleCloseError = () => {
+        setError(null);
+    };
+
+
     const handleOptionSelect = (option, setter, setVisibility) => {
         setter(option);
         setVisibility(false);
@@ -109,15 +125,15 @@ const CadastroRequisicao = () => {
         e.preventDefault();
 
         if (!idCliente) {
-            console.error('ID do cliente não está definido.');
+            setFeedbackMessage('Cliente não encontrado.');
             return;
         }
+
 
         const data = {
             cliente: idCliente, // Use o ID do cliente obtido
             emprestimoModalidade: selectedModalidade?.idModalidade,
             valorRequerido,
-            dataRequisicao,
             emprestimoObjetivo: selectedObjetivo?.idObjetivo,
             emprestimoUrgencia: selectedUrgencia?.idUrgencia,
             modalidadePagamento: selectedModalidadesPagamento?.idModalidadePagamento,
@@ -127,26 +143,35 @@ const CadastroRequisicao = () => {
 
         try {
             const response = await ApiService.Post('emprestimo-requisicao', data);
+            setFeedbackMessage('Requisição enviada com sucesso!');
+            setModalidades('');
+            setValorRequerido('');
+            setObjetivos('');
+            setUrgencias('');
+            setModalidadesPagamento('');
+            setDiaPagamento('');
+            setPrazoMes('');
+
         } catch (error) {
             console.error('Erro ao enviar a requisição:', error);
+            setFeedbackMessage('Erro ao enviar a requisição. Tente novamente.');
         }
     };
 
     return (
         <>
-        {idCliente == null && <ClienteNaoCadastrado/> }
+            {idCliente == null && <ClienteNaoCadastrado />}
             {idCliente > 0 && (
                 <>
-                <div>Olá, seu valor máximo pré-aprovado para empréstimo é de R${valorMaximoPreAprovado}</div>
                     <div className={StylesTable.services}>
-                        <h3 className={StylesTable.color}>
-                            Incluir Requisição
+                        <h3 className={StylesTable.color} style={{ marginBottom: '25px' }}>
+                            Olá, seu valor pré-aprovado para empréstimo é de {formatCurrency(valorMaximoPreAprovado)}
                         </h3>
                     </div>
                     <div className={styles.container}>
-                        <h3 className="dados-pessoais">
-                            Dados Pessoais
-                        </h3>
+                        <h5 className="requisicao" style={{ textTransform: 'none' }}>
+                            Incluir Proposta de Requisição
+                        </h5>
                         <form onSubmit={handleSubmit}>
                             <div className="row">
                                 <div className="col-sm-8 col-lg-5">
@@ -165,7 +190,7 @@ const CadastroRequisicao = () => {
                                 {/* Modalidade de Empréstimo */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="modalidade">
-                                        Modalidade de Empréstimo:
+                                        Modalidade de Empréstimo
                                     </label>
                                     <div className={styles.brselect} ref={modalidadeRef}>
                                         <div className="br-input">
@@ -206,7 +231,7 @@ const CadastroRequisicao = () => {
                                 {/* Objetivo do Empréstimo */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="objetivo">
-                                        Objetivo do Empréstimo:
+                                        Objetivo do Empréstimo
                                     </label>
                                     <div className={styles.brselect} ref={objetivoRef}>
                                         <div className="br-input">
@@ -247,7 +272,7 @@ const CadastroRequisicao = () => {
                                 {/* Urgência */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="urgencia">
-                                        Urgência:
+                                        Urgência
                                     </label>
                                     <div className={styles.brselect} ref={urgenciaRef}>
                                         <div className="br-input">
@@ -256,7 +281,7 @@ const CadastroRequisicao = () => {
                                                 type="text"
                                                 className="br-input"
                                                 placeholder="Selecione a urgência"
-                                                value={selectedUrgencia?.descricaoUrgencia || ''}
+                                                value={selectedUrgencia?.prazoUrgencia || ''}
                                                 onClick={() => toggleListVisibility(setIsUrgenciaListVisible)}
                                                 readOnly
                                             />
@@ -288,7 +313,7 @@ const CadastroRequisicao = () => {
                                 {/* Modalidade de Pagamento */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="modalidadePagamento">
-                                        Modalidade de Pagamento:
+                                        Modalidade de Pagamento
                                     </label>
                                     <div className={styles.brselect} ref={diaPagamentoRef}>
                                         <div className="br-input">
@@ -329,7 +354,7 @@ const CadastroRequisicao = () => {
                                 {/* Dia de Pagamento */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="diaPagamento">
-                                        Dia de Pagamento:
+                                        Dia de Pagamento
                                     </label>
                                     <div className={styles.brselect} ref={diaPagamentoRef}>
                                         <div className="br-input">
@@ -370,7 +395,7 @@ const CadastroRequisicao = () => {
                                 {/* Prazo em Meses */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="prazoMes">
-                                        Prazo em Meses:
+                                        Prazo em Meses para Pagamento
                                     </label>
                                     <div className={styles.brselect} ref={prazoMesRef}>
                                         <div className="br-input">
@@ -409,12 +434,41 @@ const CadastroRequisicao = () => {
                                 </div>
 
                                 <div className="br-button-group">
-                                    <button className="br-button primary" type="submit">
-                                        Incluir Requisição
+                                    <button className="br-button primary"
+                                        type="submit">
+                                        Enviar Requisição
+                                    </button>
+                                        <button className="br-button secondary" type="button" style={{ marginLeft: '20px' }} onClick={() => navigate("/")}>
+                                            Voltar
+                                        </button>
+                                    </div>
+                            </div>
+                        </form>
+                        {feedbackMessage && (
+                            <div className={`br-message ${feedbackMessage.includes('Erro') ? 'danger' : 'success'} mt-4`}>
+                                <div className="icon">
+                                    <i className={`fas ${feedbackMessage.includes('Erro') ? 'fa-times-circle' : 'fa-check-circle'} fa-lg`} aria-hidden="true"></i>
+                                </div>
+                                <div className="content" role="alert">
+                                    {feedbackMessage.includes('Erro') ? (
+                                        <>
+                                            <span className="message-title">Erro:</span>
+                                            <span className="message-body"> {feedbackMessage}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="message-title">Sucesso:</span>
+                                            <span className="message-body"> {feedbackMessage}</span>
+                                        </>
+                                    )}
+                                </div>
+                                <div className="close">
+                                    <button className="br-button circle small" type="button" aria-label="Fechar a mensagem de alerta" onClick={handleCloseError}>
+                                        <i className="fas fa-times" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
-                        </form>
+                        )}
                     </div>
                 </>
             )}

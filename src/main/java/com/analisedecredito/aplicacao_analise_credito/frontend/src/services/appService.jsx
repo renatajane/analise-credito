@@ -22,11 +22,12 @@ export const ApiService = {
             ...options,
         });
 
+        debugger;
         if (!response.ok) {
             throw new Error('Failed to post data to the API');
         }
 
-         return await response.json();
+        return response;
     },
     async Get(endpoint, options = {}){        
          const token = localStorage.getItem('__token');   

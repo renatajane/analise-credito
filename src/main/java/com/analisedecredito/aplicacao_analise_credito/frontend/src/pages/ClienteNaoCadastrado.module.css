@@ -1,0 +1,60 @@
+.container {
+    max-width: 445px;
+    /* Largura máxima para o container */
+    margin: 0 auto;
+    /* Centraliza o container horizontalmente */
+    padding: 20px;
+    /* Adiciona algum espaçamento interno */
+    background-color: #f8f9fa;
+    /* Cor de fundo leve */
+    border-radius: 8px;
+    /* Bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Sombra leve para profundidade */
+    margin-bottom: 5%;
+    margin-top: 5%;
+    /* Espaçamento superior e inferior */
+    text-align: center;
+    /* Alinha o texto ao centro */
+    font-family: 'IBM Plex Sans', sans-serif;
+    /* Aplica a fonte padrão do governo */
+}
+
+.text-large {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+}
+
+.buttonContainer {
+    margin-top: 20px;
+    /* Adiciona espaço acima do botão */
+    display: flex;
+    justify-content: center;
+    /* Centraliza o botão horizontalmente */
+}
+
+.br-button.primary {
+    padding: 10px 20px;
+    /* Ajusta o tamanho do botão, se necessário */
+}
+
+.input-button,
+.br-input,
+.form-control {
+    width: 100%;
+    /* Faz o input usar toda a largura do contêiner */
+}
+
+.form-control {
+    max-width: 400px;
+    /* Define a largura máxima para garantir que ambos os campos tenham o mesmo tamanho */
+}
+
+.col-sm-6,
+.col-lg-4,
+.col-sm-5,
+.col-lg-3 {
+    display: flex;
+    justify-content: center;
+    /* Centraliza os campos */
+}
