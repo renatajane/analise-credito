@@ -44,9 +44,7 @@ Realiza a análise e aprovação de empréstimos com base em dados financeiros e
 - **Vite**: Ferramenta de build para desenvolvimento frontend.
 - **CSS3** e **HTML5**: Para estilização e estruturação do frontend.
 - **JavaScript**: Para lógica de frontend e integração com APIs.
-- **Linux**: Sistema operacional para ambiente de desenvolvimento e produção.
-- **Nginx**: Servidor web para a aplicação frontend.
-
+- 
 ## Configuração e Execução
 
 1. Clone o repositório:
