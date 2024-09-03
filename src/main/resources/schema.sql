@@ -159,8 +159,9 @@ SELECT 'Pessoal' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE desc
 UNION ALL
 SELECT 'Imobiliário' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Imobiliário')
 UNION ALL
-SELECT 'Automóvel' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Automóvel');
-
+SELECT 'Estudantil' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Estudantil')
+UNION ALL
+SELECT 'Automotivo' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Automóvel');
 
 -- Criação da tabela Emprestimoobjetivo
 CREATE TABLE IF NOT EXISTS emprestimo_objetivo (
@@ -173,6 +174,8 @@ INSERT INTO emprestimo_objetivo (descricao_objetivo)
 SELECT 'Saúde' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Saúde')
 UNION ALL
 SELECT 'Compras' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Compras')
+UNION ALL
+SELECT 'Dívidas' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Dívidas')
 UNION ALL
 SELECT 'Viagem' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Viagem');
 
@@ -244,8 +247,6 @@ INSERT INTO emprestimo_requisicao (id_cliente_fk, id_modalidade_fk, valor_requer
 SELECT 3, 3, 10000.00, 20, 11800.00, 3, 3, 1, 1, 3, '2024-07-21', true, 'teste descricao3', '2024-07-20', 30, 200.00, 100.00, 800.00
 WHERE NOT EXISTS (SELECT 1 FROM emprestimo_requisicao WHERE data_requisicao = '2024-07-21' AND id_cliente_fk = 3);
 
-
-
 -- Criação da tabela AnaliseRestricao
 CREATE TABLE IF NOT EXISTS analise_restricao (
     id_restricao SERIAL PRIMARY KEY,
@@ -276,15 +277,15 @@ CREATE TABLE IF NOT EXISTS patrimonio_tipo (
 -- Inserir dados na tabela patrimonio_tipo apenas se não existirem registros
 INSERT INTO patrimonio_tipo (descricao_patrimonio_tipo)
 SELECT 'Imóveis'
-WHERE NOT EXISTS (SELECT 1 FROM patrimonio_tipo WHERE descricao_patrimonio_tipo = 'Imóveis');
+WHERE NOT EXISTS (SELECT 1 FROM patrimonio_tipo WHERE descricao_patrimonio_tipo = 'Imóvel');
 
 INSERT INTO patrimonio_tipo (descricao_patrimonio_tipo)
 SELECT 'Veículos'
-WHERE NOT EXISTS (SELECT 1 FROM patrimonio_tipo WHERE descricao_patrimonio_tipo = 'Veículos');
+WHERE NOT EXISTS (SELECT 1 FROM patrimonio_tipo WHERE descricao_patrimonio_tipo = 'Veículo');
 
 INSERT INTO patrimonio_tipo (descricao_patrimonio_tipo)
 SELECT 'Investimentos'
-WHERE NOT EXISTS (SELECT 1 FROM patrimonio_tipo WHERE descricao_patrimonio_tipo = 'Investimentos');
+WHERE NOT EXISTS (SELECT 1 FROM patrimonio_tipo WHERE descricao_patrimonio_tipo = 'Investimento');
 
 -- Criação da tabela Patrimonio
 CREATE TABLE IF NOT EXISTS patrimonio (
