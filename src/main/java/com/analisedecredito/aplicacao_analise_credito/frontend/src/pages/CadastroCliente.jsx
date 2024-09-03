@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Styles from './CadastroCliente.module.css';
 import { cpfMask } from '../components/Mask/CpfMask';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CadastroRenda from './CadastroRenda';
 import CadastroDespesa from './CadastroDespesa';
 import CadastroPatrimonio from './CadastroPatrimonio';
@@ -47,6 +48,8 @@ const CadastroCliente = () => {
 
     const [patrimonios, setPatrimonios] = useState([]);
     const { cpfLogado } = useAuth();
+
+    const navigate = useNavigate();
 
     const [feedbackMessage, setFeedbackMessage] = useState('');
 
@@ -395,8 +398,8 @@ const CadastroCliente = () => {
         if (!autorizacaoLGPD) {
             setFeedbackMessage('Erro: Você precisa autorizar o uso de dados.');
             return;
-        }        
-        if (despesas && despesas.length > 0) {            
+        }
+        if (despesas && despesas.length > 0) {
             for (let i = 0; i < despesas.length; i++) {
                 const despesa = despesas[i];
                 // Verifica se despesaTipo está preenchido e se valorDespesa é maior que zero
@@ -429,7 +432,7 @@ const CadastroCliente = () => {
             }
         }
 
-       
+
         if (Object.values(formErrors).every(error => error === null)) {
             const clienteData = {
                 nome,
@@ -475,13 +478,13 @@ const CadastroCliente = () => {
                 </h3>
             </div>
             <div className={Styles.container}>
-                <h3 className="dados-pessoais">
+                <h4 className="dados-pessoais">
                     Dados Pessoais
-                </h3>
+                </h4>
                 <div className="col-sm-8 col-lg-5">
                     <form onSubmit={handleSubmit}>
                         <div className="br-input">
-                            <label htmlFor="nome">Nome</label>
+                            <label htmlFor="nome">Nome <span className={Styles.obrigatorio}>(Obrigatório)</span></label>
                             <input
                                 id="nome"
                                 type="text"
@@ -493,7 +496,7 @@ const CadastroCliente = () => {
                             <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.nome}</div>
                         </div>
                         <div className="br-input">
-                            <label htmlFor="cpf">CPF</label>
+                            <label htmlFor="cpf">CPF <span className={Styles.obrigatorio}>(Obrigatório)</span></label>
                             <input
                                 id="cpf"
                                 type="text"
@@ -506,7 +509,7 @@ const CadastroCliente = () => {
                             <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.cpf}</div>
                         </div>
                         <div className="br-input">
-                            <label htmlFor="dataNascimento">Data de Nascimento</label>
+                            <label htmlFor="dataNascimento">Data de Nascimento <span className={Styles.obrigatorio}>(Obrigatório)</span></label>
                             <input
                                 id="dataNascimento"
                                 type="date"
@@ -517,7 +520,7 @@ const CadastroCliente = () => {
                             <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.dataNascimento}</div>
                         </div>
                         <div className="br-input">
-                            <label htmlFor="email">Email</label>
+                            <label htmlFor="email">Email <span className={Styles.obrigatorio}>(Obrigatório)</span></label>
                             <input
                                 id="email"
                                 type="email"
@@ -529,7 +532,7 @@ const CadastroCliente = () => {
                             <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.email}</div>
                         </div>
                         <div className="br-input">
-                            <label htmlFor="telefone">Telefone</label>
+                            <label htmlFor="telefone">Telefone <span className={Styles.obrigatorio}>(Obrigatório)</span></label>
                             <InputMask
                                 id="telefone"
                                 mask="(99) 99999-9999"
@@ -542,7 +545,8 @@ const CadastroCliente = () => {
                             <div style={{ color: 'red', fontSize: '0.875rem' }}>{errors.telefone}</div>
                         </div>
                         <div className="br-input">
-                            <label htmlFor="endereco">Endereço</label>
+                            <label htmlFor="endereco">
+                                Endereço <span className={Styles.obrigatorio}>(Obrigatório)</span></label>
                             <input
                                 id="endereco"
                                 type="text"
@@ -563,12 +567,12 @@ const CadastroCliente = () => {
 
                         {/*INICIA OS DADOS FINANCEIROS*/}
                         <div className="br-input">
-                            <h3>Dados Financeiros</h3>
+                            <h4>Dados Financeiros</h4>
 
                             {/* Restricao no Serasa */}
                             <div className="col-sm-20 col-lg-30 mb-2">
                                 <label className="text-nowrap" htmlFor="spcSerasa">
-                                    Possui restrição no SPC ou SERASA ? *
+                                    Possui restrição no SPC ou SERASA ? <span className={Styles.obrigatorio}>(Obrigatório)</span>
                                 </label>
                                 <div className={Styles.brselect} ref={spcSerasaRef}>
                                     <div className="br-input">
@@ -611,6 +615,9 @@ const CadastroCliente = () => {
                         {<CadastroDespesa despesas={despesas} onAddDespesa={addDespesa} onRemoveDespesa={removeDespesa} onUpdateDespesa={onUpdateDespesa} />}
                         <div className="p-3">
                             <button className="br-button primary mr-3" type="submit">Salvar</button>
+                            <button className="br-button secondary" type="button" style={{ marginLeft: '20px' }} onClick={() => navigate("/")}>
+                                Voltar
+                            </button>
                         </div>
                         {/* <button type="submit" className="br-button">Salvar</button> */}
                     </form>

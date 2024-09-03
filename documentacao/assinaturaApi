@@ -1,0 +1,561 @@
+openapi: 3.0.0
+info:
+  title: Sistema de Análise de Crédito
+  description: API projetada para subsidiar as operações de empréstimos para uma instituição financeira digital.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor de desenvolvimento local
+
+tags:
+  - name: Clientes
+    description: Operações relacionadas ao cadastro e gestão de clientes.
+  - name: Operações de crédito
+    description: Funcionalidades para simulação, análise e consulta de operações de crédito.
+
+paths:
+  /clientes:
+    post:
+      tags:
+        - Clientes
+      summary: Cadastro de Cliente
+      description: Registra um cliente no sistema.
+      requestBody:
+        description: Dados do cliente a serem cadastrados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                cpf:
+                  type: string
+                dataNascimento:
+                  type: string
+                  format: date-time
+                email:
+                  type: string
+                telefone:
+                  type: string
+                endereco:
+                  type: string
+                autorizacaoLGPD:
+                  type: boolean
+                dataAutorizacaoLGPD:
+                  type: string
+                  format: date-time
+                spcSerasa:
+                  type: boolean
+                renda:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      rendaTipo:
+                        type: object
+                        properties:
+                          idRendaTipo:
+                            type: integer
+                          descricaoRendaTipo:
+                            type: string
+                      valorRenda:
+                        type: number
+                        format: float
+                patrimonio:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      patrimonioTipo:
+                        type: object
+                        properties:
+                          idPatrimonioTipo:
+                            type: integer
+                      valorPatrimonio:
+                        type: number
+                        format: float
+                despesa:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      despesaTipo:
+                        type: object
+                        properties:
+                          idDespesaTipo:
+                            type: integer
+                      valorDespesa:
+                        type: number
+                        format: float
+      responses:
+        '201':
+          description: Cliente cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idCliente:
+                    type: integer
+                  nome:
+                    type: string
+                  cpf:
+                    type: string
+                  dataNascimento:
+                    type: string
+                    format: date-time
+                  email:
+                    type: string
+                  telefone:
+                    type: string
+                  endereco:
+                    type: string
+                  autorizacaoLGPD:
+                    type: boolean
+                  dataAutorizacaoLGPD:
+                    type: string
+                    format: date-time
+                  spcSerasa:
+                    type: boolean
+                  renda:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rendaTipo:
+                          type: object
+                          properties:
+                            idRendaTipo:
+                              type: integer
+                            descricaoRendaTipo:
+                              type: string
+                        valorRenda:
+                          type: number
+                          format: float
+                  patrimonio:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        patrimonioTipo:
+                          type: object
+                          properties:
+                            idPatrimonioTipo:
+                              type: integer
+                        valorPatrimonio:
+                          type: number
+                          format: float
+                  despesa:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        despesaTipo:
+                          type: object
+                          properties:
+                            idDespesaTipo:
+                              type: integer
+                        valorDespesa:
+                          type: number
+                          format: float
+        '400':
+          description: Requisição inválida
+        '500':
+          description: Erro interno do servidor
+
+  /cliente/completo/{cpf}:
+    get:
+      tags:
+        - Clientes
+      summary: Consulta de Cliente
+      description: Consulta os dados de um cliente pelo CPF.
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF do cliente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dados do cliente recuperados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idCliente:
+                    type: integer
+                  nome:
+                    type: string
+                  cpf:
+                    type: string
+                  dataNascimento:
+                    type: string
+                    format: date-time
+                  email:
+                    type: string
+                  telefone:
+                    type: string
+                  endereco:
+                    type: string
+                  autorizacaoLGPD:
+                    type: boolean
+                  dataAutorizacaoLGPD:
+                    type: string
+                    format: date-time
+                  perfilCliente:
+                    type: object
+                    properties:
+                      idPerfilCliente:
+                        type: integer
+                      nomePerfil:
+                        type: string
+                      score:
+                        type: integer
+                      percentualRisco:
+                        type: number
+                        format: float
+                  spcSerasa:
+                    type: boolean
+                  valorMaximoPreAprovado:
+                    type: number
+                    format: float
+        '404':
+          description: Cliente não encontrado
+        '500':
+          description: Erro interno do servidor
+
+  /emprestimo-requisicao/list-by-cpf:
+    get:
+      tags:
+        - Operações de crédito
+      summary: Consulta Requisições
+      description: Consulta as requisições de empréstimo de um cliente pelo CPF.
+      parameters:
+        - name: cpf
+          in: query
+          required: true
+          description: CPF do cliente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Requisições de empréstimo recuperadas com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    idRequisicao:
+                      type: integer
+                    cliente:
+                      type: object
+                      properties:
+                        idCliente:
+                          type: integer
+                        nome:
+                          type: string
+                        cpf:
+                          type: string
+                        dataNascimento:
+                          type: string
+                          format: date-time
+                        email:
+                          type: string
+                        telefone:
+                          type: string
+                        endereco:
+                          type: string
+                        autorizacaoLGPD:
+                          type: boolean
+                        dataAutorizacaoLGPD:
+                          type: string
+                          format: date-time
+                        perfilCliente:
+                          type: object
+                          properties:
+                            idPerfilCliente:
+                              type: integer
+                            nomePerfil:
+                              type: string
+                            score:
+                              type: integer
+                            percentualRisco:
+                              type: number
+                              format: float
+                        spcSerasa:
+                          type: boolean
+                        valorMaximoPreAprovado:
+                          type: number
+                          format: float
+                    emprestimoModalidade:
+                      type: object
+                      properties:
+                        idModalidade:
+                          type: integer
+                        descricaoModalidade:
+                          type: string
+                    valorRequerido:
+                      type: number
+                      format: float
+                    dataRequisicao:
+                      type: string
+                      format: date-time
+                    emprestimoObjetivo:
+                      type: object
+                      properties:
+                        idObjetivo:
+                          type: integer
+                        descricaoObjetivo:
+                          type: string
+                    emprestimoUrgencia:
+                      type: object
+                      properties:
+                        idUrgencia:
+                          type: integer
+                        prazoUrgencia:
+                          type: string
+                    iof:
+                      type: object
+                      properties:
+                        idIof:
+                          type: integer
+                        taxaIof:
+                          type: number
+                          format: float
+                        dataCalculo:
+                          type: string
+                          format: date-time
+                    juros:
+                      type: object
+                      properties:
+                        idJuros:
+                          type: integer
+                        taxaJurosMensal:
+                          type: number
+                          format: float
+                        dataVigencia:
+                          type: string
+                          format: date-time
+                    prazoMes:
+                      type: integer
+                    modalidadePagamento:
+                      type: integer
+                    diaPagamento:
+                      type: integer
+                    aprovado:
+                      type: boolean
+                    descricaoResultado:
+                      type: string
+                    dataResultado:
+                      type: string
+                      format: date-time
+                    jurosCalculado:
+                      type: number
+                      format: float
+                    iofCalculado:
+                      type: number
+                      format: float
+                    valorParcela:
+                      type: number
+                      format: float
+                    valorTotal:
+                      type: number
+                      format: float
+        '404':
+          description: Requisições não encontradas
+        '500':
+          description: Erro interno do servidor
+
+  /emprestimo-requisicao:
+    post:
+      tags:
+        - Operações de crédito
+      summary: Cria Requisições
+      description: Cria uma nova requisição de empréstimo.
+      requestBody:
+        description: Dados da requisição de empréstimo a ser criada
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cliente:
+                  type: integer
+                emprestimoModalidade:
+                  type: integer
+                valorRequerido:
+                  type: string
+                emprestimoObjetivo:
+                  type: integer
+                emprestimoUrgencia:
+                  type: integer
+                modalidadePagamento:
+                  type: integer
+                diaPagamento:
+                  type: integer
+                prazoMes:
+                  type: integer
+      responses:
+        '201':
+          description: Requisição de empréstimo criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idRequisicao:
+                    type: integer
+                  cliente:
+                    type: integer
+                  emprestimoModalidade:
+                    type: integer
+                  valorRequerido:
+                    type: string
+                  emprestimoObjetivo:
+                    type: integer
+                  emprestimoUrgencia:
+                    type: integer
+                  modalidadePagamento:
+                    type: integer
+                  diaPagamento:
+                    type: integer
+                  prazoMes:
+                    type: integer
+                  aprovado:
+                    type: boolean
+                  descricaoResultado:
+                    type: string
+                  dataResultado:
+                    type: string
+                    format: date-time
+        '400':
+          description: Requisição inválida
+        '500':
+          description: Erro interno do servidor
+
+  /emprestimo-requisicao/{id}:
+    get:
+      tags:
+        - Operações de crédito
+      summary: Consulta Requisição
+      description: Consulta os dados de uma requisição de empréstimo pelo ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da requisição
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Requisição de empréstimo recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idRequisicao:
+                    type: integer
+                  cliente:
+                    type: integer
+                  emprestimoModalidade:
+                    type: integer
+                  valorRequerido:
+                    type: string
+                  emprestimoObjetivo:
+                    type: integer
+                  emprestimoUrgencia:
+                    type: integer
+                  modalidadePagamento:
+                    type: integer
+                  diaPagamento:
+                    type: integer
+                  prazoMes:
+                    type: integer
+                  aprovado:
+                    type: boolean
+                  descricaoResultado:
+                    type: string
+                  dataResultado:
+                    type: string
+                    format: date-time
+        '404':
+          description: Requisição não encontrada
+        '500':
+          description: Erro interno do servidor
+
+components:
+  schemas:
+    Cliente:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+        nome:
+          type: string
+        cpf:
+          type: string
+        dataNascimento:
+          type: string
+          format: date-time
+        email:
+          type: string
+        telefone:
+          type: string
+        endereco:
+          type: string
+        autorizacaoLGPD:
+          type: boolean
+        dataAutorizacaoLGPD:
+          type: string
+          format: date-time
+        perfilCliente:
+          type: object
+          properties:
+            idPerfilCliente:
+              type: integer
+            nomePerfil:
+              type: string
+            score:
+              type: integer
+            percentualRisco:
+              type: number
+              format: float
+        spcSerasa:
+          type: boolean
+        valorMaximoPreAprovado:
+          type: number
+          format: float
+    RequisicaoEmprestimo:
+      type: object
+      properties:
+        idRequisicao:
+          type: integer
+        cliente:
+          type: integer
+        emprestimoModalidade:
+          type: integer
+        valorRequerido:
+          type: string
+        emprestimoObjetivo:
+          type: integer
+        emprestimoUrgencia:
+          type: integer
+        modalidadePagamento:
+          type: integer
+        diaPagamento:
+          type: integer
+        prazoMes:
+          type: integer
+        aprovado:
+          type: boolean
+        descricaoResultado:
+          type: string
+        dataResultado:
+          type: string
+          format: date-time

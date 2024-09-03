@@ -176,7 +176,7 @@ const CadastroRequisicao = () => {
                             <div className="row">
                                 <div className="col-sm-8 col-lg-5">
                                     <div className="br-input">
-                                        <label htmlFor="valorRequerido">Valor Requerido</label>
+                                        <label htmlFor="valorRequerido">Valor Requerido <span className={styles.obrigatorio}>(Obrigatório)</span></label>
                                         <input
                                             id="valorRequerido"
                                             type="text"
@@ -190,7 +190,7 @@ const CadastroRequisicao = () => {
                                 {/* Modalidade de Empréstimo */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="modalidade">
-                                        Modalidade de Empréstimo
+                                        Modalidade de Empréstimo <span className={styles.obrigatorio}>(Obrigatório)</span>
                                     </label>
                                     <div className={styles.brselect} ref={modalidadeRef}>
                                         <div className="br-input">
@@ -231,7 +231,7 @@ const CadastroRequisicao = () => {
                                 {/* Objetivo do Empréstimo */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="objetivo">
-                                        Objetivo do Empréstimo
+                                        Objetivo do Empréstimo <span className={styles.obrigatorio}>(Obrigatório)</span>
                                     </label>
                                     <div className={styles.brselect} ref={objetivoRef}>
                                         <div className="br-input">
@@ -272,7 +272,7 @@ const CadastroRequisicao = () => {
                                 {/* Urgência */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="urgencia">
-                                        Urgência
+                                        Urgência <span className={styles.obrigatorio}>(Obrigatório)</span>
                                     </label>
                                     <div className={styles.brselect} ref={urgenciaRef}>
                                         <div className="br-input">
@@ -313,7 +313,7 @@ const CadastroRequisicao = () => {
                                 {/* Modalidade de Pagamento */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="modalidadePagamento">
-                                        Modalidade de Pagamento
+                                        Modalidade de Pagamento <span className={styles.obrigatorio}>(Obrigatório)</span>
                                     </label>
                                     <div className={styles.brselect} ref={diaPagamentoRef}>
                                         <div className="br-input">
@@ -354,7 +354,7 @@ const CadastroRequisicao = () => {
                                 {/* Dia de Pagamento */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="diaPagamento">
-                                        Dia de Pagamento
+                                        Dia de Pagamento <span className={styles.obrigatorio}>(Obrigatório)</span>
                                     </label>
                                     <div className={styles.brselect} ref={diaPagamentoRef}>
                                         <div className="br-input">
@@ -395,7 +395,7 @@ const CadastroRequisicao = () => {
                                 {/* Prazo em Meses */}
                                 <div className="col-sm-20 col-lg-30 mb-2">
                                     <label className="text-nowrap" htmlFor="prazoMes">
-                                        Prazo em Meses para Pagamento
+                                        Prazo em Meses para Pagamento <span className={styles.obrigatorio}>(Obrigatório)</span>
                                     </label>
                                     <div className={styles.brselect} ref={prazoMesRef}>
                                         <div className="br-input">

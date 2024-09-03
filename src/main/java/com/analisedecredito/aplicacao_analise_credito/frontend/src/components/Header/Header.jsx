@@ -61,7 +61,7 @@ function Header() {
           <div className="header-login">
             <div className="header-sign-in">
               <Link to="/login">
-                <button className="br-sign-in small" type="button"
+                <button className="br-sign-in small" type="button" style={{marginTop:'6px'}}
                   data-trigger="login"><i className="fas fa-user"
                     aria-hidden="true"></i><span className="d-sm-inline">Entrar</span>
                 </button>

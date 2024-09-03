@@ -49,6 +49,7 @@ function Footer() {
               <a className="br-item" href="/statusRequisicao">
                 <div className="content">Consultar Status de Operação de Crédito</div>
               </a>
+              <span className="br-divider d-md-none"></span>
               <a className="br-item" href="/listarRequisicoes">
                 <div className="content">Gerar Relatórios</div>
               </a>

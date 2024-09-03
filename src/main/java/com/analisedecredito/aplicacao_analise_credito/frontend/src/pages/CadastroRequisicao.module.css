@@ -63,3 +63,8 @@
     background-color: #f0f0f0;
     width: 100%;
 }
+
+.obrigatorio {
+    color: grey;
+    font-size: 0.9em; /* Tamanho do texto pode ser ajustado */
+  }

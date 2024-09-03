@@ -99,12 +99,16 @@ CREATE TABLE IF NOT EXISTS renda_tipo (
 
 -- Inserir dados na tabela renda_tipo apenas se não existirem registros
 INSERT INTO renda_tipo (descricao_renda_tipo)
-SELECT 'salário'
+SELECT 'Salário'
 WHERE NOT EXISTS (SELECT 1 FROM renda_tipo);
 
 INSERT INTO renda_tipo (descricao_renda_tipo)
-SELECT 'pensão'
-WHERE NOT EXISTS (SELECT 1 FROM renda_tipo WHERE descricao_renda_tipo = 'pensão');
+SELECT 'Pensão'
+WHERE NOT EXISTS (SELECT 1 FROM renda_tipo WHERE descricao_renda_tipo = 'Pensão');
+
+INSERT INTO renda_tipo (descricao_renda_tipo)
+SELECT 'Outro'
+WHERE NOT EXISTS (SELECT 1 FROM renda_tipo WHERE descricao_renda_tipo = 'Outro');
 
 -- Criação da tabela de DespesaTipo
 CREATE TABLE IF NOT EXISTS despesa_tipo (
@@ -114,12 +118,16 @@ CREATE TABLE IF NOT EXISTS despesa_tipo (
 
 -- Inserir dados na tabela despesa_tipo apenas se não existirem registros
 INSERT INTO despesa_tipo (descricao_despesa_tipo)
-SELECT 'aluguel'
+SELECT 'Aluguel'
 WHERE NOT EXISTS (SELECT 1 FROM despesa_tipo);
 
 INSERT INTO despesa_tipo (descricao_despesa_tipo)
-SELECT 'alimentação'
-WHERE NOT EXISTS (SELECT 1 FROM despesa_tipo WHERE descricao_despesa_tipo = 'alimentação');
+SELECT 'Alimentação'
+WHERE NOT EXISTS (SELECT 1 FROM despesa_tipo WHERE descricao_despesa_tipo = 'Alimentação');
+
+INSERT INTO despesa_tipo (descricao_despesa_tipo)
+SELECT 'Educação'
+WHERE NOT EXISTS (SELECT 1 FROM despesa_tipo WHERE descricao_despesa_tipo = 'Educação');
 
 -- Criação da tabela RendaFonte
 CREATE TABLE IF NOT EXISTS renda_fonte (

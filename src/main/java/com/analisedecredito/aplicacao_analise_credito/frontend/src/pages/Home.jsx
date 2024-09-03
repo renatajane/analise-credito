@@ -7,7 +7,7 @@ const Home = () => {
         <div>
             <div className={styles.services}>
                 <h1 className={styles.color}>
-                    Seja bem-vindo ao Sistema de Análise de Crédito
+                    Seja Bem-Vindo ao Sistema de Análise de Crédito
                 </h1>
             </div>
 
@@ -33,7 +33,7 @@ const Home = () => {
                 </div>
                 <div>
                     <Link to="/listarRequisicoes">
-                        <h3>Gerar Relatórios de Operações de Crédito</h3>
+                        <h3>Gerar Relatórios de Operação de Crédito</h3>
                         <span className="br-divider my-3"></span>
                     </Link>
                 </div>

@@ -12,17 +12,19 @@
     align-items: center;
 }
 
-/* .text-large {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
+.text-large {
+    font-size: 1.5rem; /* Tamanho da fonte aumentado */
+    margin-bottom: 1rem; /* Margem inferior ajustada */
 }
 
 .buttonContainer {
-    margin-top: 20px;
+    margin-top: 1rem; /* Margem superior ajustada */
     display: flex;
     justify-content: center;
+    align-items: center; /* Certifica-se de que o botão esteja verticalmente centralizado */
 }
 
 .br-button.primary {
-    padding: 10px 20px;
-} */
+    padding: 10px 20px; /* Ajusta o padding do botão */
+    font-size: 1rem; /* Tamanho da fonte do botão */
+}

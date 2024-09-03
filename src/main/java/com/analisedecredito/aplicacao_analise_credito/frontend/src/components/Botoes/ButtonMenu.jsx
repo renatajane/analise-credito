@@ -104,16 +104,16 @@ const MenuButton = ({ isOpenProp }) => {
                 </a>
                 <ul className={`${operacoesOpen ? "" : "d-none"}`}>
                   <li>
-                    <a
+                  <Link
                       className="menu-item"
-                      href="http://192.168.37.8:8090/fazerRequisicaoEmprestimo"
+                      to="/cadastroRequisicao"
                       role="treeitem"
-                    >
+                    >                   
                       <span className="icon">
                         <i className="fas fa-hand-holding-usd" aria-hidden="true"></i>
                       </span>
                       <span className="content">Fazer Requisição de Empréstimo</span>
-                    </a>
+                      </Link>
                   </li>
                   <li>
                     <Link

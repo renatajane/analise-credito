@@ -21,8 +21,6 @@ export const ApiService = {
             body: JSON.stringify(data),
             ...options,
         });
-
-        debugger;
         if (!response.ok) {
             throw new Error('Failed to post data to the API');
         }
