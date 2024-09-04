@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import govbr from "../../Img/govbr.svg";
 import MenuButton from "../Botoes/ButtonMenu";
 import styles from "./Header.module.css";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../contexto/AuthProvider";
 
 function Header() {
+
+  const { nomeLogado } = useAuth();
+
+  const [saudacao, setSaudacao] = useState("Entrar");
+
+  useEffect(() => {
+    if (nomeLogado) {
+      setSaudacao(`Olá, ${nomeLogado}`);
+    } else {
+      setSaudacao("Entrar")
+    }
+  }, [nomeLogado]);
+
   return (
     <header className="br-header">
       <div className="container-lg">
@@ -61,9 +75,9 @@ function Header() {
           <div className="header-login">
             <div className="header-sign-in">
               <Link to="/login">
-                <button className="br-sign-in small" type="button" style={{marginTop:'6px'}}
+                <button className="br-sign-in small" type="button" style={{ marginTop: '6px' }}
                   data-trigger="login"><i className="fas fa-user"
-                    aria-hidden="true"></i><span className="d-sm-inline">Entrar</span>
+                    aria-hidden="true"></i><span className="d-sm-inline">{saudacao}</span>
                 </button>
               </Link>
             </div>

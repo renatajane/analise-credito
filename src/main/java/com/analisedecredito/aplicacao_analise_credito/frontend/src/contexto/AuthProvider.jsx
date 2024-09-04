@@ -11,7 +11,7 @@ import React, {
   const AuthContext = createContext({
     token: null,
     cpf: null,
-    nome: null,
+    nomeLogado: null, 
     setToken: () => {},
     logOut: () => {},
   });
@@ -21,7 +21,6 @@ import React, {
   export default function AuthProvider({ children }) {
     const token_key = "__token";
     const cpf_key = "__cpf";
-    const nome_key = "__nome";
     const navigate = useNavigate();   
   
     const [cpfLogado, setcpfLogado] = useState(() => {
@@ -29,22 +28,20 @@ import React, {
       return storedCpf ? storedCpf : null;
     });
 
-    const [nomeLogado, setnomeLogado] = useState(() => {
-      const storedNome = localStorage.getItem(nome_key);
-      return storedNome ? storedNome : null;
-    });
   
     const [token, setToken] = useState(() => {
       const storedToken = localStorage.getItem(token_key);
       return storedToken ? storedToken : null;
     });
   
+    const [nomeLogado, setNomeLogado] = useState("");
+
     useEffect(() => {
       if (token) {
         try {
           const decodedToken = jwtDecode(token);
           setcpfLogado(decodedToken.cpf);
-          setnomeLogado(decodedToken.nome);
+          setNomeLogado(decodedToken.given_name);
           // Agendar logout para quando o token expirar
           scheduleTokenExpiry(decodedToken.exp);
   
@@ -66,16 +63,10 @@ import React, {
   
       const decodedToken = jwtDecode(tokenValue);
       setcpfLogado(decodedToken.cpf);
-      setnomeLogado(decodedToken.nome);
       if (decodedToken.cpf) {
         localStorage.setItem(cpf_key, decodedToken.cpf);
       } else {
         localStorage.removeItem(cpf_key);
-      }
-      if (decodedToken.nome) {
-        localStorage.setItem(nome_key, decodedToken.nome);
-      } else {
-        localStorage.removeItem(nome_key);
       }
     };
   
@@ -96,7 +87,7 @@ import React, {
     const handleLogOut = () => {
       setToken(null);
       setcpfLogado(null); // Clear CPF on logout
-      setnomeLogado(null);
+      setNomeLogado("");
       localStorage.removeItem(token_key);
       navigate("/");
     };

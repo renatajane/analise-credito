@@ -24,6 +24,7 @@ const CadastroRequisicao = () => {
     const [selectedDiaPagamento, setSelectedDiaPagamento] = useState(null);
     const [selectedPrazoMes, setSelectedPrazoMes] = useState(null);
     const [selectedModalidadesPagamento, setSelectedModalidadesPagamento] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [isModalidadeListVisible, setIsModalidadeListVisible] = useState(false);
     const [isObjetivoListVisible, setIsObjetivoListVisible] = useState(false);
@@ -142,6 +143,7 @@ const CadastroRequisicao = () => {
         };
 
         try {
+            setIsSubmitting(true); // Desabilitar botão
             const response = await ApiService.Post('emprestimo-requisicao', data);
             setFeedbackMessage('Requisição enviada com sucesso!');
             setModalidades('');
@@ -155,6 +157,8 @@ const CadastroRequisicao = () => {
         } catch (error) {
             console.error('Erro ao enviar a requisição:', error);
             setFeedbackMessage('Erro ao enviar a requisição. Tente novamente.');
+        } finally {
+            setIsSubmitting(false); // Reabilitar botão após a requisição
         }
     };
 
@@ -435,13 +439,13 @@ const CadastroRequisicao = () => {
 
                                 <div className="br-button-group">
                                     <button className="br-button primary"
-                                        type="submit">
-                                        Enviar Requisição
+                                        type="submit" disabled={isSubmitting}>
+                                        {isSubmitting ? 'Enviando...' : 'Enviar Requisição'}
                                     </button>
-                                        <button className="br-button secondary" type="button" style={{ marginLeft: '20px' }} onClick={() => navigate("/")}>
-                                            Voltar
-                                        </button>
-                                    </div>
+                                    <button className="br-button secondary" type="button" style={{ marginLeft: '20px' }} onClick={() => navigate("/")}>
+                                        Voltar
+                                    </button>
+                                </div>
                             </div>
                         </form>
                         {feedbackMessage && (

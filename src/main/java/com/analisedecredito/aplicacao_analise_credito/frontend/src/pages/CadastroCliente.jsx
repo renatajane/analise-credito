@@ -10,8 +10,7 @@ import { ApiService } from '../services/appService';
 import { useAuth } from '../contexto/AuthProvider';
 import InputMask from 'react-input-mask';
 
-
-const CadastroCliente = () => {
+const CadastroCliente = () => {   
 
     // Dados iniciais fornecidos
     const initialData = {
@@ -47,7 +46,9 @@ const CadastroCliente = () => {
     const [isSpcSerasaListVisible, setIsSpcSerasaListVisible] = useState(false);
 
     const [patrimonios, setPatrimonios] = useState([]);
+
     const { cpfLogado } = useAuth();
+    const { nomeLogado } = useAuth();
 
     const navigate = useNavigate();
 
@@ -226,12 +227,13 @@ const CadastroCliente = () => {
             try {
                 const response = await ApiService.Get(`cliente/completo/${cpfLogado}`);
                 setCpf(cpfLogado);
+                setNome(nomeLogado);
                 // Formatar data para o formato 'yyyy-MM-dd'
                 if (response && response.data) {
                     console.log("minha response", response);
                     const formattedDataNascimento = new Date(response.data.dataNascimento).toISOString().split('T')[0];
                     setIdCliente(response.data.idCliente);
-                    setNome(response.data.nome);
+                    // setNome(response.data.nome);
                     // setCpf(response.data.cpf);
                     setDataNascimento(formattedDataNascimento);
                     setEmail(response.data.email);
@@ -489,6 +491,7 @@ const CadastroCliente = () => {
                                 id="nome"
                                 type="text"
                                 placeholder="Digite o nome"
+                                readOnly="true"
                                 value={nome}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}

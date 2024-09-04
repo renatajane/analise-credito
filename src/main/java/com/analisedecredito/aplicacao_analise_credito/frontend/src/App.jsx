@@ -13,8 +13,8 @@ import PrivateRoute from './contexto/PrivateRoute';
 function App() {
   return (
     <BrowserRouter>
-      <Header />
       <AuthProvider>
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

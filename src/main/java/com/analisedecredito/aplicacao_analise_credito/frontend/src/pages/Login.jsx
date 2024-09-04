@@ -7,8 +7,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { setToken } = useAuth();
-  const { logOut } = useAuth();
+  const { logOut, setToken, nomeLogado } = useAuth();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -77,52 +76,64 @@ function Login() {
             </div>
           </div>
         )}
-        <div className="col-sm-6 col-lg-4 mb-3">
-          <div className={`${Styles['input-button']} br-input`}>
-            <label htmlFor="input-icon">Login</label>
-            <div className="input-group">
-              <div className="input-icon">
-                <i className="fas fa-user-tie" aria-hidden="true"></i>
+        {!nomeLogado &&
+          <>
+            <div className="col-sm-6 col-lg-4 mb-3">
+              <div className={`${Styles['input-button']} br-input`}>
+                <label htmlFor="input-icon">Login</label>
+                <div className="input-group">
+                  <div className="input-icon">
+                    <i className="fas fa-user-tie" aria-hidden="true"></i>
+                  </div>
+                  <input
+                    id="input-icon"
+                    type="text"
+                    placeholder="Digite o login de acesso"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
               </div>
-              <input
-                id="input-icon"
-                type="text"
-                placeholder="Digite o login de acesso"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="form-control"
-              />
             </div>
-          </div>
-        </div>
-        <div className="col-sm-5 col-lg-3 mb-3">
-          <div className={`${Styles['input-button']} br-input`}>
-            <label htmlFor="input-password">Senha</label>
-            <div className="input-group">
-              <input
-                id="input-password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="form-control"
-                placeholder="Digite sua senha"
-              />
-              <button
-                type="button"
-                className="br-button"
-                aria-label="Exibir senha"
-                role="switch"
-                aria-checked={showPassword}
-                onClick={togglePasswordVisibility}
-              >
-                <i className={`fas fa-eye${showPassword ? '-slash' : ''}`} aria-hidden="true"></i>
-              </button>
+            <div className="col-sm-5 col-lg-3 mb-3">
+              <div className={`${Styles['input-button']} br-input`}>
+                <label htmlFor="input-password">Senha</label>
+                <div className="input-group">
+                  <input
+                    id="input-password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="form-control"
+                    placeholder="Digite sua senha"
+                  />
+                  <button
+                    type="button"
+                    className="br-button"
+                    aria-label="Exibir senha"
+                    role="switch"
+                    aria-checked={showPassword}
+                    onClick={togglePasswordVisibility}
+                  >
+                    <i className={`fas fa-eye${showPassword ? '-slash' : ''}`} aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        }
         <div className="p-3">
-          <button type="submit" className="br-button primary mr-3">Entrar</button>
-          <button type="button" className="br-button secondary mr-3" onClick={logOut}>Sair</button>
+          {!nomeLogado &&
+            <button type="submit" className="br-button primary mr-3">Entrar</button>
+          }
+          {nomeLogado &&
+            <>
+              <div className style={{ marginLeft: '30px', fontSize: '1.2rem' }}>Clique no botão abaixo para</div>
+              <div className style={{ marginLeft: '60px', fontSize: '1.2rem' }}>encerrar a sessão</div>
+              <button type="button" className="br-button primary mr-3" style={{ marginLeft: '120px', marginTop: '12px' }} onClick={logOut}>Sair</button>
+            </>
+          }
         </div>
       </div>
     </form>
