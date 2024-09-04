@@ -124,10 +124,10 @@ public class EmprestimoRequisicaoService {
             Cliente cliente = clienteOpt.get();
             // Verifica se o cliente já possui algum empréstimo em aberto
             // List<EmprestimoRequisicao> emprestimosEmAberto = repository
-            //         .findRequisicaoByIdClienteAndStatus(cliente.getIdCliente(), true);
+            // .findRequisicaoByIdClienteAndStatus(cliente.getIdCliente(), true);
 
-            //boolean clienteTemEmprestimoEmAberto = !emprestimosEmAberto.isEmpty();
-    
+            // boolean clienteTemEmprestimoEmAberto = !emprestimosEmAberto.isEmpty();
+
             // if (clienteTemEmprestimoEmAberto) {
             // throw new IllegalStateException("O cliente já possui um empréstimo em aberto.
             // Não é possível criar uma nova requisição.");
@@ -168,10 +168,6 @@ public class EmprestimoRequisicaoService {
                     jurosCalculado, emprestimoRequisicaoDto.getPrazoMes());
             emprestimoRequisicao.setValorParcela(valorParcela);
 
-            // Verifica o patrimônio do cliente
-            Double valorPatrimonioCliente = patrimonioRepository
-                    .findPatrimonioTotalCliente(cliente.getIdCliente());
-
             Double valorRendaCliente = rendaFonteRepository
                     .findRendaTotalCliente(cliente.getIdCliente());
 
@@ -191,11 +187,12 @@ public class EmprestimoRequisicaoService {
             despesaCliente += valorParcela;
 
             // Arredonda para 2 casas decimais usando BigDecimal
-            //BigDecimal despesaClienteRounded = new BigDecimal(despesaCliente).setScale(2, RoundingMode.HALF_UP);
+            // BigDecimal despesaClienteRounded = new BigDecimal(despesaCliente).setScale(2,
+            // RoundingMode.HALF_UP);
 
             // Formata o valor como moeda brasileira
-            //NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-           //String despesaFormatada = nf.format(despesaClienteRounded.doubleValue());
+            // NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            // String despesaFormatada = nf.format(despesaClienteRounded.doubleValue());
 
             // Inicializa a descrição e a aprovação
             emprestimoRequisicao.setDescricaoResultado("");
@@ -203,9 +200,9 @@ public class EmprestimoRequisicaoService {
 
             // 1. Verifica se o valor requerido é maior que a renda
             // if (emprestimoRequisicao.getValorRequerido() > valorRendaCliente) {
-            //     emprestimoRequisicao.setAprovado(false);
-            //     emprestimoRequisicao.setDescricaoResultado(
-            //             "Não é possível solicitar um empréstimo com valor superior à sua renda.");
+            // emprestimoRequisicao.setAprovado(false);
+            // emprestimoRequisicao.setDescricaoResultado(
+            // "Não é possível solicitar um empréstimo com valor superior à sua renda.");
             // }
 
             // 2. Verifica se o valor da parcela ultrapassa 30% da renda
@@ -214,10 +211,10 @@ public class EmprestimoRequisicaoService {
                 emprestimoRequisicao.setDescricaoResultado("O valor da parcela excede 30% da sua renda.");
             }
 
-            // 3. Verifica se o valor requerido é maior que o patrimônio
-            else if (emprestimoRequisicao.getValorRequerido() > valorPatrimonioCliente) {
+            else if (emprestimoRequisicao.getValorRequerido() > cliente.getValorMaximoPreAprovado()) {
                 emprestimoRequisicao.setAprovado(false);
-                emprestimoRequisicao.setDescricaoResultado("O valor requerido excede o seu patrimônio.");
+                emprestimoRequisicao
+                        .setDescricaoResultado("O valor requerido é superior ao valor pré-aprovado para empréstimo.");
             }
 
             // Caso o empréstimo seja aprovado
@@ -233,6 +230,7 @@ public class EmprestimoRequisicaoService {
             clienteService.definePerfilCliente(emprestimoRequisicao.getCliente().getIdCliente());
 
             calculaValorAprovadoService.calculaValorPreAprovado(emprestimoRequisicao.getCliente().getIdCliente());
+            repository.save(emprestimoRequisicao);
 
         } else {
             throw new ResourceNotFoundException("Dados necessários não encontrados.");

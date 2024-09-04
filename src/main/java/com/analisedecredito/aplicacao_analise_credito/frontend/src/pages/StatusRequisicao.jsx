@@ -89,9 +89,9 @@ const StatusRequisicao = () => {
                     <div className={StylesTable.container}>
                             <table className={StylesTable.table}>
                                 <thead>
-                                    <tr>
-                                        <th scope="col" className={StylesTable.negritoBold}>Nome do Requerente</th>
+                                    <tr>                                        
                                         <th scope="col" className={StylesTable.negritoBold}>Valor Requerido</th>
+                                        <th scope="col" className={StylesTable.negritoBold}>Valor da Parcela</th>
                                         <th scope="col" className={StylesTable.negritoBold}>Data Requisição</th>
                                         <th scope="col" className={StylesTable.negritoBold}>Situação</th>
                                         <th scope="col" className={StylesTable.negritoBold}>Descrição do Situação</th>
@@ -99,9 +99,9 @@ const StatusRequisicao = () => {
                                 </thead>
                                 <tbody>
                                     {requisicoes.map((requisicao, index) => (
-                                        <tr key={index}>
-                                            <td>{requisicao.cliente.nome}</td>
+                                        <tr key={index}>                                            
                                             <td>{FormatValor(requisicao.valorRequerido)}</td>
+                                            <td>{FormatValor(requisicao.valorParcela)}</td>
                                             <td>{FormatDate(requisicao.dataRequisicao)}</td>
                                             <td>{renderStatusBadge(requisicao.aprovado)}</td>
                                             <td>{requisicao.descricaoResultado}</td>

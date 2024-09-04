@@ -13,7 +13,8 @@ import com.analisedecredito.aplicacao_analise_credito.backend.model.Despesa;
 public interface DespesaRepository extends JpaRepository<Despesa, Integer> {
 
     @Query("SELECT COALESCE(SUM(p.valorDespesa), 0) FROM Despesa p WHERE p.cliente.idCliente = :clienteId")
-    Double findDespesaTotalCliente(@Param("clienteId") Integer clienteId);
+    Double 
+    findDespesaTotalCliente(@Param("clienteId") Integer clienteId);
 
     @Query("SELECT d FROM Despesa d JOIN d.cliente c WHERE c.idCliente = :id")
     List<Despesa> findByIdCliente(@Param("id") Integer id);

@@ -42,7 +42,7 @@ function Login() {
         grant_type: 'password',
         username: username,
         password: password,
-        client_secret: 'ycixApu6M2H5rU0vPYuSthEEVo2WAMRb',
+        client_secret: 'iZTmplwA1mIE5bwQT3cu0Ky9jMhbVAbn',
       }),
     });
 

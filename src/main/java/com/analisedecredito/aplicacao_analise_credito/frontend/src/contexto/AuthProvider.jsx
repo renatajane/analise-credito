@@ -11,6 +11,7 @@ import React, {
   const AuthContext = createContext({
     token: null,
     cpf: null,
+    nome: null,
     setToken: () => {},
     logOut: () => {},
   });
@@ -20,13 +21,17 @@ import React, {
   export default function AuthProvider({ children }) {
     const token_key = "__token";
     const cpf_key = "__cpf";
-    const navigate = useNavigate();
-  
-  
+    const nome_key = "__nome";
+    const navigate = useNavigate();   
   
     const [cpfLogado, setcpfLogado] = useState(() => {
       const storedCpf = localStorage.getItem(cpf_key);
       return storedCpf ? storedCpf : null;
+    });
+
+    const [nomeLogado, setnomeLogado] = useState(() => {
+      const storedNome = localStorage.getItem(nome_key);
+      return storedNome ? storedNome : null;
     });
   
     const [token, setToken] = useState(() => {
@@ -39,6 +44,7 @@ import React, {
         try {
           const decodedToken = jwtDecode(token);
           setcpfLogado(decodedToken.cpf);
+          setnomeLogado(decodedToken.nome);
           // Agendar logout para quando o token expirar
           scheduleTokenExpiry(decodedToken.exp);
   
@@ -60,10 +66,16 @@ import React, {
   
       const decodedToken = jwtDecode(tokenValue);
       setcpfLogado(decodedToken.cpf);
+      setnomeLogado(decodedToken.nome);
       if (decodedToken.cpf) {
         localStorage.setItem(cpf_key, decodedToken.cpf);
       } else {
         localStorage.removeItem(cpf_key);
+      }
+      if (decodedToken.nome) {
+        localStorage.setItem(nome_key, decodedToken.nome);
+      } else {
+        localStorage.removeItem(nome_key);
       }
     };
   
@@ -84,13 +96,14 @@ import React, {
     const handleLogOut = () => {
       setToken(null);
       setcpfLogado(null); // Clear CPF on logout
+      setnomeLogado(null);
       localStorage.removeItem(token_key);
       navigate("/");
     };
   
     return (
       <AuthContext.Provider
-        value={{ token, cpfLogado, setToken: handleSetToken, logOut: handleLogOut }}
+        value={{ token, cpfLogado, nomeLogado, setToken: handleSetToken, logOut: handleLogOut }}
       >
         {children}
       </AuthContext.Provider>

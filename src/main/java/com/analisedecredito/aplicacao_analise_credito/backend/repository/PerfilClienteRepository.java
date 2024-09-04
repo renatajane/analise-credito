@@ -15,7 +15,9 @@ public interface PerfilClienteRepository extends JpaRepository<PerfilCliente, In
     // Método para encontrar um perfil de cliente pelo nome do perfil
     Optional<PerfilCliente> findByNomePerfil(String nomePerfil);
 
-    @Query(value = "SELECT * FROM perfil_cliente p WHERE p.score >= :score ORDER BY p.score LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM perfil_cliente p WHERE p.score >= :score ORDER BY p.score LIMIT 1", 
+    nativeQuery = true)
     PerfilCliente findScore(@Param("score") Integer score);
+    
 
 }

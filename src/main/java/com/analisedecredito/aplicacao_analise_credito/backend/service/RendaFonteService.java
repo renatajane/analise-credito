@@ -63,8 +63,8 @@ public class RendaFonteService {
         repository.save(rendaFonte);
 
         clienteService.definePerfilCliente(clienteOpt.get().getIdCliente());
-        var a = clienteService.calculaValorPreAprovado(clienteOpt.get().getIdCliente());
-        System.out.println("MEU VALOR PRE APROVADO" + a);
+        clienteService.calculaValorPreAprovado(clienteOpt.get().getIdCliente());
+
     }
 
     /* Atualiza os dados de uma fonte de renda existente */

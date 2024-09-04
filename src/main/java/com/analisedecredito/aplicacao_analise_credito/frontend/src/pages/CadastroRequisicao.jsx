@@ -179,7 +179,7 @@ const CadastroRequisicao = () => {
                                         <label htmlFor="valorRequerido">Valor Requerido <span className={styles.obrigatorio}>(Obrigatório)</span></label>
                                         <input
                                             id="valorRequerido"
-                                            type="text"
+                                            type="number"
                                             placeholder="Digite o valor requerido"
                                             value={valorRequerido}
                                             onChange={(e) => setValorRequerido(e.target.value)}

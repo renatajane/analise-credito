@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.analisedecredito.aplicacao_analise_credito.backend.dto.BeneficiadoDto;
-import com.analisedecredito.aplicacao_analise_credito.backend.dto.ClienteDto;
 import com.analisedecredito.aplicacao_analise_credito.backend.exception.ResourceNotFoundException;
 import com.analisedecredito.aplicacao_analise_credito.backend.model.Cliente;
 import com.analisedecredito.aplicacao_analise_credito.backend.model.EmprestimoRequisicao;
@@ -55,28 +54,47 @@ public class CalcularValorAprovadoService {
     public void calculaValorPreAprovado(Integer idCliente) {
 
         Optional<Cliente> clienteOpt = repository.findById(idCliente);
+
         if (!clienteOpt.isPresent()) {
             throw new IllegalArgumentException("Cliente não encontrado");
         }
 
         Cliente cliente = clienteOpt.get();
         Double rendaTotal = somaRenda(idCliente);
-        Double despesa = calculaDespesaTotal(idCliente);
-        Double valorMaximoPreAprovado = 0.0;
-        var perfilCliente = cliente.getPerfilCliente().getNomePerfil();
+        // Double despesa = calculaDespesaTotal(idCliente);
+        Double valorMaximoPreAprovado;
 
-        if (perfilCliente.contains("Perfil de Baixo Risco")) {
-            valorMaximoPreAprovado = (rendaTotal - despesa) * 3;
-        } else if (perfilCliente.contains("Perfil de Risco Moderado")) {
-            valorMaximoPreAprovado = (rendaTotal - despesa) * 2;
-        } else if (perfilCliente.contains("Perfil de Alto Risco")) {
-            valorMaximoPreAprovado = (rendaTotal - despesa) * 1.5;
-        }
-        if (valorMaximoPreAprovado < 0) {
-            valorMaximoPreAprovado = 0.0;
-        }
+        // Se o valor preaprovado ainda não foi calculado, faça o cálculo inicial
+        valorMaximoPreAprovado = 0.0;
+        // String perfilCliente = cliente.getPerfilCliente().getNomePerfil();
 
+        // if (perfilCliente.contains("Perfil de Baixo Risco")) {
+            valorMaximoPreAprovado = rendaTotal * 3;
+        // } else if (perfilCliente.contains("Perfil de Risco Moderado")) {
+        //     valorMaximoPreAprovado = rendaTotal * 2;
+        // } else if (perfilCliente.contains("Perfil de Alto Risco")) {
+        //     valorMaximoPreAprovado = rendaTotal * 1.5;
+        // }
+
+        // Busca a última requisição de empréstimo aprovada do cliente
+        List<EmprestimoRequisicao> requisicoesAprovadas = requisicaoRepository
+                .findRequisicaoByIdClienteAndAprovado(cliente.getIdCliente());
+
+            if (requisicoesAprovadas != null && !requisicoesAprovadas.isEmpty()) {
+                for (EmprestimoRequisicao emprestimo : requisicoesAprovadas) {
+                    Double valorRequerido = emprestimo.getValorRequerido();
+                    valorMaximoPreAprovado -= valorRequerido;
+                }
+            }
+
+        // Atualiza o valor preaprovado no cliente
         cliente.setValorMaximoPreAprovado(valorMaximoPreAprovado);
+
+        // Certifique-se de que o valor preaprovado não seja negativo
+        if (cliente.getValorMaximoPreAprovado() < 0) {
+            cliente.setValorMaximoPreAprovado(0.0);
+        }
+
         repository.save(cliente);
     }
 
@@ -103,10 +121,7 @@ public class CalcularValorAprovadoService {
                 rendaTotal += beneficiado.getValorBeneficio(); // Adiciona o valor do benefício à renda total
             }
 
-            ClienteDto clienteDto = new ClienteDto(cliente);
-            clienteDto.setRendaTotal(rendaTotal);
-
-            return clienteDto.getRendaTotal();
+            return rendaTotal;
         } else {
             // Cliente não encontrado, lançar exceção ou retornar valor padrão
             throw new EntityNotFoundException("Cliente não encontrado para o ID: " + id);

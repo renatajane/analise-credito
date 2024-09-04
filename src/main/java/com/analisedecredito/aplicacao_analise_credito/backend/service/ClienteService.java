@@ -68,6 +68,9 @@ public class ClienteService {
     @Autowired
     private BeneficiadoService beneficiadoService;
 
+    @Autowired
+    CalcularValorAprovadoService calculaValorAprovadoService;
+
     /* Retorna um cliente de acordo com o id */
     public ClienteReadDto findById(Integer id) {
         return new ClienteReadDto(repository.findById(id).get());
@@ -102,6 +105,7 @@ public class ClienteService {
     }
 
     /* Cria o cliente completo com dados pessoais e financeiros */
+
     @Transactional
     public void createOrUpdateClienteCompleto(ClienteCompletoReadDto clienteCompletoDto) {
 
@@ -243,13 +247,17 @@ public class ClienteService {
                 }
             }
         }
-        // Define o perfil do cliente e calcula o valor pré-aprovado para empréstimo
-        definePerfilCliente(cliente.getIdCliente());
-        cliente = repository.save(cliente);
 
-        var valorPreAprovado = calculaValorPreAprovado(cliente.getIdCliente());
-        cliente.setValorMaximoPreAprovado(valorPreAprovado);
         cliente = repository.save(cliente);
+        // Define o perfil do cliente e calcula o valor pré-aprovado para empréstimo
+        cliente = definePerfilCliente(cliente.getIdCliente());
+
+        calculaValorAprovadoService.calculaValorPreAprovado(cliente.getIdCliente());
+        repository.save(cliente);
+
+        // var valorPreAprovado = calculaValorPreAprovado(cliente.getIdCliente());
+        // cliente.setValorMaximoPreAprovado(valorPreAprovado);
+        // cliente = repository.save(cliente);
     }
 
     /* Retorna uma lista de todos os clientes cadastrados */
@@ -364,7 +372,7 @@ public class ClienteService {
         return new BeneficiadoDto(cpf, null); // Retorna o CPF e valor null se não encontrado
     }
 
-    public void definePerfilCliente(Integer idCliente) {
+    public Cliente definePerfilCliente(Integer idCliente) {
 
         Optional<Cliente> clienteOpt = repository.findById(idCliente);
         if (!clienteOpt.isPresent()) {
@@ -398,6 +406,7 @@ public class ClienteService {
         cliente.setPerfilCliente(perfilCliente);
         repository.save(cliente);
 
+        return cliente;
     }
 
     /* Atualiza os dados de um cliente existente */

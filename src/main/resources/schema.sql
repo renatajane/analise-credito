@@ -7,8 +7,8 @@
 CREATE TABLE IF NOT EXISTS perfil_cliente (
     id_perfil_cliente SERIAL PRIMARY KEY,
     nome_perfil VARCHAR(255) NOT NULL,
-    score DOUBLE PRECISION NOT NULL,
-    percentual_risco DOUBLE PRECISION NOT NULL
+    score INTEGER NOT NULL,
+    percentual_risco INTEGER NOT NULL
 );
 
 -- Inserir 'Perfil de Baixo Risco' se não existir
@@ -162,14 +162,30 @@ CREATE TABLE IF NOT EXISTS emprestimo_modalidade (
 );
 
 -- Inserir dados na tabela EmprestimoModalidade se não existirem
-INSERT INTO emprestimo_modalidade (descricao_modalidade)  
-SELECT 'Pessoal' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Pessoal')
-UNION ALL
-SELECT 'Imobiliário' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Imobiliário')
-UNION ALL
-SELECT 'Estudantil' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Estudantil')
-UNION ALL
-SELECT 'Automotivo' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Automóvel');
+INSERT INTO emprestimo_modalidade (descricao_modalidade)
+SELECT 'Pessoal'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Pessoal'
+);
+INSERT INTO emprestimo_modalidade (descricao_modalidade)
+SELECT 'Imobiliário'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Imobiliário'
+);
+INSERT INTO emprestimo_modalidade (descricao_modalidade)
+SELECT 'Estudantil'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Estudantil'
+);
+
+-- INSERT INTO emprestimo_modalidade (descricao_modalidade)  
+-- SELECT 'Pessoal' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Pessoal')
+-- UNION ALL
+-- SELECT 'Imobiliário' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Imobiliário')
+-- UNION ALL
+-- SELECT 'Estudantil' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Estudantil')
+-- UNION ALL
+-- SELECT 'Automotivo' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_modalidade WHERE descricao_modalidade = 'Automóvel');
 
 -- Criação da tabela Emprestimoobjetivo
 CREATE TABLE IF NOT EXISTS emprestimo_objetivo (
@@ -178,14 +194,30 @@ CREATE TABLE IF NOT EXISTS emprestimo_objetivo (
 );
 
 -- Inserir dados na tabela EmprestimoObjetivo se não existirem
-INSERT INTO emprestimo_objetivo (descricao_objetivo)  
-SELECT 'Saúde' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Saúde')
-UNION ALL
-SELECT 'Compras' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Compras')
-UNION ALL
-SELECT 'Dívidas' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Dívidas')
-UNION ALL
-SELECT 'Viagem' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Viagem');
+INSERT INTO emprestimo_objetivo (descricao_objetivo)
+SELECT 'Saúde'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Saúde'
+);
+INSERT INTO emprestimo_objetivo (descricao_objetivo)
+SELECT 'Compras'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Compras'
+);
+INSERT INTO emprestimo_objetivo (descricao_objetivo)
+SELECT 'Dívidas'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Dívidas'
+);
+
+-- INSERT INTO emprestimo_objetivo (descricao_objetivo)  
+-- SELECT 'Saúde' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Saúde')
+-- UNION ALL
+-- SELECT 'Compras' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Compras')
+-- UNION ALL
+-- SELECT 'Dívidas' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Dívidas')
+-- UNION ALL
+-- SELECT 'Viagem' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_objetivo WHERE descricao_objetivo = 'Viagem');
 
 -- Criação da tabela EmprestimoUrgencia
 CREATE TABLE IF NOT EXISTS emprestimo_urgencia (
@@ -194,12 +226,29 @@ CREATE TABLE IF NOT EXISTS emprestimo_urgencia (
 );
 
 -- Inserir dados na tabela EmprestimoUrgencia se não existirem
-INSERT INTO emprestimo_urgencia (prazo_urgencia)  
-SELECT '30 dias' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = '30 dias')
-UNION ALL
-SELECT 'Imediato' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = 'Imediato')
-UNION ALL
-SELECT '15 dias' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = '15 dias');
+
+INSERT INTO emprestimo_urgencia (prazo_urgencia)
+SELECT '30 dias'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = '30 dias'
+);
+INSERT INTO emprestimo_urgencia (prazo_urgencia)
+SELECT 'Imediato'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = 'Imediato'
+);
+INSERT INTO emprestimo_urgencia (prazo_urgencia)
+SELECT '15 dias'
+WHERE NOT EXISTS (
+    SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = '15 dias'
+);
+-- INSERT INTO emprestimo_urgencia (prazo_urgencia)  
+-- SELECT '30 dias' WHERE NOT EXISTS(SELECT 1 FROM
+--  emprestimo_urgencia WHERE prazo_urgencia = '30 dias')
+-- UNION ALL
+-- SELECT 'Imediato' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = 'Imediato')
+-- UNION ALL
+-- SELECT '15 dias' WHERE NOT EXISTS(SELECT 1 FROM emprestimo_urgencia WHERE prazo_urgencia = '15 dias');
 
 -- Criação da tabela Juros
 CREATE TABLE IF NOT EXISTS juros (
