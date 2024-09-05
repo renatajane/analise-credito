@@ -147,7 +147,7 @@ const CadastroRequisicao = () => {
             prazoMes: selectedPrazoMes?.valor // Usando valor numérico selecionado
         };
 
-        if (valorRequerido == null || valorRequerido == '') {
+        if (valorRequerido <=0 | valorRequerido == null || valorRequerido == '') {
             setFeedbackMessage('Erro: Você precisa inserir um valor de requisição válido.');
             return;
         }
