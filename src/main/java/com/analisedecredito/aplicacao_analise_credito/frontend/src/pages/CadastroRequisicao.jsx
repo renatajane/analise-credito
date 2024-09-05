@@ -147,6 +147,35 @@ const CadastroRequisicao = () => {
             prazoMes: selectedPrazoMes?.valor // Usando valor numérico selecionado
         };
 
+        if (valorRequerido == null || valorRequerido == '') {
+            setFeedbackMessage('Erro: Você precisa inserir um valor de requisição válido.');
+            return;
+        }
+        if (!selectedModalidade) {
+            setFeedbackMessage('Erro: Você precisa selecionar uma modalidade de empréstimo.');
+            return;
+        }
+        if (!selectedObjetivo) {
+            setFeedbackMessage('Erro: Você precisa selecionar o objetivo do empréstimo.');
+            return;
+        }
+        if (!selectedUrgencia) {
+            setFeedbackMessage('Erro: Você precisa selecionar a urgência do empréstimo.');
+            return;
+        }
+        if (!selectedModalidadesPagamento) {
+            setFeedbackMessage('Erro: Você precisa selecionar a modalidade de pagamento do empréstimo.');
+            return;
+        }
+        if (!selectedDiaPagamento) {
+            setFeedbackMessage('Erro: Você precisa selecionar um dia para pagamento do empréstimo.');
+            return;
+        }
+        if (!selectedPrazoMes) {
+            setFeedbackMessage('Erro: Você precisa selecionar um prazo em meses para pagamento do empréstimo.');
+            return;
+        }       
+
         try {
             setIsSubmitting(true); // Desabilitar botão
             const response = await ApiService.Post('emprestimo-requisicao', data);
@@ -187,14 +216,16 @@ const CadastroRequisicao = () => {
                                 <h5 className="requisicao" style={{ textTransform: 'none' }}>
                                     Incluir Proposta de Requisição
                                 </h5>
+                                <label htmlFor='camposObrigatorios'><span className={styles.obrigatorio}>(Todos os campos são obrigatórios)</span></label>
                                 <form onSubmit={handleSubmit}>
-                                    <div className="row">
+                              
                                         <div className="col-sm-8 col-lg-5">
                                             <div className="br-input">
-                                                <label htmlFor="valorRequerido">Valor Requerido <span className={styles.obrigatorio}>(Obrigatório)</span></label>
+                                                <label htmlFor="valorRequerido">Valor Requerido</label>
                                                 <input
                                                     id="valorRequerido"
                                                     type="number"
+                                                    style={{ width: '200px' }}
                                                     placeholder="Digite o valor requerido"
                                                     value={valorRequerido}
                                                     onChange={(e) => setValorRequerido(e.target.value)}
@@ -205,7 +236,7 @@ const CadastroRequisicao = () => {
                                         {/* Modalidade de Empréstimo */}
                                         <div className="col-sm-20 col-lg-30 mb-2">
                                             <label className="text-nowrap" htmlFor="modalidade">
-                                                Modalidade de Empréstimo <span className={styles.obrigatorio}>(Obrigatório)</span>
+                                                Modalidade de Empréstimo 
                                             </label>
                                             <div className={styles.brselect} ref={modalidadeRef}>
                                                 <div className="br-input">
@@ -241,53 +272,51 @@ const CadastroRequisicao = () => {
                                                     </ul>
                                                 )}
                                             </div>
-                                        </div>
-
-                                        {/* Objetivo do Empréstimo */}
-                                        <div className="col-sm-20 col-lg-30 mb-2">
-                                            <label className="text-nowrap" htmlFor="objetivo">
-                                                Objetivo do Empréstimo <span className={styles.obrigatorio}>(Obrigatório)</span>
-                                            </label>
-                                            <div className={styles.brselect} ref={objetivoRef}>
-                                                <div className="br-input">
-                                                    <input
-                                                        id="objetivo"
-                                                        type="text"
-                                                        className="br-input"
-                                                        placeholder="Selecione o objetivo"
-                                                        value={selectedObjetivo?.descricaoObjetivo || ''}
-                                                        onClick={() => toggleListVisibility(setIsObjetivoListVisible)}
-                                                        readOnly
-                                                    />
-                                                    <button
-                                                        className="br-button"
-                                                        type="button"
-                                                        aria-label="Exibir lista"
-                                                        onClick={() => toggleListVisibility(setIsObjetivoListVisible)}
-                                                    >
-                                                        <i className="fas fa-angle-down" aria-hidden="true"></i>
-                                                    </button>
+                                            {/* Objetivo do Empréstimo */}
+                                            <div className="col-sm-20 col-lg-30 mb-2">
+                                                <label className="text-nowrap" htmlFor="objetivo">
+                                                    Objetivo do Empréstimo 
+                                                </label>
+                                                <div className={styles.brselect} ref={objetivoRef}>
+                                                    <div className="br-input">
+                                                        <input
+                                                            id="objetivo"
+                                                            type="text"
+                                                            className="br-input"
+                                                            placeholder="Selecione o objetivo"
+                                                            value={selectedObjetivo?.descricaoObjetivo || ''}
+                                                            onClick={() => toggleListVisibility(setIsObjetivoListVisible)}
+                                                            readOnly
+                                                        />
+                                                        <button
+                                                            className="br-button"
+                                                            type="button"
+                                                            aria-label="Exibir lista"
+                                                            onClick={() => toggleListVisibility(setIsObjetivoListVisible)}
+                                                        >
+                                                            <i className="fas fa-angle-down" aria-hidden="true"></i>
+                                                        </button>
+                                                    </div>
+                                                    {isObjetivoListVisible && (
+                                                        <ul className={styles.dropdownList}>
+                                                            {objetivos.map((objetivo) => (
+                                                                <li
+                                                                    key={objetivo.idObjetivo}
+                                                                    onClick={() => handleOptionSelect(objetivo, setSelectedObjetivo, setIsObjetivoListVisible)}
+                                                                    className={styles.dropdownItem}
+                                                                >
+                                                                    {objetivo.descricaoObjetivo}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
                                                 </div>
-                                                {isObjetivoListVisible && (
-                                                    <ul className={styles.dropdownList}>
-                                                        {objetivos.map((objetivo) => (
-                                                            <li
-                                                                key={objetivo.idObjetivo}
-                                                                onClick={() => handleOptionSelect(objetivo, setSelectedObjetivo, setIsObjetivoListVisible)}
-                                                                className={styles.dropdownItem}
-                                                            >
-                                                                {objetivo.descricaoObjetivo}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
                                             </div>
-                                        </div>
 
                                         {/* Urgência */}
                                         <div className="col-sm-20 col-lg-30 mb-2">
                                             <label className="text-nowrap" htmlFor="urgencia">
-                                                Urgência <span className={styles.obrigatorio}>(Obrigatório)</span>
+                                                Urgência 
                                             </label>
                                             <div className={styles.brselect} ref={urgenciaRef}>
                                                 <div className="br-input">
@@ -328,7 +357,7 @@ const CadastroRequisicao = () => {
                                         {/* Modalidade de Pagamento */}
                                         <div className="col-sm-20 col-lg-30 mb-2">
                                             <label className="text-nowrap" htmlFor="modalidadePagamento">
-                                                Modalidade de Pagamento <span className={styles.obrigatorio}>(Obrigatório)</span>
+                                                Modalidade de Pagamento 
                                             </label>
                                             <div className={styles.brselect} ref={diaPagamentoRef}>
                                                 <div className="br-input">
@@ -369,7 +398,7 @@ const CadastroRequisicao = () => {
                                         {/* Dia de Pagamento */}
                                         <div className="col-sm-20 col-lg-30 mb-2">
                                             <label className="text-nowrap" htmlFor="diaPagamento">
-                                                Dia de Pagamento <span className={styles.obrigatorio}>(Obrigatório)</span>
+                                                Dia de Pagamento
                                             </label>
                                             <div className={styles.brselect} ref={diaPagamentoRef}>
                                                 <div className="br-input">
@@ -410,7 +439,7 @@ const CadastroRequisicao = () => {
                                         {/* Prazo em Meses */}
                                         <div className="col-sm-20 col-lg-30 mb-2">
                                             <label className="text-nowrap" htmlFor="prazoMes">
-                                                Prazo em Meses para Pagamento <span className={styles.obrigatorio}>(Obrigatório)</span>
+                                                Prazo em Meses para Pagamento 
                                             </label>
                                             <div className={styles.brselect} ref={prazoMesRef}>
                                                 <div className="br-input">
@@ -467,7 +496,7 @@ const CadastroRequisicao = () => {
                                         <div className="content" role="alert">
                                             {feedbackMessage.includes('Erro') ? (
                                                 <>
-                                                    <span className="message-title">Erro:</span>
+                                                    <span className="message-title"></span>
                                                     <span className="message-body"> {feedbackMessage}</span>
                                                 </>
                                             ) : (
