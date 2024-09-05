@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FormatDate from "../utils/formatDate";
 import FormatValor from "../utils/formatCurrency";
 import StylesTable from './Table.module.css';
+import Styles from './Cpf.module.css';
 import { ApiService } from '../services/appService';
 import { useAuth } from '../contexto/AuthProvider';
 import ClienteNaoCadastrado from '../pages/ClienteNaoCadastrado';
@@ -76,65 +77,72 @@ const StatusRequisicao = () => {
 
     return (
         <div>
-            {idCliente == null && <ClienteNaoCadastrado />}
-            {idCliente != null && requisicoes.length === 0 && <ClienteNaoTemRequisicao />}
-            {requisicoes.length > 0 && (
+            {loading ? (
+                <div className={Styles.container} style={{ fontSize: '1.2rem' }}>
+                    Carregando...
+                </div>
+            ) : (
                 <>
-                    <div className={StylesTable.services}>
-                        <h3 className={StylesTable.color}>
-                            Consultar Status de Operação de Crédito
-                        </h3>
-                    </div>
-                    <div>
-                    <div className={StylesTable.container}>
-                            <table className={StylesTable.table}>
-                                <thead>
-                                    <tr>                                        
-                                        <th scope="col" className={StylesTable.negritoBold}>Valor Requerido</th>
-                                        <th scope="col" className={StylesTable.negritoBold}>Valor da Parcela</th>
-                                        <th scope="col" className={StylesTable.negritoBold}>Data Requisição</th>
-                                        <th scope="col" className={StylesTable.negritoBold}>Situação</th>
-                                        <th scope="col" className={StylesTable.negritoBold}>Descrição do Situação</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {requisicoes.map((requisicao, index) => (
-                                        <tr key={index}>                                            
-                                            <td>{FormatValor(requisicao.valorRequerido)}</td>
-                                            <td>{FormatValor(requisicao.valorParcela)}</td>
-                                            <td>{FormatDate(requisicao.dataRequisicao)}</td>
-                                            <td>{renderStatusBadge(requisicao.aprovado)}</td>
-                                            <td>{requisicao.descricaoResultado}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        
-                        <div className="d-flex justify-content-center mt-5">
-                            <button className="br-button secondary" type="button" onClick={() => navigate("/")}>
-                                Voltar
-                            </button>
-                        </div>
-                        </div>
-                    </div>
+                    {idCliente == null && <ClienteNaoCadastrado />}
+                    {idCliente != null && requisicoes.length === 0 && <ClienteNaoTemRequisicao />}
+                    {requisicoes.length > 0 && (
+                        <>
+                            <div className={StylesTable.services}>
+                                <h3 className={StylesTable.color}>
+                                    Consultar Status de Operação de Crédito
+                                </h3>
+                            </div>
+                            <div>
+                                <div className={StylesTable.container}>
+                                    <table className={StylesTable.table}>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" className={StylesTable.negritoBold}>Valor Requerido</th>
+                                                <th scope="col" className={StylesTable.negritoBold}>Valor da Parcela</th>
+                                                <th scope="col" className={StylesTable.negritoBold}>Data Requisição</th>
+                                                <th scope="col" className={StylesTable.negritoBold}>Situação</th>
+                                                <th scope="col" className={StylesTable.negritoBold}>Descrição do Situação</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {requisicoes.map((requisicao, index) => (
+                                                <tr key={index}>
+                                                    <td>{FormatValor(requisicao.valorRequerido)}</td>
+                                                    <td>{FormatValor(requisicao.valorParcela)}</td>
+                                                    <td>{FormatDate(requisicao.dataRequisicao)}</td>
+                                                    <td>{renderStatusBadge(requisicao.aprovado)}</td>
+                                                    <td>{requisicao.descricaoResultado}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
 
-                    {loading && <p className="mt-4">Carregando...</p>}
+                                    <div className="d-flex justify-content-center mt-5">
+                                        <button className="br-button secondary" type="button" onClick={() => navigate("/")}>
+                                            Voltar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-                    {error && (
-                        <div className="br-message danger mt-4">
-                            <div className="icon">
-                                <i className="fas fa-times-circle fa-lg" aria-hidden="true"></i>
-                            </div>
-                            <div className="content" role="alert">
-                                <span className="message-title">Erro:</span>
-                                <span className="message-body"> {error}</span>
-                            </div>
-                            <div className="close">
-                                <button className="br-button circle small" type="button" aria-label="Fechar a mensagem de alerta" onClick={handleCloseError}>
-                                    <i className="fas fa-times" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
+
+                            {error && (
+                                <div className="br-message danger mt-4">
+                                    <div className="icon">
+                                        <i className="fas fa-times-circle fa-lg" aria-hidden="true"></i>
+                                    </div>
+                                    <div className="content" role="alert">
+                                        <span className="message-title">Erro:</span>
+                                        <span className="message-body"> {error}</span>
+                                    </div>
+                                    <div className="close">
+                                        <button className="br-button circle small" type="button" aria-label="Fechar a mensagem de alerta" onClick={handleCloseError}>
+                                            <i className="fas fa-times" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </>
             )}

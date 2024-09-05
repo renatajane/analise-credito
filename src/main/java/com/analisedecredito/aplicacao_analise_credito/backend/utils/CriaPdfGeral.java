@@ -145,7 +145,7 @@ public class CriaPdfGeral extends PdfPageEventHelper {
         // Adiciona as linhas da tabela
         for (EmprestimoRequisicaoReadDto dto : requisicoes) {
             // Adiciona uma linha com o código da requisição
-            addTableRow(tabela, "Código da requisição:", String.valueOf(dto.getIdRequisicao()));
+            addTableRow(tabela, "Número do Empréstimo:", String.valueOf(dto.getIdRequisicao()));
 
             // Cria o texto das informações com espaçamento extra
             StringBuilder infoBuilder = new StringBuilder();
