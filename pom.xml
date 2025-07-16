@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
-            <version>21.1.1</version>
+            <version>22.0.1</version>
         </dependency>
 
 	</dependencies>
